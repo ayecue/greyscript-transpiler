@@ -1,0 +1,1 @@
+import_code("../fixtures/long-circular-import-1")

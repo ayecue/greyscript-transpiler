@@ -1,0 +1,10 @@
+test = {}
+
+test.here = "was"
+
+test.was = function()
+	super.here
+	print(self.here)
+end function
+
+print(test.was())

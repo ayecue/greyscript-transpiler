@@ -1,0 +1,26 @@
+test = function(abc)
+    print(abc)
+end function
+
+superlangername = function(abc)
+    print(abc)
+end function
+
+superlangername3 = function(abc)
+    print(abc)
+end function
+
+superlangername4 = function(abc)
+    print(abc)
+end function
+
+superlangername5 = function(abc)
+    print(abc)
+end function
+
+test("xxxxxxxxxx")
+superlangername("xxxxxxxxxx")
+superlangername4("xxxxxxxxxx")
+superlangername("xxxxxxxxxx")
+superlangername5("xxxxxxxxxx")
+superlangername3("xxxxxxxxxx")

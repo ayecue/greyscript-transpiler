@@ -1,0 +1,4 @@
+#include ../fixtures/envar-include.src
+
+myvar = #envar test
+print(#envar test2)

@@ -1,0 +1,32 @@
+main = function()
+    num = 0
+    iterate = function()
+        clear_screen
+
+        text = "<mark=green><color=black>" + outer.num
+
+        print(outer.hasIndex("num"))
+
+        if (outer.num > 20) then text = "<mark=yellow><color=green>" + outer.num
+        if (outer.num > 40) then text = "<mark=red><color=yellow>" + outer.num
+        if (outer.num < -20) then text = "<mark=green><color=yellow>" + outer.num
+        if (outer.num < -40) then text = "<mark=yellow><color=red>" + outer.num
+
+        print text
+        key = user_input("test", false, true)
+
+        if (key == "UpArrow") then
+            outer.num += 1
+        else if (key == "DownArrow") then
+            outer.num -= 1
+        else
+            exit "bye"
+        end if
+    end function
+
+    while (true)
+        iterate
+    end while
+end function
+
+main

@@ -1,0 +1,11 @@
+test = function(arg1 = 0, arg2 = "test")
+	print(arg1)
+	print(arg2)
+end function
+
+test()
+test("foo", false)
+
+var1 = "test"
+var2 = "test"
+var3 = "test"

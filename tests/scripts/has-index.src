@@ -1,0 +1,5 @@
+globals.test = "was"
+locals.foo = "moo"
+
+print(globals.hasIndex("test"))
+print(locals.hasIndex("foo"))
