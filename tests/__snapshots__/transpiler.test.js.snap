@@ -1433,7 +1433,9 @@ Array [
   "globals.test=\\"was\\"
 locals.foo=\\"moo\\"
 print(globals.hasIndex(\\"test\\"))
-print(locals.hasIndex(\\"foo\\"))",
+print(locals.hasIndex(\\"foo\\"))
+print(globals.hasIndex(\\"doesNotExist\\"))
+print(locals.hasIndex(\\"doesNotExist\\"))",
 ]
 `;
 
@@ -1442,7 +1444,9 @@ Array [
   "globals.test = \\"was\\"
 locals.foo = \\"moo\\"
 print(globals.hasIndex(\\"test\\"))
-print(locals.hasIndex(\\"foo\\"))",
+print(locals.hasIndex(\\"foo\\"))
+print(globals.hasIndex(\\"doesNotExist\\"))
+print(locals.hasIndex(\\"doesNotExist\\"))",
 ]
 `;
 
@@ -1451,7 +1455,9 @@ Array [
   "H.I=\\"was\\"
 locals.J=\\"moo\\"
 print(H.hasIndex(\\"I\\"))
-print(locals.hasIndex(\\"J\\"))",
+print(locals.hasIndex(\\"J\\"))
+print(H.hasIndex(\\"doesNotExist\\"))
+print(locals.hasIndex(\\"doesNotExist\\"))",
 ]
 `;
 

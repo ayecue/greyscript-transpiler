@@ -195,10 +195,9 @@ export function uglifyFactory(
         argItem = item.arguments[0];
 
         if (argItem.type === 'StringLiteral') {
-          const name = context.variables.get(
-            (argItem as ASTLiteral).value.toString()
-          );
-          return base + '("' + name + '")';
+          const namespace = (argItem as ASTLiteral).value.toString();
+          const optNamespace = context.variables.get(namespace);
+          return base + '("' + (optNamespace ?? namespace) + '")';
         }
 
         return base + '(' + make(argItem) + ')';
