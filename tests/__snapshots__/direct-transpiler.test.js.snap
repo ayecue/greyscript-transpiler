@@ -345,7 +345,9 @@ exports[`parse default scripts greybel-utils.src 1`] = `
 #include \\"./ascii.src\\";
 #include \\"../fixtures/sub-import.src\\";
 \\"true\\"
-//debugger"
+//debugger
+print(7)
+print(\\"unknown\\")"
 `;
 
 exports[`parse default scripts greybel-utils.src beautify 1`] = `
@@ -353,7 +355,9 @@ exports[`parse default scripts greybel-utils.src beautify 1`] = `
 #include \\"./ascii.src\\";
 #include \\"../fixtures/sub-import.src\\";
 \\"true\\"
-//debugger"
+//debugger
+print(7)
+print(\\"unknown\\")"
 `;
 
 exports[`parse default scripts greybel-utils.src uglify 1`] = `
@@ -361,7 +365,9 @@ exports[`parse default scripts greybel-utils.src uglify 1`] = `
 #include \\"./ascii.src\\";
 #include \\"../fixtures/sub-import.src\\";
 \\"true\\"
-//debugger"
+//debugger
+print(7)
+print(\\"unknown\\")"
 `;
 
 exports[`parse default scripts greybel-utils-with-comments.src 1`] = `

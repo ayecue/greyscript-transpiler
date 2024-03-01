@@ -3,3 +3,6 @@
 #include "../fixtures/sub-import.src"
 #envar TEST_ENV;
 debugger;
+
+print #line
+print #filename

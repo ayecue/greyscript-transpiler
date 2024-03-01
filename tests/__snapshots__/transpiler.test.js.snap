@@ -522,8 +522,12 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(123)
+print(6)
+print(\\"sub-import.src\\")
 \\"true\\"
-//debugger",
+//debugger
+print(7)
+print(\\"greybel-utils.src\\")",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
   "test=123
@@ -703,8 +707,12 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(123)
+print(6)
+print(\\"sub-import.src\\")
 \\"true\\"
-//debugger",
+//debugger
+print(7)
+print(\\"greybel-utils.src\\")",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
   "test = 123
@@ -889,8 +897,12 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(AO)
+print(6)
+print(\\"sub-import.src\\")
 \\"true\\"
-//debugger",
+//debugger
+print(7)
+print(\\"greybel-utils.src\\")",
   "o=\\"\\"foo\\"\\"",
   "r=\\"hi\\"",
   "p=AO
@@ -1051,6 +1063,8 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(123)
+print(6)
+print(\\"sub-import.src\\")
 \\"true\\"
 //debugger",
   "myvar2=\\"\\"foo\\"\\"",
@@ -1232,6 +1246,8 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(123)
+print(6)
+print(\\"sub-import.src\\")
 \\"true\\"
 //debugger",
   "myvar2 = \\"\\"foo\\"\\"",
@@ -1418,6 +1434,8 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(AO)
+print(6)
+print(\\"sub-import.src\\")
 \\"true\\"
 //debugger",
   "o=\\"\\"foo\\"\\"",
@@ -1537,7 +1555,9 @@ print(AsciiGen.gen(\\"Hallo\\"))",
   "test=123
 was=123
 x=123",
-  "print(123)",
+  "print(123)
+print(6)
+print(\\"sub-import.src\\")",
 ]
 `;
 
@@ -1623,7 +1643,9 @@ print(AsciiGen.gen(\\"Hallo\\"))",
   "test = 123
 was = 123
 x = 123",
-  "print(123)",
+  "print(123)
+print(6)
+print(\\"sub-import.src\\")",
 ]
 `;
 
@@ -1717,7 +1739,9 @@ print(I.gen(\\"Hallo\\"))",
   "o=AD
 p=AD
 g=AD",
-  "print(AD)",
+  "print(AD)
+print(6)
+print(\\"sub-import.src\\")",
 ]
 `;
 
