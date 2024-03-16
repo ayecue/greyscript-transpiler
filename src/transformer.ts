@@ -9,6 +9,9 @@ export interface TransformerDataObject {
 }
 
 export class Transformer {
+  static DEFAULT_TARGET: string = 'unknown';
+
+  currentTarget: string;
   currentStack: Stack;
   context: Context;
   buildMap: BuildMap;
@@ -24,9 +27,15 @@ export class Transformer {
   ) {
     const me = this;
 
+    me.currentTarget = Transformer.DEFAULT_TARGET;
     me.currentStack = new Stack();
     me.context = context;
-    me.buildMap = mapFactory(me.make.bind(me), context, environmentVariables);
+    me.buildMap = mapFactory.call(
+      me,
+      me.make.bind(me),
+      context,
+      environmentVariables
+    );
   }
 
   make(o: ASTBase, data: TransformerDataObject = {}): string {
