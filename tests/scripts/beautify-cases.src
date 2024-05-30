@@ -1,0 +1,80 @@
+// binary + logical
+test = 1 + 2 + 3 + 4 + 5 + 6 and (2 + 3 + 4 + 5 + 6 + (2+3+4+5+6+7))
+
+//call expression
+printAlign("dieFace[1] - dieFace[6]", [dieFace[1], dieFace[2], dieFace[3], dieFace[4], dieFace[5], dieFace[6], {"foo": 123, "was": "wo"}].join, 123, 123)
+printAlign(1,
+  2,
+  3,
+  4
+)
+
+//object
+test = {   }
+test = { 
+  
+"was": 123 
+
+}
+test = {"foo": 123, "was": ["abc", 1, 234], "xx": {"foo": 123, "ooo": {"foo": 123, "was": "wo"}, "was": "wo"}, "123": "3"}
+
+//list
+test = [  
+
+]
+test = [
+
+"was"
+]
+test = ["abc", 1, ["abc", 1, 234], ["abc", ["abc", 1, 234], 1, 234], 234]
+
+// shorthand binary
+test = test + 5
+test = test + 4 + 5
+test.abc = test.abc + 5
+test.abc = test.abc + 4 + 5
+
+// if
+if (true) then print("test")
+if (true) then print("test") else print("xd")
+if (true) then test = [1,2,3,4,5]
+if (true) then test = [1,2,3,4,5] else test = [5,4,3,2,1]
+if (true) then
+   print("test")
+else
+  print("xd")
+end if
+if (true) then
+  print("test")
+else if (false) then
+  print("xa")
+else
+ print("xd")
+end if
+
+test = function
+  return [1,2,3,4,5]
+end function
+
+
+// comments
+test = test + 5 // test
+test = [ 1, 2, // :D
+3, 4] // its a list
+test = function // its a function
+  return 123 // it a return
+end function // its function end
+for test in [123] // my for loop
+  print "test" // some print
+end for // end for loop
+
+test = { 
+  
+"was": 123, // was
+}
+test = { 
+  
+"was": 123, // was
+"foo": 13,
+"bar": 45,
+}

@@ -9,6 +9,7 @@ import { ASTImportCodeExpression } from 'greyscript-core';
 import {
   ASTAssignmentStatement,
   ASTBase,
+  ASTBaseBlock,
   ASTCallExpression,
   ASTCallStatement,
   ASTChunk,
@@ -28,6 +29,7 @@ import {
   ASTMapKeyString,
   ASTMemberExpression,
   ASTParenthesisExpression,
+  ASTPosition,
   ASTReturnStatement,
   ASTSliceExpression,
   ASTUnaryExpression,
@@ -37,21 +39,90 @@ import { basename } from 'path';
 
 import { TransformerDataObject } from '../transformer';
 import { injectImport } from '../utils/inject-imports';
+import {
+  countEvaluationExpressions,
+  SHORTHAND_OPERATORS,
+  transformBitOperation,
+  unwrap
+} from './beautify/utils';
 import { BuildMap } from './default';
 
-const isBlock = (item: string) => {
-  return /^[^\n]*(function|if|for|while)[^\n]*/.test(item);
-};
-
-export function beatuifyFactory(
+export function beautifyFactory(
   make: (item: ASTBase, _data?: TransformerDataObject) => string,
   context: Context,
   environmentVariables: Map<string, string>
 ): BuildMap {
   let indent = 0;
+  let isMultilineAllowed = true;
+  const chunks: ASTChunk['lines'][] = [];
+  const usedComments: Set<ASTBase> = new Set();
+  const pushLines = (lines: ASTChunk['lines']) => chunks.push(lines);
+  const popLines = (): ASTChunk['lines'] => chunks.pop();
+  const getLines = (): ASTChunk['lines'] => chunks[chunks.length - 1];
+  const appendComment = (position: ASTPosition, line: string): string => {
+    const items = getLines().get(position.line);
+    const comment = items?.find(
+      (item) => item instanceof ASTComment
+    ) as ASTComment;
+
+    if (comment && !usedComments.has(comment)) {
+      usedComments.add(comment);
+      return line + ' // ' + comment.value.trimStart();
+    }
+
+    return line;
+  };
+  const disableMultiline = () => (isMultilineAllowed = false);
+  const enableMultiline = () => (isMultilineAllowed = true);
   const incIndent = () => indent++;
   const decIndent = () => indent--;
-  const putIndent = (str: string) => `${'\t'.repeat(indent)}${str}`;
+  const putIndent = (str: string, offset: number = 0) =>
+    `${'\t'.repeat(indent + offset)}${str}`;
+  const buildBlock = (block: ASTBaseBlock): string[] => {
+    const body: string[] = [];
+    let previous: ASTBase | null = null;
+
+    for (let index = 0; index < block.body.length; index++) {
+      const bodyItem = block.body[index];
+
+      if (
+        (bodyItem instanceof ASTComment &&
+          getLines().get(bodyItem.start.line).length > 1) ||
+        previous?.end.line === bodyItem.start.line ||
+        usedComments.has(bodyItem)
+      ) {
+        continue;
+      }
+
+      const diff = Math.max(
+        previous ? bodyItem.start.line - previous.end.line - 1 : 0,
+        0
+      );
+
+      for (let j = 0; j < diff; j++) {
+        body.push('');
+      }
+
+      if (bodyItem instanceof ASTComment) {
+        usedComments.add(bodyItem);
+        const transformed = make(bodyItem, { isCommand: true });
+        body.push(putIndent(transformed));
+      } else {
+        const transformed = make(bodyItem, { isCommand: true });
+        body.push(putIndent(appendComment(bodyItem.end, transformed)));
+      }
+
+      previous = bodyItem;
+    }
+
+    const last = block.body[block.body.length - 1];
+
+    body.push(
+      ...new Array(Math.max(block.end.line - last?.end?.line - 1, 0)).fill(' ')
+    );
+
+    return body;
+  };
 
   return {
     ParenthesisExpression: (
@@ -59,6 +130,13 @@ export function beatuifyFactory(
       _data: TransformerDataObject
     ): string => {
       const expr = make(item.expression);
+
+      if (/\n/.test(expr) && !/,(?!\n)/.test(expr)) {
+        incIndent();
+        const expr = make(item.expression);
+        decIndent();
+        return '(\n' + putIndent(expr, 1) + ')';
+      }
 
       return '(' + expr + ')';
     },
@@ -70,7 +148,7 @@ export function beatuifyFactory(
           .join('\n');
       }
 
-      return '//' + item.value;
+      return '// ' + item.value.trimStart();
     },
     AssignmentStatement: (
       item: ASTAssignmentStatement,
@@ -80,6 +158,20 @@ export function beatuifyFactory(
       const init = item.init;
       const left = make(varibale);
       const right = make(init);
+
+      // might can create shorthand for expression
+      if (
+        (varibale instanceof ASTIdentifier ||
+          varibale instanceof ASTMemberExpression) &&
+        new RegExp('^\\b' + left + '\\b').test(right)
+      ) {
+        const segments = right.split(' ');
+        const [_, operator, ...rightSegments] = segments;
+
+        if (SHORTHAND_OPERATORS.includes(operator)) {
+          return left + ' ' + operator + '= ' + rightSegments.join(' ');
+        }
+      }
 
       return left + ' = ' + right;
     },
@@ -97,58 +189,83 @@ export function beatuifyFactory(
       _data: TransformerDataObject
     ): string => {
       const parameters = [];
-      const body = [];
-      let index = item.body.length - 1;
       let parameterItem;
-      let bodyItem;
 
-      incIndent();
+      disableMultiline();
 
       for (parameterItem of item.parameters) {
         parameters.push(make(parameterItem));
       }
 
-      for (bodyItem of item.body) {
-        const transformed = make(bodyItem);
-        if (transformed === '') continue;
-        if (
-          isBlock(transformed) &&
-          body.length > 0 &&
-          body[body.length - 1] !== ''
-        ) {
-          body.push('');
-        }
+      enableMultiline();
 
-        body.push(putIndent(transformed));
+      const blockStart = appendComment(
+        item.start,
+        'function(' + parameters.join(', ') + ')'
+      );
+      const blockEnd = putIndent('end function');
 
-        if (isBlock(transformed) && --index !== 0) {
-          body.push('');
-        }
-      }
+      incIndent();
+
+      const body = buildBlock(item);
 
       decIndent();
 
-      return (
-        'function(' +
-        parameters.join(', ') +
-        ')\n' +
-        body.join('\n') +
-        '\n' +
-        putIndent('end function')
-      );
+      return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
     },
     MapConstructorExpression: (
       item: ASTMapConstructorExpression,
       _data: TransformerDataObject
     ): string => {
+      if (item.fields.length === 0) {
+        return '{}';
+      }
+
+      if (item.fields.length === 1) {
+        const field = make(item.fields[0]);
+        return appendComment(item.fields[0].end, '{ ' + field + ' }');
+      }
+
+      if (isMultilineAllowed) {
+        const fields = [];
+        const blockEnd = putIndent(appendComment(item.start, '}'));
+
+        incIndent();
+
+        for (let index = item.fields.length - 1; index >= 0; index--) {
+          const fieldItem = item.fields[index];
+          fields.unshift(appendComment(fieldItem.end, make(fieldItem) + ','));
+        }
+
+        decIndent();
+
+        const blockStart = appendComment(item.start, '{');
+
+        return (
+          blockStart +
+          '\n' +
+          fields.map((field) => putIndent(field, 1)).join('\n') +
+          '\n' +
+          blockEnd
+        );
+      }
+
       const fields = [];
       let fieldItem;
+      const blockStart = '{';
+      const blockEnd = appendComment(item.start, '}');
 
       for (fieldItem of item.fields) {
         fields.push(make(fieldItem));
       }
 
-      return '{' + fields.join(', ') + '}';
+      return (
+        blockStart +
+        ' ' +
+        fields.map((field) => putIndent(field, 1)).join(', ') +
+        ' ' +
+        blockEnd
+      );
     },
     MapKeyString: (
       item: ASTMapKeyString,
@@ -179,59 +296,61 @@ export function beatuifyFactory(
       item: ASTWhileStatement,
       _data: TransformerDataObject
     ): string => {
-      const condition = make(item.condition);
-      const body = [];
-      let index = item.body.length - 1;
-      let bodyItem;
+      const condition = make(unwrap(item.condition));
+      const blockStart = appendComment(item.start, 'while ' + condition);
+      const blockEnd = putIndent('end while');
 
       incIndent();
 
-      for (bodyItem of item.body) {
-        const transformed = make(bodyItem);
-        if (transformed === '') continue;
-        if (
-          isBlock(transformed) &&
-          body.length > 0 &&
-          body[body.length - 1] !== ''
-        ) {
-          body.push('');
-        }
-
-        body.push(putIndent(transformed));
-
-        if (isBlock(transformed) && --index !== 0) {
-          body.push('');
-        }
-      }
+      const body = buildBlock(item);
 
       decIndent();
 
-      return (
-        'while ' +
-        condition +
-        '\n' +
-        body.join('\n') +
-        '\n' +
-        putIndent('end while')
-      );
+      return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
     },
     CallExpression: (
       item: ASTCallExpression,
-      _data: TransformerDataObject
+      data: TransformerDataObject
     ): string => {
       const base = make(item.base);
-      const args = [];
-      let argItem;
 
-      for (argItem of item.arguments) {
-        args.push(make(argItem));
-      }
-
-      if (args.length === 0) {
+      if (item.arguments.length === 0) {
         return base;
       }
 
-      return base + '(' + args.join(', ') + ')';
+      if (item.arguments.length > 3 && isMultilineAllowed) {
+        let argItem;
+        const args = [];
+
+        incIndent();
+
+        for (argItem of item.arguments) {
+          args.push(make(argItem));
+        }
+
+        decIndent();
+
+        return (
+          base +
+          '(\n' +
+          args.map((item) => putIndent(item, 1)).join(',\n') +
+          ')'
+        );
+      }
+
+      const args = item.arguments.map((argItem) => make(argItem));
+      const argStr = args.join(', ');
+
+      if (/\n/.test(argStr) && !/,(?!\n)/.test(argStr)) {
+        incIndent();
+        const args = item.arguments.map((argItem) => make(argItem));
+        decIndent();
+        const argStr = args.join(', ');
+
+        return base + '(\n' + putIndent(argStr, 1) + ')';
+      }
+
+      return data.isCommand ? base + ' ' + argStr : base + '(' + argStr + ')';
     },
     StringLiteral: (item: ASTLiteral, _data: TransformerDataObject): string => {
       return item.raw.toString();
@@ -292,41 +411,32 @@ export function beatuifyFactory(
         clauses.push(make(clausesItem));
       }
 
-      return clauses.join('\n') + '\n' + putIndent('end if');
+      return clauses.join(' ');
     },
     IfShortcutClause: (
       item: ASTIfClause,
       _data: TransformerDataObject
     ): string => {
-      const condition = make(item.condition);
+      const condition = make(unwrap(item.condition));
+      const statement = make(item.body[0]);
 
-      incIndent();
-      const statement = putIndent(make(item.body[0]));
-      decIndent();
-
-      return '\n' + putIndent('if ' + condition + ' then') + '\n' + statement;
+      return 'if ' + condition + ' then ' + statement;
     },
     ElseifShortcutClause: (
       item: ASTIfClause,
       _data: TransformerDataObject
     ): string => {
-      const condition = make(item.condition);
+      const condition = make(unwrap(item.condition));
+      const statement = make(item.body[0]);
 
-      incIndent();
-      const statement = putIndent(make(item.body[0]));
-      decIndent();
-
-      return 'else if ' + condition + ' then\n' + statement;
+      return 'else if ' + condition + ' then ' + statement;
     },
     ElseShortcutClause: (
       item: ASTElseClause,
       _data: TransformerDataObject
     ): string => {
-      incIndent();
       const statement = putIndent(make(item.body[0]));
-      decIndent();
-
-      return 'else\n' + statement;
+      return 'else ' + statement;
     },
     NilLiteral: (_item: ASTLiteral, _data: TransformerDataObject): string => {
       return 'null';
@@ -335,44 +445,21 @@ export function beatuifyFactory(
       item: ASTForGenericStatement,
       _data: TransformerDataObject
     ): string => {
-      const variable = make(item.variable);
-      const iterator = make(item.iterator);
-      const body = [];
-      let index = item.body.length - 1;
-      let bodyItem;
+      const variable = make(unwrap(item.variable));
+      const iterator = make(unwrap(item.iterator));
+      const blockStart = appendComment(
+        item.start,
+        'for ' + variable + ' in ' + iterator
+      );
+      const blockEnd = putIndent('end for');
 
       incIndent();
 
-      for (bodyItem of item.body) {
-        const transformed = make(bodyItem);
-        if (transformed === '') continue;
-        if (
-          isBlock(transformed) &&
-          body.length > 0 &&
-          body[body.length - 1] !== ''
-        ) {
-          body.push('');
-        }
-
-        body.push(putIndent(transformed));
-
-        if (isBlock(transformed) && --index !== 0) {
-          body.push('');
-        }
-      }
+      const body = buildBlock(item);
 
       decIndent();
 
-      return (
-        'for ' +
-        variable +
-        ' in ' +
-        iterator +
-        '\n' +
-        body.join('\n') +
-        '\n' +
-        putIndent('end for')
-      );
+      return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
     },
     IfStatement: (
       item: ASTIfStatement,
@@ -388,95 +475,42 @@ export function beatuifyFactory(
       return clauses.join('\n') + '\n' + putIndent('end if');
     },
     IfClause: (item: ASTIfClause, _data: TransformerDataObject): string => {
-      const condition = make(item.condition);
-      const body = [];
-      let index = item.body.length - 1;
-      let bodyItem;
+      const condition = make(unwrap(item.condition));
+      const blockStart = appendComment(item.start, 'if ' + condition + ' then');
 
       incIndent();
 
-      for (bodyItem of item.body) {
-        const transformed = make(bodyItem);
-        if (transformed === '') continue;
-        if (
-          isBlock(transformed) &&
-          body.length > 0 &&
-          body[body.length - 1] !== ''
-        ) {
-          body.push('');
-        }
-
-        body.push(putIndent(transformed));
-
-        if (isBlock(transformed) && --index !== 0) {
-          body.push('');
-        }
-      }
+      const body = buildBlock(item);
 
       decIndent();
 
-      return 'if ' + condition + ' then' + '\n' + body.join('\n');
+      return blockStart + '\n' + body.join('\n');
     },
     ElseifClause: (item: ASTIfClause, _data: TransformerDataObject): string => {
-      const condition = make(item.condition);
-      const body = [];
-      let index = item.body.length - 1;
-      let bodyItem;
+      const condition = make(unwrap(item.condition));
+      const blockStart = appendComment(
+        item.start,
+        putIndent('else if') + ' ' + condition + ' then'
+      );
 
       incIndent();
 
-      for (bodyItem of item.body) {
-        const transformed = make(bodyItem);
-        if (transformed === '') continue;
-        if (
-          isBlock(transformed) &&
-          body.length > 0 &&
-          body[body.length - 1] !== ''
-        ) {
-          body.push('');
-        }
-
-        body.push(putIndent(transformed));
-
-        if (isBlock(transformed) && --index !== 0) {
-          body.push('');
-        }
-      }
+      const body = buildBlock(item);
 
       decIndent();
 
-      return (
-        putIndent('else if') + ' ' + condition + ' then\n' + body.join('\n')
-      );
+      return blockStart + '\n' + body.join('\n');
     },
     ElseClause: (item: ASTElseClause, _data: TransformerDataObject): string => {
-      const body = [];
-      let index = item.body.length - 1;
-      let bodyItem;
+      const blockStart = appendComment(item.start, putIndent('else'));
 
       incIndent();
 
-      for (bodyItem of item.body) {
-        const transformed = make(bodyItem);
-        if (transformed === '') continue;
-        if (
-          isBlock(transformed) &&
-          body.length > 0 &&
-          body[body.length - 1] !== ''
-        ) {
-          body.push('');
-        }
-
-        body.push(putIndent(transformed));
-
-        if (isBlock(transformed) && --index !== 0) {
-          body.push('');
-        }
-      }
+      const body = buildBlock(item);
 
       decIndent();
 
-      return putIndent('else') + '\n' + body.join('\n');
+      return blockStart + '\n' + body.join('\n');
     },
     ContinueStatement: (
       _item: ASTBase,
@@ -535,14 +569,49 @@ export function beatuifyFactory(
       item: ASTListConstructorExpression,
       _data: TransformerDataObject
     ): string => {
+      if (item.fields.length === 0) {
+        return '[]';
+      }
+
+      if (item.fields.length === 1) {
+        const field = make(item.fields[0]);
+        return appendComment(item.fields[0].end, '[ ' + field + ' ]');
+      }
+
       const fields = [];
       let fieldItem;
+
+      if (isMultilineAllowed) {
+        const blockEnd = putIndent(appendComment(item.end, ']'));
+
+        incIndent();
+
+        for (let index = item.fields.length - 1; index >= 0; index--) {
+          const fieldItem = item.fields[index];
+          fields.unshift(appendComment(fieldItem.end, make(fieldItem) + ','));
+        }
+
+        decIndent();
+
+        const blockStart = appendComment(item.start, '[');
+
+        return (
+          blockStart +
+          '\n' +
+          fields.map((field) => putIndent(field, 1)).join('\n') +
+          '\n' +
+          blockEnd
+        );
+      }
+
+      const blockEnd = putIndent(appendComment(item.end, ']'));
+      const blockStart = '[';
 
       for (fieldItem of item.fields) {
         fields.push(make(fieldItem));
       }
 
-      return '[' + fields.join(', ') + ']';
+      return blockStart + ' ' + fields.join(', ') + ' ' + blockEnd;
     },
     ListValue: (item: ASTListValue, _data: TransformerDataObject): string => {
       return make(item.value);
@@ -567,32 +636,77 @@ export function beatuifyFactory(
     },
     LogicalExpression: (
       item: ASTEvaluationExpression,
-      _data: TransformerDataObject
+      data: TransformerDataObject
     ): string => {
-      const left = make(item.left);
-      const right = make(item.right);
+      const count = data.isInEvalExpression
+        ? 0
+        : countEvaluationExpressions(item);
+
+      if (count > 3 || data.isEvalMultiline) {
+        if (!data.isEvalMultiline) incIndent();
+
+        const left = make(item.left, {
+          isInEvalExpression: true,
+          isEvalMultiline: true
+        });
+        const right = make(item.right, {
+          isInEvalExpression: true,
+          isEvalMultiline: true
+        });
+        const operator = item.operator;
+        const expression = left + ' ' + operator + '\n' + putIndent(right);
+
+        if (!data.isEvalMultiline) decIndent();
+
+        return expression;
+      }
+
+      const left = make(item.left, { isInEvalExpression: true });
+      const right = make(item.right, { isInEvalExpression: true });
 
       return left + ' ' + item.operator + ' ' + right;
     },
     BinaryExpression: (
       item: ASTEvaluationExpression,
-      _data: TransformerDataObject
+      data: TransformerDataObject
     ): string => {
-      const left = make(item.left);
-      const right = make(item.right);
-      const operator = item.operator;
-      let expression = left + ' ' + operator + ' ' + right;
+      const count = data.isInBinaryExpression
+        ? 0
+        : countEvaluationExpressions(item);
 
-      if (
-        operator === '<<' ||
-        operator === '>>' ||
-        operator === '>>>' ||
-        operator === '|' ||
-        operator === '&'
-      ) {
-        expression =
-          'bitwise(' + ['"' + operator + '"', left, right].join(', ') + ')';
+      if (count > 3 || data.isEvalMultiline) {
+        if (!data.isEvalMultiline) incIndent();
+
+        const left = make(item.left, {
+          isInEvalExpression: true,
+          isEvalMultiline: true
+        });
+        const right = make(item.right, {
+          isInEvalExpression: true,
+          isEvalMultiline: true
+        });
+        const operator = item.operator;
+        const expression = transformBitOperation(
+          left + ' ' + operator + '\n' + putIndent(right),
+          left,
+          right,
+          operator
+        );
+
+        if (!data.isEvalMultiline) decIndent();
+
+        return expression;
       }
+
+      const left = make(item.left, { isInEvalExpression: true });
+      const right = make(item.right, { isInEvalExpression: true });
+      const operator = item.operator;
+      const expression = transformBitOperation(
+        left + ' ' + operator + ' ' + right,
+        left,
+        right,
+        operator
+      );
 
       return expression;
     },
@@ -606,29 +720,10 @@ export function beatuifyFactory(
       return operator + arg;
     },
     Chunk: (item: ASTChunk, _data: TransformerDataObject): string => {
-      const body = [];
-      let index = item.body.length - 1;
-      let bodyItem;
-
-      for (bodyItem of item.body) {
-        const transformed = make(bodyItem);
-        if (transformed === '') continue;
-        if (
-          isBlock(transformed) &&
-          body.length > 0 &&
-          body[body.length - 1] !== ''
-        ) {
-          body.push('');
-        }
-
-        body.push(putIndent(transformed));
-
-        if (isBlock(transformed) && --index !== 0) {
-          body.push('');
-        }
-      }
-
-      return body.join('\n');
+      pushLines(item.lines);
+      const body = buildBlock(item).join('\n');
+      popLines();
+      return body;
     },
     ImportCodeExpression: (
       item: ASTImportCodeExpression,
