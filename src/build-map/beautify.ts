@@ -133,9 +133,9 @@ export function beautifyFactory(
 
       if (/\n/.test(expr) && !/,(?!\n)/.test(expr)) {
         incIndent();
-        const expr = make(item.expression);
+        const expr = putIndent(make(item.expression), 1);
         decIndent();
-        return '(\n' + putIndent(expr, 1) + ')';
+        return '(\n' + expr + ')';
       }
 
       return '(' + expr + ')';
