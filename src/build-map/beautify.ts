@@ -188,27 +188,20 @@ export function beautifyFactory(
       item: ASTFunctionStatement,
       _data: TransformerDataObject
     ): string => {
-      const parameters = [];
-      let parameterItem;
-
       disableMultiline();
-
-      for (parameterItem of item.parameters) {
-        parameters.push(make(parameterItem));
-      }
-
+      const parameters = item.parameters.map((item) => make(item));
       enableMultiline();
 
       const blockStart = appendComment(
         item.start,
-        'function(' + parameters.join(', ') + ')'
+        parameters.length === 0
+          ? 'function'
+          : 'function(' + parameters.join(', ') + ')'
       );
       const blockEnd = putIndent('end function');
 
       incIndent();
-
       const body = buildBlock(item);
-
       decIndent();
 
       return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;

@@ -591,7 +591,7 @@ else
 	print \\"xd\\"
 end if
 
-test = function()
+test = function
 	return [
 		1,
 		2,
@@ -610,7 +610,7 @@ test = [
 	3,
 	4,
 ] // its a list
-test = function() // its a function
+test = function // its a function
 	return 123 // it a return
 end function // its function end
 for test in [ 123 ] // my for loop
@@ -3384,9 +3384,9 @@ main",
 
 exports[`parse default scripts outer.src beautify 1`] = `
 Array [
-  "main = function()
+  "main = function
 	num = 0
-	iterate = function()
+	iterate = function
 		clear_screen
 
 		text = \\"<mark=green><color=black>\\" + outer.num
@@ -3529,7 +3529,7 @@ PasswordGenerator.ALPHABETIC_CHARACTERS = \\"qwertzuiopasdfghjklyxcvbnm\\"
 PasswordGenerator.NUMBER_CHARACTERS = \\"0123456789\\"
 PasswordGenerator.ALPHA_NUMERIC = PasswordGenerator.ALPHABETIC_CHARACTERS + PasswordGenerator.ALPHABETIC_CHARACTERS.upper + PasswordGenerator.NUMBER_CHARACTERS
 
-PasswordGenerator.constructor = function()
+PasswordGenerator.constructor = function
 	me = self
 	me.buffer = [ 0 ]
 	me.characters = me.ALPHA_NUMERIC
@@ -3554,7 +3554,7 @@ PasswordGenerator.increaseBuffer = function(i)
 	end if
 end function
 
-PasswordGenerator.gen = function()
+PasswordGenerator.gen = function
 	me = self
 	currentCharBuffer = me.buffer
 	generatorCharacters = me.characters
@@ -3899,11 +3899,11 @@ String.remove = function(str)
 	return (new self).constructor(self.str.remove(str))
 end function
 
-String.toString = function()
+String.toString = function
 	return self.str
 end function
 
-String.length = function()
+String.length = function
 	return self.str.len
 end function
 
@@ -3928,7 +3928,7 @@ Error.constructor = function(message, values)
 	return m
 end function
 
-Error.throw = function()
+Error.throw = function
 	exit \\"<color=#ff0000>\\" + self.message + \\"</color>\\"
 end function
 
@@ -4502,7 +4502,7 @@ Array [
 
 test.here = \\"was\\"
 
-test.was = function()
+test.was = function
 	super.here
 	print self.here
 end function
@@ -4593,7 +4593,7 @@ print(-(1+2))",
 
 exports[`parse default scripts unary.src beautify 1`] = `
 Array [
-  "test = function()
+  "test = function
 	return null
 end function
 
