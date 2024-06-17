@@ -430,7 +430,7 @@ export function uglifyFactory(
       _data: TransformerDataObject
     ): string => {
       if (!item.chunk) {
-        return '#import "' + make(item.name) + ' from ' + item.path + '";';
+        return '#import ' + make(item.name) + ' from "' + item.path + '";';
       }
 
       const requireMethodName = context.variables.get('__REQUIRE');

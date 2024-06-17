@@ -371,7 +371,7 @@ export function defaultFactory(
       _data: TransformerDataObject
     ): string => {
       if (!item.chunk) {
-        return '#import "' + make(item.name) + ' from ' + item.path + '";';
+        return '#import ' + make(item.name) + ' from "' + item.path + '";';
       }
 
       return make(item.name) + ' = __REQUIRE("' + item.namespace + '")';
