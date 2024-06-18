@@ -541,10 +541,10 @@ test = [
 ]
 
 // shorthand binary
-test += 5
-test += 4 + 5
-test.abc += 5
-test.abc += 4 + 5
+test = test + 5
+test = test + 4 + 5
+test.abc = test.abc + 5
+test.abc = test.abc + 4 + 5
 
 // if
 if true then print(\\"test\\")
@@ -594,7 +594,7 @@ end function
 
 
 // comments
-test += 5 // test
+test = test + 5 // test
 test = [
 	1,
 	2, // :D
@@ -702,10 +702,10 @@ a or b"
 `;
 
 exports[`parse default scripts binary-expressions.src beautify 1`] = `
-"a /= b
-a *= b
-a -= b
-a += b
+"a = a / b
+a = a * b
+a = a - b
+a = a + b
 bitwise(\\"<<\\", a, b)
 bitwise(\\">>\\", a, b)
 w = bitwise(\\">>\\", bitwise(\\">>>\\", a, (bitwise(\\"<<\\", b, c))), a)
@@ -1259,9 +1259,9 @@ exports[`parse default scripts outer.src beautify 1`] = `
 		key = user_input(\\"test\\", false, true)
 
 		if key == \\"UpArrow\\" then
-			outer.num += 1
+			outer.num = outer.num + 1
 		else if key == \\"DownArrow\\" then
-			outer.num -= 1
+			outer.num = outer.num - 1
 		else
 			exit \\"bye\\"
 		end if
@@ -1393,7 +1393,7 @@ PasswordGenerator.increaseBuffer = function(i)
 	maxBufferSize = me.characters.len
 	if i == null then i = currentCharBuffer.len - 1
 	p = currentCharBuffer[i]
-	p += 1
+	p = p + 1
 	currentCharBuffer[i] = p
 	if p == maxBufferSize then
 		currentCharBuffer[i] = 0
@@ -1414,9 +1414,9 @@ PasswordGenerator.gen = function
 
 	while index < currentCharBuffer.len
 		pointer = currentCharBuffer[index]
-		password += generatorCharacters[pointer]
+		password = password + generatorCharacters[pointer]
 		if index == currentCharBuffer.len - 1 then self.increaseBuffer
-		index += 1
+		index = index + 1
 	end while
 
 	if currentCharBuffer.len > me.MAX_PASSWORD_LENGTH then
@@ -1434,7 +1434,7 @@ result = []
 
 while index < max
 	result.push pgen.gen
-	index += 1
+	index = index + 1
 end while
 
 print result"
@@ -1717,8 +1717,8 @@ String.parse = function(values)
 	maxIndex = values.len
 
 	while index < maxIndex
-		result += index, values[index])
-		index += 1
+		result = result.replace(\\"$\\" + index, values[index])
+		index = index + 1
 	end while
 
 	return (new self).constructor(result)
@@ -1840,7 +1840,7 @@ Crypto.encrypt = function(str, pw)
 		output.push get(AND(RSHIFT(buffer, 12), 63))
 		output.push get(AND(RSHIFT(buffer, 6), 63))
 		output.push get(AND(buffer, 63))
-		position += 3
+		position = position + 3
 	end while
 	if padding == 2 then
 		m = hash[position % hash.len - 1]
@@ -1882,9 +1882,9 @@ Crypto.decrypt = function(str, pw)
 	while position < max
 		buffer = me.table.indexOf(str[position])
 		currentBit = bitCounter
-		bitCounter += 1
+		bitCounter = bitCounter + 1
 		if currentBit % 4 then
-			bitStorage *= 64 + buffer
+			bitStorage = bitStorage * 64 + buffer
 		else
 			bitStorage = buffer
 		end if
@@ -1900,9 +1900,9 @@ Crypto.decrypt = function(str, pw)
 				if charCode > me.maxCharCode then break
 				output.push char(charCode)
 			end if
-			hashPointer += 1
+			hashPointer = hashPointer + 1
 		end if
-		position += 1
+		position = position + 1
 	end while
 	return output.join(\\"\\")
 end function
@@ -2204,8 +2204,8 @@ Random.calcSeed = function(seed)
 	pos = seed.len
 
 	for char in seed
-		seedVal += char.code + pos
-		pos -= 1
+		seedVal = seedVal + char.code + pos
+		pos = pos - 1
 	end for
 
 	return seedVal
@@ -2219,7 +2219,7 @@ Random.gen = function(min, max, seed, inc)
 	if pool.hasIndex(seed) then
 		ps = pool[seed]
 		if not inc then return ps.value
-		ps.generation += 1
+		ps.generation = ps.generation + 1
 		val = floor((rnd(ps.value + ps.generation) * (max - min)) + min)
 		ps.value = val
 		return val
@@ -2240,7 +2240,7 @@ Random.seq = function(min, max, seed, amount, keepPool)
 	while index < amount
 		temp = me.gen(min, max, seed)
 		result.push temp
-		index += 1
+		index = index + 1
 	end while
 	if keepPool != true then me.pool.remove(seed)
 	return result

@@ -160,20 +160,6 @@ export function beautifyFactory(
       const left = make(varibale);
       const right = make(init);
 
-      // might can create shorthand for expression
-      if (
-        (varibale instanceof ASTIdentifier ||
-          varibale instanceof ASTMemberExpression) &&
-        new RegExp('^\\b' + left + '\\b').test(right)
-      ) {
-        const segments = right.split(' ');
-        const [_, operator, ...rightSegments] = segments;
-
-        if (SHORTHAND_OPERATORS.includes(operator)) {
-          return left + ' ' + operator + '= ' + rightSegments.join(' ');
-        }
-      }
-
       return left + ' = ' + right;
     },
     MemberExpression: (
