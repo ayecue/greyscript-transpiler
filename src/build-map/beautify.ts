@@ -95,12 +95,12 @@ export function beautifyFactory(
       }
 
       const diff = Math.max(
-        previous ? bodyItem.start.line - previous.end.line - 1 : 0,
+        previous ? bodyItem.start.line - previous.end.line - 1 : bodyItem.start.line - block.start.line - 1,
         0
       );
 
-      for (let j = 0; j < diff; j++) {
-        body.push('');
+      if (diff > 0) {
+        body.push(...new Array(diff).fill(''));
       }
 
       if (bodyItem instanceof ASTComment) {
@@ -119,7 +119,7 @@ export function beautifyFactory(
     const size = Math.max(block.end.line - last?.end?.line - 1, 0);
 
     if (size > 0) {
-      body.push(...new Array(size).fill(' '));
+      body.push(...new Array(size).fill(''));
     }
 
     return body;

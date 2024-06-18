@@ -972,7 +972,7 @@ print {} isa list
 print {} isa map
 
 print {} isa funcRef
- "
+"
 `;
 
 exports[`parse default scripts isa.src uglify 1`] = `
