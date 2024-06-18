@@ -116,10 +116,11 @@ export function beautifyFactory(
     }
 
     const last = block.body[block.body.length - 1];
+    const size = Math.max(block.end.line - last?.end?.line - 1, 0);
 
-    body.push(
-      ...new Array(Math.max(block.end.line - last?.end?.line - 1, 0)).fill(' ')
-    );
+    if (size > 0) {
+      body.push(...new Array(size).fill(' '));
+    }
 
     return body;
   };
