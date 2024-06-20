@@ -2215,7 +2215,7 @@ end function
 debugger
 
 print(#line)
-print(#file)",
+print(#filename)",
   "myvar2 = #envar test",
   "lastimport = \\"hi\\"",
   "
@@ -4155,7 +4155,7 @@ print(123)
 
 
 print(#line)
-print(#file)",
+print(#filename)",
 ]
 `;
 

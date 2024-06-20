@@ -290,7 +290,7 @@ export const uglifyFactory: Factory<DefaultFactoryOptions> = (
       item: ASTFeatureFileExpression,
       _data: TransformerDataObject
     ): string => {
-      if (isDevMode) return `#file`;
+      if (isDevMode) return `#filename`;
       return `"${basename(item.filename).replace(/"/g, '"')}"`;
     },
     IfShortcutStatement: (

@@ -581,7 +581,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTFeatureFileExpression,
       _data: TransformerDataObject
     ): string => {
-      if (isDevMode) return '#file';
+      if (isDevMode) return '#filename';
       return `"${basename(item.filename).replace(/"/g, '"')}"`;
     },
     ListConstructorExpression: (

@@ -1276,7 +1276,7 @@ exports[`parse default scripts greybel-utils.src beautify with custom settings 1
 debugger
 
 print(#line)
-print(#file)"
+print(#filename)"
 `;
 
 exports[`parse default scripts greybel-utils.src uglify 1`] = `
