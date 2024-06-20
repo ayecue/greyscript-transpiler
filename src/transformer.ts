@@ -1,4 +1,5 @@
 import { BuildMap, Context, Factory, Stack } from 'greybel-transpiler';
+import { DefaultFactoryOptions } from 'greybel-transpiler/dist/build-map/factory';
 import { ASTChunkGreyScript } from 'greyscript-core';
 import { ASTBase } from 'miniscript-core';
 
@@ -15,8 +16,8 @@ export class Transformer {
   buildMap: BuildMap;
 
   constructor(
-    options: object,
-    mapFactory: Factory<object>,
+    options: DefaultFactoryOptions,
+    mapFactory: Factory<DefaultFactoryOptions>,
     context: Context,
     environmentVariables: Map<string, string>
   ) {

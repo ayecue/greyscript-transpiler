@@ -300,6 +300,238 @@ print AsciiGen.gen(\\"Hallo\\")",
 ]
 `;
 
+exports[`parse default scripts ascii.src beautify with custom settings 1`] = `
+Array [
+  "AsciiGen = {}
+
+map = {}
+
+map.a = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"|| || \\",
+]
+map.b = [
+          \\"||¯/ \\",
+          \\"|| \\\\ \\",
+          \\"||_/ \\",
+]
+map.c = [
+          \\"||¯ \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.d = [
+          \\"||¯\\\\\\\\ \\",
+          \\"|| // \\",
+          \\"||//  \\",
+]
+map.e = [
+          \\"||¯ \\",
+          \\"||- \\",
+          \\"||_ \\",
+]
+map.f = [
+          \\"||¯ \\",
+          \\"||_ \\",
+          \\"||  \\",
+]
+map.g = [
+          \\"||¯¯  \\",
+          \\"|| \\\\\\\\ \\",
+          \\"||_|| \\",
+]
+map.h = [
+          \\"|| || \\",
+          \\"||-|| \\",
+          \\"|| || \\",
+]
+map.i = [
+          \\"|| \\",
+          \\"|| \\",
+          \\"|| \\",
+]
+map.j = [
+          \\" ¯||¯ \\",
+          \\"  ||  \\",
+          \\"|_||  \\",
+]
+map.k = [
+          \\"||  / \\",
+          \\"|| /  \\",
+          \\"||¯\\\\\\\\ \\",
+]
+map.l = [
+          \\"||  \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.m = [
+          \\"||\\\\\\\\/|| \\",
+          \\"||   || \\",
+          \\"||   || \\",
+]
+map.n = [
+          \\"||\\\\\\\\ || \\",
+          \\"|| \\\\\\\\|| \\",
+          \\"||  \\\\|| \\",
+]
+map.o = [
+          \\"||¯|| \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.p = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"||    \\",
+]
+map.q = [
+          \\"||¯||  \\",
+          \\"|| ||  \\",
+          \\"||_||¬ \\",
+]
+map.r = [
+          \\"||¯|| \\",
+          \\"||¯\\\\\\\\ \\",
+          \\"|| || \\",
+]
+map.s = [
+          \\"||¯¯ \\",
+          \\" \\\\\\\\  \\",
+          \\"__|| \\",
+]
+map.t = [
+          \\"¯||¯ \\",
+          \\" ||  \\",
+          \\" ||  \\",
+]
+map.u = [
+          \\"|| || \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.v = [
+          \\"\\\\\\\\ || \\",
+          \\" \\\\\\\\|| \\",
+          \\"  \\\\\\\\| \\",
+]
+map.w = [
+          \\"\\\\\\\\ |\\\\\\\\ | \\",
+          \\" \\\\\\\\| \\\\\\\\| \\",
+          \\"  \\\\\\\\  \\\\\\\\ \\",
+]
+map.x = [
+          \\"\\\\\\\\  / \\",
+          \\" \\\\\\\\/  \\",
+          \\" //\\\\  \\",
+]
+map.y = [
+          \\"\\\\\\\\  // \\",
+          \\" \\\\\\\\//  \\",
+          \\"  ||   \\",
+]
+map.z = [
+          \\"¯// \\",
+          \\"//  \\",
+          \\"||_ \\",
+]
+map[\\"0\\"] = [
+          \\"||¯|| \\",
+          \\"||x|| \\",
+          \\"||_|| \\",
+]
+map[\\"1\\"] = [
+          \\"'|| \\",
+          \\" || \\",
+          \\" || \\",
+]
+map[\\"2\\"] = [
+          \\"¯¯|| \\",
+          \\"||¯  \\",
+          \\"||_  \\",
+]
+map[\\"3\\"] = [
+          \\"¯|| \\",
+          \\"-|| \\",
+          \\"_|| \\",
+]
+map[\\"4\\"] = [
+          \\" /|| \\",
+          \\"/_|| \\",
+          \\"  || \\",
+]
+map[\\"5\\"] = [
+          \\"||¯¯ \\",
+          \\" ¯|| \\",
+          \\" _|| \\",
+]
+map[\\"6\\"] = [
+          \\"||¯¯  \\",
+          \\"||¯|| \\",
+          \\"||_|| \\",
+]
+map[\\"7\\"] = [
+          \\"¯¯// \\",
+          \\" //  \\",
+          \\"//   \\",
+]
+map[\\"8\\"] = [
+          \\"||¯|| \\",
+          \\"||-|| \\",
+          \\"||_|| \\",
+]
+map[\\"9\\"] = [
+          \\"||¯|| \\",
+          \\"  ¯|| \\",
+          \\"  //  \\",
+]
+map[\\" \\"] = [
+          \\"  \\",
+          \\"  \\",
+          \\"  \\",
+]
+
+AsciiGen.MAP = map
+
+AsciiGen.gen = function(str, colors)
+          r = [
+                    [],
+                    [],
+                    [],
+          ]
+          signs = self.MAP
+
+          for char in str
+                    char = char.lower
+                    if signs.hasIndex(char) then
+                              r[0].push(signs[char][0])
+                              r[1].push(signs[char][1])
+                              r[2].push(signs[char][2])
+                    end if
+          end for
+
+          if typeof(colors) == \\"string\\" then
+                    r[0] = [ \\"<color=#\\" + colors + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          else if typeof(colors) == \\"list\\" then
+                    r[0] = [ \\"<color=#\\" + colors[0] + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors[1] + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors[2] + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          end if
+
+          return [
+                    r[0].join(\\"\\"),
+                    r[1].join(\\"\\"),
+                    r[2].join(\\"\\"),
+          ].join(\\"\\\\n\\")
+end function
+
+print(AsciiGen.gen(\\"Hallo\\"))",
+]
+`;
+
 exports[`parse default scripts ascii.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -626,6 +858,174 @@ test = {
 ]
 `;
 
+exports[`parse default scripts beautify-cases.src beautify with custom settings 1`] = `
+Array [
+  "// binary + logical
+test = 1 +
+          2 +
+          3 +
+          4 +
+          5 +
+          6 and
+          (
+                              2 +
+                              3 +
+                              4 +
+                              5 +
+                              6 +
+                              (
+                                                  2 +
+                                                  3 +
+                                                  4 +
+                                                  5 +
+                                                  6 +
+                                                  7))
+
+// call expression
+printAlign(
+          \\"dieFace[1] - dieFace[6]\\",
+          [
+                    dieFace[1],
+                    dieFace[2],
+                    dieFace[3],
+                    dieFace[4],
+                    dieFace[5],
+                    dieFace[6],
+                    {
+                              \\"foo\\": 123,
+                              \\"was\\": \\"wo\\",
+                    },
+          ].join,
+          123,
+          123)
+printAlign(
+          1,
+          2,
+          3,
+          4)
+
+// object
+test = {}
+test = { \\"was\\": 123 }
+test = {
+          \\"foo\\": 123,
+          \\"was\\": [
+                    \\"abc\\",
+                    1,
+                    234,
+          ],
+          \\"xx\\": {
+                    \\"foo\\": 123,
+                    \\"ooo\\": {
+                              \\"foo\\": 123,
+                              \\"was\\": \\"wo\\",
+                    },
+                    \\"was\\": \\"wo\\",
+          },
+          \\"123\\": \\"3\\",
+}
+
+// list
+test = []
+test = [ \\"was\\" ]
+test = [
+          \\"abc\\",
+          1,
+          [
+                    \\"abc\\",
+                    1,
+                    234,
+          ],
+          [
+                    \\"abc\\",
+                    [
+                              \\"abc\\",
+                              1,
+                              234,
+                    ],
+                    1,
+                    234,
+          ],
+          234,
+]
+
+// shorthand binary
+test += 5
+test = test + 4 + 5
+test.abc += 5
+test.abc = test.abc + 4 + 5
+
+// if
+if true then print(\\"test\\")
+if true then print(\\"test\\") else print(\\"xd\\")
+if true then test = [
+          1,
+          2,
+          3,
+          4,
+          5,
+]
+if true then test = [
+          1,
+          2,
+          3,
+          4,
+          5,
+] else test = [
+          5,
+          4,
+          3,
+          2,
+          1,
+]
+if true then
+          print(\\"test\\")
+else
+          print(\\"xd\\")
+end if
+if true then
+          print(\\"test\\")
+else if false then
+          print(\\"xa\\")
+else
+          print(\\"xd\\")
+end if
+
+test = function
+          return [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+          ]
+end function
+
+
+// comments
+test += 5 // test
+test = [
+          1,
+          2, // :D
+          3,
+          4,
+] // its a list
+test = function // its a function
+          return 123 // it a return
+end function // its function end
+for test in [ 123 ] // my for loop
+          print(\\"test\\") // some print
+end for // end for loop
+
+test = { \\"was\\": 123 } // was
+test = {
+          \\"was\\": 123, // was
+          \\"foo\\": 13,
+          \\"bar\\": 45,
+}",
+]
+`;
+
 exports[`parse default scripts beautify-cases.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -732,6 +1132,23 @@ a or b",
 ]
 `;
 
+exports[`parse default scripts binary-expressions.src beautify with custom settings 1`] = `
+Array [
+  "a /= b
+a *= b
+a -= b
+a += b
+bitwise(\\"<<\\", a, b)
+bitwise(\\">>\\", a, b)
+w = bitwise(\\">>\\", bitwise(\\">>>\\", a, (bitwise(\\"<<\\", b, c))), a)
+bitwise(\\"|\\", a, b)
+bitwise(\\"&\\", a, b)
+a ^ b
+a and b
+a or b",
+]
+`;
+
 exports[`parse default scripts binary-expressions.src uglify 1`] = `
 Array [
   "I=I/(J)
@@ -760,6 +1177,14 @@ test=2
 `;
 
 exports[`parse default scripts comments.src beautify 1`] = `
+Array [
+  "// comment
+myVariable // comment2
+test = 2 // comment3",
+]
+`;
+
+exports[`parse default scripts comments.src beautify with custom settings 1`] = `
 Array [
   "// comment
 myVariable // comment2
@@ -804,6 +1229,22 @@ var3 = \\"test\\"",
 ]
 `;
 
+exports[`parse default scripts default-args.src beautify with custom settings 1`] = `
+Array [
+  "test = function(arg1 = 0, arg2 = \\"test\\")
+          print(arg1)
+          print(arg2)
+end function
+
+test
+test(\\"foo\\", false)
+
+var1 = \\"test\\"
+var2 = \\"test\\"
+var3 = \\"test\\"",
+]
+`;
+
 exports[`parse default scripts default-args.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -834,6 +1275,15 @@ Array [
 
 myvar = \\"\\"foo\\"\\"
 print \\"0.2\\"",
+]
+`;
+
+exports[`parse default scripts envar.src beautify with custom settings 1`] = `
+Array [
+  "#include \\"../fixtures/envar-include.src\\";
+
+myvar = #envar test
+print(#envar test2)",
 ]
 `;
 
@@ -1504,6 +1954,272 @@ print \\"greybel-utils.src\\"",
   "lastimport = \\"hi\\"",
   "
 
+test = 123
+was = 123
+x = 123",
+]
+`;
+
+exports[`parse default scripts greybel-utils.src beautify with custom settings 1`] = `
+Array [
+  "MODULES = {}
+EXPORTED = {}
+__REQUIRE = function(r)
+          if not MODULES.hasIndex(r) then
+                    exit(\\"Module \\" + r + \\" cannot be found...\\")
+          end if
+          module = @MODULES[r]
+          return @module(r).exports
+end function
+MODULES[\\"B\\"] = function(r)
+          module = {}
+          if EXPORTED.hasIndex(r) then
+                    module = EXPORTED[r]
+          end if
+          if not module.hasIndex(\\"exports\\") then
+                    AsciiGen = {}
+
+map = {}
+
+map.a = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"|| || \\",
+]
+map.b = [
+          \\"||¯/ \\",
+          \\"|| \\\\ \\",
+          \\"||_/ \\",
+]
+map.c = [
+          \\"||¯ \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.d = [
+          \\"||¯\\\\\\\\ \\",
+          \\"|| // \\",
+          \\"||//  \\",
+]
+map.e = [
+          \\"||¯ \\",
+          \\"||- \\",
+          \\"||_ \\",
+]
+map.f = [
+          \\"||¯ \\",
+          \\"||_ \\",
+          \\"||  \\",
+]
+map.g = [
+          \\"||¯¯  \\",
+          \\"|| \\\\\\\\ \\",
+          \\"||_|| \\",
+]
+map.h = [
+          \\"|| || \\",
+          \\"||-|| \\",
+          \\"|| || \\",
+]
+map.i = [
+          \\"|| \\",
+          \\"|| \\",
+          \\"|| \\",
+]
+map.j = [
+          \\" ¯||¯ \\",
+          \\"  ||  \\",
+          \\"|_||  \\",
+]
+map.k = [
+          \\"||  / \\",
+          \\"|| /  \\",
+          \\"||¯\\\\\\\\ \\",
+]
+map.l = [
+          \\"||  \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.m = [
+          \\"||\\\\\\\\/|| \\",
+          \\"||   || \\",
+          \\"||   || \\",
+]
+map.n = [
+          \\"||\\\\\\\\ || \\",
+          \\"|| \\\\\\\\|| \\",
+          \\"||  \\\\|| \\",
+]
+map.o = [
+          \\"||¯|| \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.p = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"||    \\",
+]
+map.q = [
+          \\"||¯||  \\",
+          \\"|| ||  \\",
+          \\"||_||¬ \\",
+]
+map.r = [
+          \\"||¯|| \\",
+          \\"||¯\\\\\\\\ \\",
+          \\"|| || \\",
+]
+map.s = [
+          \\"||¯¯ \\",
+          \\" \\\\\\\\  \\",
+          \\"__|| \\",
+]
+map.t = [
+          \\"¯||¯ \\",
+          \\" ||  \\",
+          \\" ||  \\",
+]
+map.u = [
+          \\"|| || \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.v = [
+          \\"\\\\\\\\ || \\",
+          \\" \\\\\\\\|| \\",
+          \\"  \\\\\\\\| \\",
+]
+map.w = [
+          \\"\\\\\\\\ |\\\\\\\\ | \\",
+          \\" \\\\\\\\| \\\\\\\\| \\",
+          \\"  \\\\\\\\  \\\\\\\\ \\",
+]
+map.x = [
+          \\"\\\\\\\\  / \\",
+          \\" \\\\\\\\/  \\",
+          \\" //\\\\  \\",
+]
+map.y = [
+          \\"\\\\\\\\  // \\",
+          \\" \\\\\\\\//  \\",
+          \\"  ||   \\",
+]
+map.z = [
+          \\"¯// \\",
+          \\"//  \\",
+          \\"||_ \\",
+]
+map[\\"0\\"] = [
+          \\"||¯|| \\",
+          \\"||x|| \\",
+          \\"||_|| \\",
+]
+map[\\"1\\"] = [
+          \\"'|| \\",
+          \\" || \\",
+          \\" || \\",
+]
+map[\\"2\\"] = [
+          \\"¯¯|| \\",
+          \\"||¯  \\",
+          \\"||_  \\",
+]
+map[\\"3\\"] = [
+          \\"¯|| \\",
+          \\"-|| \\",
+          \\"_|| \\",
+]
+map[\\"4\\"] = [
+          \\" /|| \\",
+          \\"/_|| \\",
+          \\"  || \\",
+]
+map[\\"5\\"] = [
+          \\"||¯¯ \\",
+          \\" ¯|| \\",
+          \\" _|| \\",
+]
+map[\\"6\\"] = [
+          \\"||¯¯  \\",
+          \\"||¯|| \\",
+          \\"||_|| \\",
+]
+map[\\"7\\"] = [
+          \\"¯¯// \\",
+          \\" //  \\",
+          \\"//   \\",
+]
+map[\\"8\\"] = [
+          \\"||¯|| \\",
+          \\"||-|| \\",
+          \\"||_|| \\",
+]
+map[\\"9\\"] = [
+          \\"||¯|| \\",
+          \\"  ¯|| \\",
+          \\"  //  \\",
+]
+map[\\" \\"] = [
+          \\"  \\",
+          \\"  \\",
+          \\"  \\",
+]
+
+AsciiGen.MAP = map
+
+AsciiGen.gen = function(str, colors)
+          r = [
+                    [],
+                    [],
+                    [],
+          ]
+          signs = self.MAP
+
+          for char in str
+                    char = char.lower
+                    if signs.hasIndex(char) then
+                              r[0].push(signs[char][0])
+                              r[1].push(signs[char][1])
+                              r[2].push(signs[char][2])
+                    end if
+          end for
+
+          if typeof(colors) == \\"string\\" then
+                    r[0] = [ \\"<color=#\\" + colors + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          else if typeof(colors) == \\"list\\" then
+                    r[0] = [ \\"<color=#\\" + colors[0] + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors[1] + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors[2] + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          end if
+
+          return [
+                    r[0].join(\\"\\"),
+                    r[1].join(\\"\\"),
+                    r[2].join(\\"\\"),
+          ].join(\\"\\\\n\\")
+end function
+
+print(AsciiGen.gen(\\"Hallo\\"))
+          end if
+          EXPORTED[r] = module
+          return EXPORTED[r]
+end function
+#import foo from \\"./ascii.src\\";
+#include \\"./ascii.src\\";
+#include \\"../fixtures/sub-import.src\\";
+#envar TEST_ENV
+debugger
+
+print(#line)
+print(#file)",
+  "myvar2 = #envar test",
+  "lastimport = \\"hi\\"",
+  "
+import_code(\\"/Users/_ac/workspace/greyscript-transpiler/tests/fixtures/sub-sub-sub-import.src\\")
 test = 123
 was = 123
 x = 123",
@@ -2360,6 +3076,269 @@ x = 123",
 ]
 `;
 
+exports[`parse default scripts greybel-utils-with-comments.src beautify with custom settings 1`] = `
+Array [
+  "MODULES = {}
+EXPORTED = {}
+__REQUIRE = function(r)
+          if not MODULES.hasIndex(r) then
+                    exit(\\"Module \\" + r + \\" cannot be found...\\")
+          end if
+          module = @MODULES[r]
+          return @module(r).exports
+end function
+MODULES[\\"B\\"] = function(r)
+          module = {}
+          if EXPORTED.hasIndex(r) then
+                    module = EXPORTED[r]
+          end if
+          if not module.hasIndex(\\"exports\\") then
+                    AsciiGen = {}
+
+map = {}
+
+map.a = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"|| || \\",
+]
+map.b = [
+          \\"||¯/ \\",
+          \\"|| \\\\ \\",
+          \\"||_/ \\",
+]
+map.c = [
+          \\"||¯ \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.d = [
+          \\"||¯\\\\\\\\ \\",
+          \\"|| // \\",
+          \\"||//  \\",
+]
+map.e = [
+          \\"||¯ \\",
+          \\"||- \\",
+          \\"||_ \\",
+]
+map.f = [
+          \\"||¯ \\",
+          \\"||_ \\",
+          \\"||  \\",
+]
+map.g = [
+          \\"||¯¯  \\",
+          \\"|| \\\\\\\\ \\",
+          \\"||_|| \\",
+]
+map.h = [
+          \\"|| || \\",
+          \\"||-|| \\",
+          \\"|| || \\",
+]
+map.i = [
+          \\"|| \\",
+          \\"|| \\",
+          \\"|| \\",
+]
+map.j = [
+          \\" ¯||¯ \\",
+          \\"  ||  \\",
+          \\"|_||  \\",
+]
+map.k = [
+          \\"||  / \\",
+          \\"|| /  \\",
+          \\"||¯\\\\\\\\ \\",
+]
+map.l = [
+          \\"||  \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.m = [
+          \\"||\\\\\\\\/|| \\",
+          \\"||   || \\",
+          \\"||   || \\",
+]
+map.n = [
+          \\"||\\\\\\\\ || \\",
+          \\"|| \\\\\\\\|| \\",
+          \\"||  \\\\|| \\",
+]
+map.o = [
+          \\"||¯|| \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.p = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"||    \\",
+]
+map.q = [
+          \\"||¯||  \\",
+          \\"|| ||  \\",
+          \\"||_||¬ \\",
+]
+map.r = [
+          \\"||¯|| \\",
+          \\"||¯\\\\\\\\ \\",
+          \\"|| || \\",
+]
+map.s = [
+          \\"||¯¯ \\",
+          \\" \\\\\\\\  \\",
+          \\"__|| \\",
+]
+map.t = [
+          \\"¯||¯ \\",
+          \\" ||  \\",
+          \\" ||  \\",
+]
+map.u = [
+          \\"|| || \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.v = [
+          \\"\\\\\\\\ || \\",
+          \\" \\\\\\\\|| \\",
+          \\"  \\\\\\\\| \\",
+]
+map.w = [
+          \\"\\\\\\\\ |\\\\\\\\ | \\",
+          \\" \\\\\\\\| \\\\\\\\| \\",
+          \\"  \\\\\\\\  \\\\\\\\ \\",
+]
+map.x = [
+          \\"\\\\\\\\  / \\",
+          \\" \\\\\\\\/  \\",
+          \\" //\\\\  \\",
+]
+map.y = [
+          \\"\\\\\\\\  // \\",
+          \\" \\\\\\\\//  \\",
+          \\"  ||   \\",
+]
+map.z = [
+          \\"¯// \\",
+          \\"//  \\",
+          \\"||_ \\",
+]
+map[\\"0\\"] = [
+          \\"||¯|| \\",
+          \\"||x|| \\",
+          \\"||_|| \\",
+]
+map[\\"1\\"] = [
+          \\"'|| \\",
+          \\" || \\",
+          \\" || \\",
+]
+map[\\"2\\"] = [
+          \\"¯¯|| \\",
+          \\"||¯  \\",
+          \\"||_  \\",
+]
+map[\\"3\\"] = [
+          \\"¯|| \\",
+          \\"-|| \\",
+          \\"_|| \\",
+]
+map[\\"4\\"] = [
+          \\" /|| \\",
+          \\"/_|| \\",
+          \\"  || \\",
+]
+map[\\"5\\"] = [
+          \\"||¯¯ \\",
+          \\" ¯|| \\",
+          \\" _|| \\",
+]
+map[\\"6\\"] = [
+          \\"||¯¯  \\",
+          \\"||¯|| \\",
+          \\"||_|| \\",
+]
+map[\\"7\\"] = [
+          \\"¯¯// \\",
+          \\" //  \\",
+          \\"//   \\",
+]
+map[\\"8\\"] = [
+          \\"||¯|| \\",
+          \\"||-|| \\",
+          \\"||_|| \\",
+]
+map[\\"9\\"] = [
+          \\"||¯|| \\",
+          \\"  ¯|| \\",
+          \\"  //  \\",
+]
+map[\\" \\"] = [
+          \\"  \\",
+          \\"  \\",
+          \\"  \\",
+]
+
+AsciiGen.MAP = map
+
+AsciiGen.gen = function(str, colors)
+          r = [
+                    [],
+                    [],
+                    [],
+          ]
+          signs = self.MAP
+
+          for char in str
+                    char = char.lower
+                    if signs.hasIndex(char) then
+                              r[0].push(signs[char][0])
+                              r[1].push(signs[char][1])
+                              r[2].push(signs[char][2])
+                    end if
+          end for
+
+          if typeof(colors) == \\"string\\" then
+                    r[0] = [ \\"<color=#\\" + colors + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          else if typeof(colors) == \\"list\\" then
+                    r[0] = [ \\"<color=#\\" + colors[0] + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors[1] + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors[2] + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          end if
+
+          return [
+                    r[0].join(\\"\\"),
+                    r[1].join(\\"\\"),
+                    r[2].join(\\"\\"),
+          ].join(\\"\\\\n\\")
+end function
+
+print(AsciiGen.gen(\\"Hallo\\"))
+          end if
+          EXPORTED[r] = module
+          return EXPORTED[r]
+end function
+#import foo from \\"./ascii.src\\";
+#include \\"./ascii.src\\";
+#include \\"../fixtures/sub-import.src\\";
+#envar TEST_ENV
+debugger",
+  "myvar2 = #envar test",
+  "lastimport = \\"hi\\"",
+  "
+import_code(\\"/Users/_ac/workspace/greyscript-transpiler/tests/fixtures/sub-sub-sub-import.src\\")
+test = 123
+was = 123
+x = 123",
+]
+`;
+
 exports[`parse default scripts greybel-utils-with-comments.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -2568,6 +3547,18 @@ print globals.hasIndex(\\"test\\")
 print locals.hasIndex(\\"foo\\")
 print globals.hasIndex(\\"doesNotExist\\")
 print locals.hasIndex(\\"doesNotExist\\")",
+]
+`;
+
+exports[`parse default scripts has-index.src beautify with custom settings 1`] = `
+Array [
+  "globals.test = \\"was\\"
+locals.foo = \\"moo\\"
+
+print(globals.hasIndex(\\"test\\"))
+print(locals.hasIndex(\\"foo\\"))
+print(globals.hasIndex(\\"doesNotExist\\"))
+print(locals.hasIndex(\\"doesNotExist\\"))",
 ]
 `;
 
@@ -2916,6 +3907,258 @@ print \\"sub-import.src\\"",
 ]
 `;
 
+exports[`parse default scripts import-code.src beautify with custom settings 1`] = `
+Array [
+  "import_code(\\"/Users/_ac/workspace/greyscript-transpiler/tests/scripts/ascii.src\\")
+import_code(\\"/Users/_ac/workspace/greyscript-transpiler/tests/fixtures/envar-include.src\\")
+import_code(\\"/Users/_ac/workspace/greyscript-transpiler/tests/fixtures/sub-sub-sub-import.src\\")
+import_code(\\"/Users/_ac/workspace/greyscript-transpiler/tests/fixtures/sub-sub-import.src\\")
+import_code(\\"/Users/_ac/workspace/greyscript-transpiler/tests/fixtures/sub-import.src\\")
+print(123)",
+  "AsciiGen = {}
+
+map = {}
+
+map.a = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"|| || \\",
+]
+map.b = [
+          \\"||¯/ \\",
+          \\"|| \\\\ \\",
+          \\"||_/ \\",
+]
+map.c = [
+          \\"||¯ \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.d = [
+          \\"||¯\\\\\\\\ \\",
+          \\"|| // \\",
+          \\"||//  \\",
+]
+map.e = [
+          \\"||¯ \\",
+          \\"||- \\",
+          \\"||_ \\",
+]
+map.f = [
+          \\"||¯ \\",
+          \\"||_ \\",
+          \\"||  \\",
+]
+map.g = [
+          \\"||¯¯  \\",
+          \\"|| \\\\\\\\ \\",
+          \\"||_|| \\",
+]
+map.h = [
+          \\"|| || \\",
+          \\"||-|| \\",
+          \\"|| || \\",
+]
+map.i = [
+          \\"|| \\",
+          \\"|| \\",
+          \\"|| \\",
+]
+map.j = [
+          \\" ¯||¯ \\",
+          \\"  ||  \\",
+          \\"|_||  \\",
+]
+map.k = [
+          \\"||  / \\",
+          \\"|| /  \\",
+          \\"||¯\\\\\\\\ \\",
+]
+map.l = [
+          \\"||  \\",
+          \\"||  \\",
+          \\"||_ \\",
+]
+map.m = [
+          \\"||\\\\\\\\/|| \\",
+          \\"||   || \\",
+          \\"||   || \\",
+]
+map.n = [
+          \\"||\\\\\\\\ || \\",
+          \\"|| \\\\\\\\|| \\",
+          \\"||  \\\\|| \\",
+]
+map.o = [
+          \\"||¯|| \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.p = [
+          \\"||¯|| \\",
+          \\"||_|| \\",
+          \\"||    \\",
+]
+map.q = [
+          \\"||¯||  \\",
+          \\"|| ||  \\",
+          \\"||_||¬ \\",
+]
+map.r = [
+          \\"||¯|| \\",
+          \\"||¯\\\\\\\\ \\",
+          \\"|| || \\",
+]
+map.s = [
+          \\"||¯¯ \\",
+          \\" \\\\\\\\  \\",
+          \\"__|| \\",
+]
+map.t = [
+          \\"¯||¯ \\",
+          \\" ||  \\",
+          \\" ||  \\",
+]
+map.u = [
+          \\"|| || \\",
+          \\"|| || \\",
+          \\"||_|| \\",
+]
+map.v = [
+          \\"\\\\\\\\ || \\",
+          \\" \\\\\\\\|| \\",
+          \\"  \\\\\\\\| \\",
+]
+map.w = [
+          \\"\\\\\\\\ |\\\\\\\\ | \\",
+          \\" \\\\\\\\| \\\\\\\\| \\",
+          \\"  \\\\\\\\  \\\\\\\\ \\",
+]
+map.x = [
+          \\"\\\\\\\\  / \\",
+          \\" \\\\\\\\/  \\",
+          \\" //\\\\  \\",
+]
+map.y = [
+          \\"\\\\\\\\  // \\",
+          \\" \\\\\\\\//  \\",
+          \\"  ||   \\",
+]
+map.z = [
+          \\"¯// \\",
+          \\"//  \\",
+          \\"||_ \\",
+]
+map[\\"0\\"] = [
+          \\"||¯|| \\",
+          \\"||x|| \\",
+          \\"||_|| \\",
+]
+map[\\"1\\"] = [
+          \\"'|| \\",
+          \\" || \\",
+          \\" || \\",
+]
+map[\\"2\\"] = [
+          \\"¯¯|| \\",
+          \\"||¯  \\",
+          \\"||_  \\",
+]
+map[\\"3\\"] = [
+          \\"¯|| \\",
+          \\"-|| \\",
+          \\"_|| \\",
+]
+map[\\"4\\"] = [
+          \\" /|| \\",
+          \\"/_|| \\",
+          \\"  || \\",
+]
+map[\\"5\\"] = [
+          \\"||¯¯ \\",
+          \\" ¯|| \\",
+          \\" _|| \\",
+]
+map[\\"6\\"] = [
+          \\"||¯¯  \\",
+          \\"||¯|| \\",
+          \\"||_|| \\",
+]
+map[\\"7\\"] = [
+          \\"¯¯// \\",
+          \\" //  \\",
+          \\"//   \\",
+]
+map[\\"8\\"] = [
+          \\"||¯|| \\",
+          \\"||-|| \\",
+          \\"||_|| \\",
+]
+map[\\"9\\"] = [
+          \\"||¯|| \\",
+          \\"  ¯|| \\",
+          \\"  //  \\",
+]
+map[\\" \\"] = [
+          \\"  \\",
+          \\"  \\",
+          \\"  \\",
+]
+
+AsciiGen.MAP = map
+
+AsciiGen.gen = function(str, colors)
+          r = [
+                    [],
+                    [],
+                    [],
+          ]
+          signs = self.MAP
+
+          for char in str
+                    char = char.lower
+                    if signs.hasIndex(char) then
+                              r[0].push(signs[char][0])
+                              r[1].push(signs[char][1])
+                              r[2].push(signs[char][2])
+                    end if
+          end for
+
+          if typeof(colors) == \\"string\\" then
+                    r[0] = [ \\"<color=#\\" + colors + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          else if typeof(colors) == \\"list\\" then
+                    r[0] = [ \\"<color=#\\" + colors[0] + \\">\\" ] + r[0] + [ \\"</color>\\" ]
+                    r[1] = [ \\"<color=#\\" + colors[1] + \\">\\" ] + r[1] + [ \\"</color>\\" ]
+                    r[2] = [ \\"<color=#\\" + colors[2] + \\">\\" ] + r[2] + [ \\"</color>\\" ]
+          end if
+
+          return [
+                    r[0].join(\\"\\"),
+                    r[1].join(\\"\\"),
+                    r[2].join(\\"\\"),
+          ].join(\\"\\\\n\\")
+end function
+
+print(AsciiGen.gen(\\"Hallo\\"))",
+  "myvar2 = #envar test",
+  "lastimport = \\"hi\\"",
+  "
+
+test = 123
+was = 123
+x = 123",
+  "
+
+print(123)
+
+
+print(#line)
+print(#file)",
+]
+`;
+
 exports[`parse default scripts import-code.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -3081,6 +4324,53 @@ print {} isa funcRef
 ]
 `;
 
+exports[`parse default scripts isa.src beautify with custom settings 1`] = `
+Array [
+  "print(2 isa number)
+print(2 isa string)
+print(2 isa list)
+print(2 isa map)
+
+print(\\"abc\\" isa number)
+print(\\"abc\\" isa string)
+print(\\"abc\\" isa list)
+print(\\"abc\\" isa map)
+
+print(
+          [
+                    1,
+                    2,
+                    3,
+          ] isa number)
+print(
+          [
+                    1,
+                    2,
+                    3,
+          ] isa string)
+print(
+          [
+                    1,
+                    2,
+                    3,
+          ] isa list)
+print(
+          [
+                    1,
+                    2,
+                    3,
+          ] isa map)
+
+print({} isa number)
+print({} isa string)
+print({} isa list)
+print({} isa map)
+
+print({} isa funcRef)
+",
+]
+`;
+
 exports[`parse default scripts isa.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -3131,6 +4421,22 @@ test5 = { 123: \\"bar\\" }",
 ]
 `;
 
+exports[`parse default scripts map.src beautify with custom settings 1`] = `
+Array [
+  "test = { {
+          \\"myTest\\": 0,
+          1: 2,
+}: true }
+test2 = { [
+          12,
+          14,
+]: true }
+test3 = { test: 234 }
+test4 = { true: \\"foo\\" }
+test5 = { 123: \\"bar\\" }",
+]
+`;
+
 exports[`parse default scripts map.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -3172,6 +4478,17 @@ Array [
 ]
 `;
 
+exports[`parse default scripts multiline-comment.src beautify with custom settings 1`] = `
+Array [
+  "//
+//
+//
+//my Test
+//
+//  **",
+]
+`;
+
 exports[`parse default scripts multiline-comment.src uglify 1`] = `
 Array [
   "print(\\"test\\")",
@@ -3198,6 +4515,20 @@ foo = [
 
 print test
 print foo",
+]
+`;
+
+exports[`parse default scripts negation.src beautify with custom settings 1`] = `
+Array [
+  "test = -1 + 2 + -2 + 3
+foo = [
+          -1,
+          -2 + 4,
+          (-2) + -4 + 6,
+]
+
+print(test)
+print(foo)",
 ]
 `;
 
@@ -3244,6 +4575,33 @@ myList = [
 ]
 
 print myList",
+]
+`;
+
+exports[`parse default scripts obj-init.src beautify with custom settings 1`] = `
+Array [
+  "valueOfIdentifier = \\"foo\\"
+
+myObject = {
+          \\"test\\": { \\"another\\": \\"123\\" },
+          \\"value\\": \\"123\\",
+          \\"idtf\\": valueOfIdentifier,
+}
+
+print(
+          [
+                    myObject.test.another,
+                    myObject.value,
+                    myObject.idtf,
+          ])
+
+myList = [
+          { \\"another\\": \\"123\\" },
+          \\"123\\",
+          valueOfIdentifier,
+]
+
+print(myList)",
 ]
 `;
 
@@ -3313,6 +4671,37 @@ superlangername4 \\"xxxxxxxxxx\\"
 superlangername \\"xxxxxxxxxx\\"
 superlangername5 \\"xxxxxxxxxx\\"
 superlangername3 \\"xxxxxxxxxx\\"",
+]
+`;
+
+exports[`parse default scripts optimize.src beautify with custom settings 1`] = `
+Array [
+  "test = function(abc)
+          print(abc)
+end function
+
+superlangername = function(abc)
+          print(abc)
+end function
+
+superlangername3 = function(abc)
+          print(abc)
+end function
+
+superlangername4 = function(abc)
+          print(abc)
+end function
+
+superlangername5 = function(abc)
+          print(abc)
+end function
+
+test(\\"xxxxxxxxxx\\")
+superlangername(\\"xxxxxxxxxx\\")
+superlangername4(\\"xxxxxxxxxx\\")
+superlangername(\\"xxxxxxxxxx\\")
+superlangername5(\\"xxxxxxxxxx\\")
+superlangername3(\\"xxxxxxxxxx\\")",
 ]
 `;
 
@@ -3413,6 +4802,43 @@ Array [
 	while true
 		iterate
 	end while
+end function
+
+main",
+]
+`;
+
+exports[`parse default scripts outer.src beautify with custom settings 1`] = `
+Array [
+  "main = function
+          num = 0
+          iterate = function
+                    clear_screen
+
+                    text = \\"<mark=green><color=black>\\" + outer.num
+
+                    print(outer.hasIndex(\\"num\\"))
+
+                    if outer.num > 20 then text = \\"<mark=yellow><color=green>\\" + outer.num
+                    if outer.num > 40 then text = \\"<mark=red><color=yellow>\\" + outer.num
+                    if outer.num < -20 then text = \\"<mark=green><color=yellow>\\" + outer.num
+                    if outer.num < -40 then text = \\"<mark=yellow><color=red>\\" + outer.num
+
+                    print(text)
+                    key = user_input(\\"test\\", false, true)
+
+                    if key == \\"UpArrow\\" then
+                              outer.num += 1
+                    else if key == \\"DownArrow\\" then
+                              outer.num -= 1
+                    else
+                              exit(\\"bye\\")
+                    end if
+          end function
+
+          while true
+                    iterate
+          end while
 end function
 
 main",
@@ -3587,6 +5013,76 @@ while index < max
 end while
 
 print result",
+]
+`;
+
+exports[`parse default scripts password-generator.src beautify with custom settings 1`] = `
+Array [
+  "PasswordGenerator = {}
+
+PasswordGenerator.MAX_PASSWORD_LENGTH = 15
+PasswordGenerator.ALPHABETIC_CHARACTERS = \\"qwertzuiopasdfghjklyxcvbnm\\"
+PasswordGenerator.NUMBER_CHARACTERS = \\"0123456789\\"
+PasswordGenerator.ALPHA_NUMERIC = PasswordGenerator.ALPHABETIC_CHARACTERS + PasswordGenerator.ALPHABETIC_CHARACTERS.upper + PasswordGenerator.NUMBER_CHARACTERS
+
+PasswordGenerator.constructor = function
+          me = self
+          me.buffer = [ 0 ]
+          me.characters = me.ALPHA_NUMERIC
+          return me
+end function
+
+PasswordGenerator.increaseBuffer = function(i)
+          me = self
+          currentCharBuffer = me.buffer
+          maxBufferSize = me.characters.len
+          if i == null then i = currentCharBuffer.len - 1
+          p = currentCharBuffer[i]
+          p += 1
+          currentCharBuffer[i] = p
+          if p == maxBufferSize then
+                    currentCharBuffer[i] = 0
+                    if i == 0 then
+                              currentCharBuffer.push(0)
+                    else
+                              me.increaseBuffer(i - 1)
+                    end if
+          end if
+end function
+
+PasswordGenerator.gen = function
+          me = self
+          currentCharBuffer = me.buffer
+          generatorCharacters = me.characters
+          password = \\"\\"
+          index = 0
+
+          while index < currentCharBuffer.len
+                    pointer = currentCharBuffer[index]
+                    password += generatorCharacters[pointer]
+                    if index == currentCharBuffer.len - 1 then self.increaseBuffer
+                    index += 1
+          end while
+
+          if currentCharBuffer.len > me.MAX_PASSWORD_LENGTH then
+                    return null
+          end if
+
+          return password
+end function
+
+pgen = (new PasswordGenerator).constructor
+
+index = 0
+max = 10
+result = []
+
+while index < max
+          result.push(pgen.gen)
+          index += 1
+end while
+
+print(result)",
 ]
 `;
 
@@ -4074,6 +5570,223 @@ print decrypted",
 ]
 `;
 
+exports[`parse default scripts pseudo-crypto.src beautify with custom settings 1`] = `
+Array [
+  "String = {}
+
+String.constructor = function(str)
+          self.str = str
+          return self
+end function
+
+String.parse = function(values)
+          result = self.str
+          index = 0
+          maxIndex = values.len
+
+          while index < maxIndex
+                    result = result.replace(\\"$\\" + index, values[index])
+                    index += 1
+          end while
+
+          return (new self).constructor(result)
+end function
+
+String.startsWith = function(str)
+          return self.str.indexOf(str) == 0
+end function
+
+String.substr = function(startIndex, endIndex)
+          return (new self).constructor(slice(self.str, startIndex, endIndex))
+end function
+
+String.indexOf = function(str)
+          return self.str.indexOf(str)
+end function
+
+String.replace = function(str, newStr)
+          return (new self).constructor(self.str.replace(str, newStr))
+end function
+
+String.remove = function(str)
+          return (new self).constructor(self.str.remove(str))
+end function
+
+String.toString = function
+          return self.str
+end function
+
+String.length = function
+          return self.str.len
+end function
+
+String.split = function(seperator)
+          return self.str.split(seperator)
+end function
+
+String.trim = function(seperator)
+          return (new self).constructor(self.str.trim)
+end function
+
+Error = {}
+
+Error.String = String
+
+Error.constructor = function(message, values)
+          m = self
+          m.message = message
+          if values != null then
+                    m.message = (new m.String).constructor(message).parse(values).toString
+          end if
+          return m
+end function
+
+Error.throw = function
+          exit(\\"<color=#ff0000>\\" + self.message + \\"</color>\\")
+end function
+
+Crypto = {}
+
+Crypto.defaultCharset = \\"QWERTZUIOPASDFGHJKLYXCVBNMqwertzuiopasdfghjklyxcvbnm1234567890+-\\"
+Crypto.defaultSecret = \\"test123\\"
+Crypto.maxCharCode = 55295
+Crypto.Error = Error
+
+Crypto.constructor = function(defaultSecret, hashFn, charset)
+          me = self
+          me.defaultSecret = defaultSecret
+          me.table = charset
+          me.hashFn = @hashFn
+          if @hashFn == null then me.hashFn = @md5
+          if charset == null then me.table = me.defaultCharset
+          if me.table.len != 64 then (new me.Error).constructor(\\"Invalid charset $0...\\", [ me.table ]).throw
+          return me
+end function
+
+Crypto.getHash = function(pw)
+          me = self
+          hash = []
+          x = me.hashFn(pw)
+          for char in x
+                    hash.push(char.code)
+          end for
+          hash.reverse
+          return hash
+end function
+
+Crypto.encrypt = function(str, pw)
+          me = self
+          if pw == null then pw = me.defaultSecret
+          hash = me.getHash(pw)
+          hashPointer = 0
+          output = []
+          position = 0
+          padding = str.len % 3
+          max = str.len - padding
+          get = function(v)
+                    if not me.table.hasIndex(v) then
+                              (new me.Error).constructor(\\"Invalid index $0...\\", [ v ]).throw
+                    end if
+                    return me.table[v]
+          end function
+          AND = function(a, b)
+                    return bitwise(\\"&\\", a, b)
+          end function
+          LSHIFT = function(a, b)
+                    return bitwise(\\"<<\\", a, b)
+          end function
+          RSHIFT = function(a, b)
+                    return bitwise(\\">>\\", a, b)
+          end function
+          while position < max
+                    m = hash[position % hash.len - 1]
+                    a = LSHIFT(str[position].code + m, 16)
+                    b = LSHIFT(str[position + 1].code + m, 8)
+                    c = str[position + 2].code + m
+                    buffer = a + b + c
+                    output.push(get(AND(RSHIFT(buffer, 18), 63)))
+                    output.push(get(AND(RSHIFT(buffer, 12), 63)))
+                    output.push(get(AND(RSHIFT(buffer, 6), 63)))
+                    output.push(get(AND(buffer, 63)))
+                    position += 3
+          end while
+          if padding == 2 then
+                    m = hash[position % hash.len - 1]
+                    a = LSHIFT(str[position].code + m, 8)
+                    b = str[position + 1].code + m
+                    buffer = a + b
+                    output.push(get(RSHIFT(buffer, 10)))
+                    output.push(get(AND(RSHIFT(buffer, 4), 63)))
+                    output.push(get(AND(LSHIFT(buffer, 2), 63)))
+                    output.push(\\"=\\")
+          else if padding == 1 then
+                    m = hash[position % hash.len - 1]
+                    buffer = str[position].code + m
+                    output.push(get(RSHIFT(buffer, 2)))
+                    output.push(get(AND(LSHIFT(buffer, 4), 63)))
+                    output.push(\\"==\\")
+          end if
+          return output.join(\\"\\")
+end function
+
+Crypto.decrypt = function(str, pw)
+          me = self
+          if pw == null then pw = me.defaultSecret
+          hash = me.getHash(pw)
+          hashPointer = 0
+          hashLength = hash.len
+          output = []
+          bitCounter = 0
+          bitStorage = 0
+          position = 0
+          hashPointer = 0
+          max = str.len
+          AND = function(a, b)
+                    return bitwise(\\"&\\", a, b)
+          end function
+          RSHIFT = function(a, b)
+                    return bitwise(\\">>\\", a, b)
+          end function
+          while position < max
+                    buffer = me.table.indexOf(str[position])
+                    currentBit = bitCounter
+                    bitCounter += 1
+                    if currentBit % 4 then
+                              bitStorage = bitStorage * 64 + buffer
+                    else
+                              bitStorage = buffer
+                    end if
+                    if currentBit % 4 then
+                              expectedHashIndex = (floor(hashPointer / 3) * 3) % hashLength - 1
+                              if not hash.hasIndex(expectedHashIndex) then break
+                              m = hash[expectedHashIndex]
+                              operation = AND(-2 * bitCounter, 6)
+                              operation = RSHIFT(bitStorage, operation)
+                              operation = AND(255, operation)
+                              if operation != 0 then
+                                        charCode = operation - m
+                                        if charCode > me.maxCharCode then break
+                                        output.push(char(charCode))
+                              end if
+                              hashPointer += 1
+                    end if
+                    position += 1
+          end while
+          return output.join(\\"\\")
+end function
+
+test = (new Crypto).constructor(\\"test\\")
+
+pwd = \\"abcde\\"
+
+foo = test.encrypt(pwd)
+decrypted = test.decrypt(foo)
+
+print(foo)
+print(decrypted)",
+]
+`;
+
 exports[`parse default scripts pseudo-crypto.src uglify 1`] = `
 Array [
   "globals.H=globals
@@ -4421,6 +6134,82 @@ print(
 ]
 `;
 
+exports[`parse default scripts random.src beautify with custom settings 1`] = `
+Array [
+  "Random = {}
+
+Random.pool = {}
+Random.defaultSeed = \\"random\\"
+
+Random.createPool = function(seed, val)
+          return {
+                    \\"seed\\": seed,
+                    \\"value\\": val,
+                    \\"generation\\": 0,
+          }
+end function
+
+Random.calcSeed = function(seed)
+          seedVal = 0
+          pos = seed.len
+
+          for char in seed
+                    seedVal = seedVal + char.code + pos
+                    pos -= 1
+          end for
+
+          return seedVal
+end function
+
+Random.gen = function(min, max, seed, inc)
+          me = self
+          pool = me.pool
+          if inc == null then inc = true
+          if seed == null then seed = me.defaultSeed
+          if pool.hasIndex(seed) then
+                    ps = pool[seed]
+                    if not inc then return ps.value
+                    ps.generation += 1
+                    val = floor((rnd(ps.value + ps.generation) * (max - min)) + min)
+                    ps.value = val
+                    return val
+          end if
+
+          seedVal = me.calcSeed(seed)
+
+          val = floor((rnd(seedVal) * (max - min)) + min)
+          pool[seed] = me.createPool(seedVal, val)
+
+          return val
+end function
+
+Random.seq = function(min, max, seed, amount, keepPool)
+          me = self
+          index = 0
+          result = []
+          while index < amount
+                    temp = me.gen(min, max, seed)
+                    result.push(temp)
+                    index += 1
+          end while
+          if keepPool != true then me.pool.remove(seed)
+          return result
+end function
+
+Random.get = function(min, max)
+          return self.gen(min, max)
+end function
+
+print(Random.get(100, 500))
+print(
+          Random.seq(
+                    100,
+                    500,
+                    \\"test\\",
+                    10))",
+]
+`;
+
 exports[`parse default scripts random.src uglify 1`] = `
 Array [
   "I={}
@@ -4511,6 +6300,21 @@ print test.was",
 ]
 `;
 
+exports[`parse default scripts simple-object.src beautify with custom settings 1`] = `
+Array [
+  "test = {}
+
+test.here = \\"was\\"
+
+test.was = function
+          super.here
+          print(self.here)
+end function
+
+print(test.was)",
+]
+`;
+
 exports[`parse default scripts simple-object.src uglify 1`] = `
 Array [
   "I={}
@@ -4560,6 +6364,26 @@ print divideString(\\"blahhblahhblahhblahhblahhblahhgad\\", 5)",
 ]
 `;
 
+exports[`parse default scripts slice.src beautify with custom settings 1`] = `
+Array [
+  "divideString = function(str, limit)
+          offset = 0
+          maxLen = str.len
+          frags = []
+
+          while offset < maxLen
+                    next = offset + limit
+                    frags.push(str[offset : next])
+                    offset = next
+          end while
+
+          return frags
+end function
+
+print(divideString(\\"blahhblahhblahhblahhblahhblahhgad\\", 5))",
+]
+`;
+
 exports[`parse default scripts slice.src uglify 1`] = `
 Array [
   "I=function(str,J)
@@ -4603,6 +6427,21 @@ print not \\"was\\".split and (false or not false)
 print not (\\"was\\".split and (false or not false))
 print -1 + 2
 print -(1 + 2)",
+]
+`;
+
+exports[`parse default scripts unary.src beautify with custom settings 1`] = `
+Array [
+  "test = function
+          return null
+end function
+
+print(@\\"was\\".split and (false or not false))
+print(@(\\"was\\".split and (false or not false)))
+print(not \\"was\\".split and (false or not false))
+print(not (\\"was\\".split and (false or not false)))
+print(-1 + 2)
+print(-(1 + 2))",
 ]
 `;
 

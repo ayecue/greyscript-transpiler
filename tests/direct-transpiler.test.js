@@ -46,6 +46,23 @@ describe('parse', function () {
 
         expect(result).toMatchSnapshot();
       });
+
+      test(path.basename(filepath) + ' beautify with custom settings', async () => {
+        const result = new DirectTranspiler({
+          code: fs.readFileSync(filepath, 'utf-8'),
+          buildType: BuildType.BEAUTIFY,
+          buildOptions: {
+            isDevMode: true,
+            keepParentheses: true,
+            indentation: 1,
+            indentationSpaces: 10
+          },
+          environmentVariables,
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+        }).parse();
+
+        expect(result).toMatchSnapshot();
+      });
     });
   });
 });

@@ -5,6 +5,7 @@ import {
   ASTFeatureIncludeExpression
 } from 'greybel-core';
 import { Factory } from 'greybel-transpiler';
+import { DefaultFactoryOptions } from 'greybel-transpiler/dist/build-map/factory';
 import { ASTImportCodeExpression } from 'greyscript-core';
 import {
   ASTAssignmentStatement,
@@ -38,12 +39,14 @@ import { basename } from 'path';
 import { TransformerDataObject } from '../transformer';
 import { injectImport } from '../utils/inject-imports';
 
-export const defaultFactory: Factory<object> = (
-  _options,
+export const defaultFactory: Factory<DefaultFactoryOptions> = (
+  options,
   make,
   context,
   environmentVariables
 ) => {
+  const { isDevMode = false } = options;
+
   return {
     ParenthesisExpression: (
       item: ASTParenthesisExpression,
@@ -226,6 +229,7 @@ export const defaultFactory: Factory<object> = (
       item: ASTFeatureEnvarExpression,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return `#envar ${item.name}`;
       const value = environmentVariables.get(item.name);
       if (!value) return 'null';
       return `"${value}"`;
@@ -367,9 +371,8 @@ export const defaultFactory: Factory<object> = (
       item: ASTFeatureImportExpression,
       _data: TransformerDataObject
     ): string => {
-      if (!item.chunk) {
-        return '#import ' + make(item.name) + ' from "' + item.path + '";';
-      }
+      if (isDevMode) return '#import ' + make(item.name) + ' from "' + item.path + '";';
+      if (!item.chunk) return '#import ' + make(item.name) + ' from "' + item.path + '";';
 
       return make(item.name) + ' = __REQUIRE("' + item.namespace + '")';
     },
@@ -377,9 +380,8 @@ export const defaultFactory: Factory<object> = (
       item: ASTFeatureIncludeExpression,
       _data: TransformerDataObject
     ): string => {
-      if (!item.chunk) {
-        return '#include "' + item.path + '";';
-      }
+      if (isDevMode) return '#include "' + item.path + '";';
+      if (!item.chunk) return '#include "' + item.path + '";';
 
       return make(item.chunk);
     },
@@ -387,18 +389,21 @@ export const defaultFactory: Factory<object> = (
       _item: ASTBase,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return 'debugger';
       return '//debugger';
     },
     FeatureLineExpression: (
       item: ASTBase,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return '#line';
       return `${item.start.line}`;
     },
     FeatureFileExpression: (
       item: ASTFeatureFileExpression,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return '#file';
       return `"${basename(item.filename).replace(/"/g, '"')}"`;
     },
     ListConstructorExpression: (

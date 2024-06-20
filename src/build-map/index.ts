@@ -1,4 +1,5 @@
 import { Factory } from 'greybel-transpiler';
+import { DefaultFactoryOptions } from 'greybel-transpiler/dist/build-map/factory';
 
 import { beautifyFactory } from './beautify';
 import { defaultFactory } from './default';
@@ -18,7 +19,7 @@ const FACTORIES = {
 
 export function getFactory(
   type: BuildType = BuildType.DEFAULT
-): Factory<object> {
+): Factory<DefaultFactoryOptions> {
   const factory = FACTORIES[type];
 
   if (!factory) {

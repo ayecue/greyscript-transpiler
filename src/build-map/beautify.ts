@@ -6,6 +6,8 @@ import {
 } from 'greybel-core';
 import { Factory } from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
+import { BeautifyOptions } from 'greybel-transpiler/dist/build-map/beautify';
+import { createExpressionHash } from 'greybel-transpiler/dist/utils/create-expression-hash';
 import {
   ASTAssignmentStatement,
   ASTBase,
@@ -40,6 +42,7 @@ import { basename } from 'path';
 import { TransformerDataObject } from '../transformer';
 import { injectImport } from '../utils/inject-imports';
 import {
+  SHORTHAND_OPERATORS,
   countEvaluationExpressions,
   transformBitOperation,
   unwrap
@@ -50,12 +53,6 @@ export enum IndentationType {
   Whitespace
 }
 
-export interface BeautifyOptions {
-  keepParentheses: boolean;
-  indentation: IndentationType;
-  indentationSpaces: number;
-}
-
 export const beautifyFactory: Factory<BeautifyOptions> = (
   options,
   make,
@@ -63,6 +60,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
   environmentVariables
 ) => {
   const {
+    isDevMode = false,
     keepParentheses = false,
     indentation = IndentationType.Tab,
     indentationSpaces = 2
@@ -94,9 +92,9 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
   const putIndent =
     indentation === IndentationType.Tab
       ? (str: string, offset: number = 0) =>
-          `${'\t'.repeat(indent + offset)}${str}`
+        `${'\t'.repeat(indent + offset)}${str}`
       : (str: string, offset: number = 0) =>
-          `${' '.repeat(indentationSpaces).repeat(indent + offset)}${str}`;
+        `${' '.repeat(indentationSpaces).repeat(indent + offset)}${str}`;
   const buildBlock = (block: ASTBaseBlock): string[] => {
     const body: string[] = [];
     let previous: ASTBase | null = null;
@@ -179,6 +177,22 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       const varibale = item.variable;
       const init = item.init;
       const left = make(varibale);
+
+      // might can create shorthand for expression
+      if (
+        isDevMode &&
+        (varibale instanceof ASTIdentifier ||
+          varibale instanceof ASTMemberExpression) &&
+        init instanceof ASTEvaluationExpression &&
+        (init.left instanceof ASTIdentifier ||
+          init.left instanceof ASTMemberExpression) &&
+        SHORTHAND_OPERATORS.includes(init.operator) &&
+        createExpressionHash(varibale) === createExpressionHash(init.left)
+      ) {
+        const right = make(unwrap(init.right));
+        return left + ' ' + init.operator + '= ' + right;
+      }
+
       const right = make(init);
 
       return left + ' = ' + right;
@@ -399,6 +413,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTFeatureEnvarExpression,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return `#envar ${item.name}`;
       const value = environmentVariables.get(item.name);
       if (!value) return 'null';
       return `"${value}"`;
@@ -534,9 +549,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTFeatureImportExpression,
       _data: TransformerDataObject
     ): string => {
-      if (!item.chunk) {
-        return '#import ' + make(item.name) + ' from "' + item.path + '";';
-      }
+      if (isDevMode) return '#import ' + make(item.name) + ' from "' + item.path + '";';
+      if (!item.chunk) return '#import ' + make(item.name) + ' from "' + item.path + '";';
 
       return make(item.name) + ' = __REQUIRE("' + item.namespace + '")';
     },
@@ -544,9 +558,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTFeatureIncludeExpression,
       _data: TransformerDataObject
     ): string => {
-      if (!item.chunk) {
-        return '#include "' + item.path + '";';
-      }
+      if (isDevMode) return '#include "' + item.path + '";';
+      if (!item.chunk) return '#include "' + item.path + '";';
 
       return make(item.chunk);
     },
@@ -554,18 +567,21 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       _item: ASTBase,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return 'debugger';
       return '//debugger';
     },
     FeatureLineExpression: (
       item: ASTBase,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return '#line';
       return `${item.start.line}`;
     },
     FeatureFileExpression: (
       item: ASTFeatureFileExpression,
       _data: TransformerDataObject
     ): string => {
+      if (isDevMode) return '#file';
       return `"${basename(item.filename).replace(/"/g, '"')}"`;
     },
     ListConstructorExpression: (
