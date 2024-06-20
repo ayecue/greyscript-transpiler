@@ -687,10 +687,10 @@ I={N:M,O:13,\\"bar\\":45}"
 `;
 
 exports[`parse default scripts binary-expressions.src 1`] = `
-"a=a/b
-a=a*b
-a=a-b
-a=a+b
+"a=a/(b)
+a=a*(b)
+a=a-(b)
+a=a+(b)
 bitwise(\\"<<\\",a,b)
 bitwise(\\">>\\",a,b)
 w=bitwise(\\">>\\",bitwise(\\">>>\\",a,(bitwise(\\"<<\\",b,c))),a)
@@ -702,10 +702,10 @@ a or b"
 `;
 
 exports[`parse default scripts binary-expressions.src beautify 1`] = `
-"a = a / b
-a = a * b
-a = a - b
-a = a + b
+"a = a / (b)
+a = a * (b)
+a = a - (b)
+a = a + (b)
 bitwise(\\"<<\\", a, b)
 bitwise(\\">>\\", a, b)
 w = bitwise(\\">>\\", bitwise(\\">>>\\", a, (bitwise(\\"<<\\", b, c))), a)
@@ -717,10 +717,10 @@ a or b"
 `;
 
 exports[`parse default scripts binary-expressions.src uglify 1`] = `
-"I=I/J
-I=I*J
-I=I-J
-I=I+J
+"I=I/(J)
+I=I*(J)
+I=I-(J)
+I=I+(J)
 bitwise(\\"<<\\",I,J)
 bitwise(\\">>\\",I,J)
 K=bitwise(\\">>\\",bitwise(\\">>>\\",I,(bitwise(\\"<<\\",J,L))),I)
@@ -1226,9 +1226,9 @@ end if
 print(text)
 key=user_input(\\"test\\",false,true)
 if (key==\\"UpArrow\\") then
-outer.num=outer.num+1
+outer.num=outer.num+(1)
 else if (key==\\"DownArrow\\") then
-outer.num=outer.num-1
+outer.num=outer.num-(1)
 else
 exit(\\"bye\\")
 end if
@@ -1259,9 +1259,9 @@ exports[`parse default scripts outer.src beautify 1`] = `
 		key = user_input(\\"test\\", false, true)
 
 		if key == \\"UpArrow\\" then
-			outer.num = outer.num + 1
+			outer.num = outer.num + (1)
 		else if key == \\"DownArrow\\" then
-			outer.num = outer.num - 1
+			outer.num = outer.num - (1)
 		else
 			exit \\"bye\\"
 		end if
@@ -1297,9 +1297,9 @@ end if
 print(L)
 M=user_input(\\"test\\",false,true)
 if (M==\\"UpArrow\\") then
-outer.J=outer.J+1
+outer.J=outer.J+(1)
 else if (M==\\"DownArrow\\") then
-outer.J=outer.J-1
+outer.J=outer.J-(1)
 else
 exit(\\"bye\\")
 end if

@@ -1,6 +1,6 @@
 {
   "name": "greyscript-transpiler",
-  "version": "0.7.9",
+  "version": "0.8.0",
   "description": "Transpiler",
   "main": "dist/index",
   "typings": "dist/index",
@@ -50,8 +50,8 @@
   },
   "dependencies": {
     "blueimp-md5": "^2.19.0",
-    "greybel-transpiler": "~2.6.8",
-    "greyscript-core": "~1.6.2"
+    "greybel-transpiler": "~2.7.0",
+    "greyscript-core": "~1.7.0"
   },
   "keywords": [
     "greyscript",
