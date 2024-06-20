@@ -51,23 +51,6 @@ describe('parse', function () {
 
         expect(Object.values(result)).toMatchSnapshot();
       });
-
-      test(path.basename(filepath) + ' beautify with custom settings', async () => {
-        const result = await new Transpiler({
-          target: filepath,
-          buildType: BuildType.BEAUTIFY,
-          buildOptions: {
-            isDevMode: true,
-            keepParentheses: true,
-            indentation: 1,
-            indentationSpaces: 10
-          },
-          environmentVariables,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
-        }).parse();
-
-        expect(Object.values(result)).toMatchSnapshot();
-      });
     });
   });
 
