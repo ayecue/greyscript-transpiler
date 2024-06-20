@@ -1,8 +1,6 @@
-import { Context, Stack } from 'greybel-transpiler';
+import { BuildMap, Context, Factory, Stack } from 'greybel-transpiler';
 import { ASTChunkGreyScript } from 'greyscript-core';
 import { ASTBase } from 'miniscript-core';
-
-import { BuildMap } from './build-map/default';
 
 export interface TransformerDataObject {
   [key: string]: any;
@@ -17,11 +15,8 @@ export class Transformer {
   buildMap: BuildMap;
 
   constructor(
-    mapFactory: (
-      make: Function,
-      context: Context,
-      environmentVariables: Map<string, string>
-    ) => BuildMap,
+    options: object,
+    mapFactory: Factory<object>,
     context: Context,
     environmentVariables: Map<string, string>
   ) {
@@ -30,8 +25,8 @@ export class Transformer {
     me.currentTarget = Transformer.DEFAULT_TARGET;
     me.currentStack = new Stack();
     me.context = context;
-    me.buildMap = mapFactory.call(
-      me,
+    me.buildMap = mapFactory(
+      options,
       me.make.bind(me),
       context,
       environmentVariables

@@ -50,6 +50,7 @@ export class Transpiler extends GreybelTranspiler {
 
     // create builder
     const transformer = new Transformer(
+      this.buildOptions,
       mapFactory,
       context,
       me.environmentVariables

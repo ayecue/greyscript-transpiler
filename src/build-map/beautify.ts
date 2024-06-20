@@ -4,7 +4,7 @@ import {
   ASTFeatureImportExpression,
   ASTFeatureIncludeExpression
 } from 'greybel-core';
-import { Context } from 'greybel-transpiler';
+import { Factory } from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
 import {
   ASTAssignmentStatement,
@@ -41,17 +41,32 @@ import { TransformerDataObject } from '../transformer';
 import { injectImport } from '../utils/inject-imports';
 import {
   countEvaluationExpressions,
-  SHORTHAND_OPERATORS,
   transformBitOperation,
   unwrap
 } from './beautify/utils';
-import { BuildMap } from './default';
 
-export function beautifyFactory(
-  make: (item: ASTBase, _data?: TransformerDataObject) => string,
-  context: Context,
-  environmentVariables: Map<string, string>
-): BuildMap {
+export enum IndentationType {
+  Tab,
+  Whitespace
+}
+
+export interface BeautifyOptions {
+  keepParentheses: boolean;
+  indentation: IndentationType;
+  indentationSpaces: number;
+}
+
+export const beautifyFactory: Factory<BeautifyOptions> = (
+  options,
+  make,
+  context,
+  environmentVariables
+) => {
+  const {
+    keepParentheses = false,
+    indentation = IndentationType.Tab,
+    indentationSpaces = 2
+  } = options;
   let indent = 0;
   let isMultilineAllowed = true;
   const chunks: ASTChunk['lines'][] = [];
@@ -76,8 +91,12 @@ export function beautifyFactory(
   const enableMultiline = () => (isMultilineAllowed = true);
   const incIndent = () => indent++;
   const decIndent = () => indent--;
-  const putIndent = (str: string, offset: number = 0) =>
-    `${'\t'.repeat(indent + offset)}${str}`;
+  const putIndent =
+    indentation === IndentationType.Tab
+      ? (str: string, offset: number = 0) =>
+          `${'\t'.repeat(indent + offset)}${str}`
+      : (str: string, offset: number = 0) =>
+          `${' '.repeat(indentationSpaces).repeat(indent + offset)}${str}`;
   const buildBlock = (block: ASTBaseBlock): string[] => {
     const body: string[] = [];
     let previous: ASTBase | null = null;
@@ -95,7 +114,9 @@ export function beautifyFactory(
       }
 
       const diff = Math.max(
-        previous ? bodyItem.start.line - previous.end.line - 1 : bodyItem.start.line - block.start.line - 1,
+        previous
+          ? bodyItem.start.line - previous.end.line - 1
+          : bodyItem.start.line - block.start.line - 1,
         0
       );
 
@@ -330,7 +351,9 @@ export function beautifyFactory(
         return base + '(\n' + putIndent(argStr, 1) + ')';
       }
 
-      return data.isCommand ? base + ' ' + argStr : base + '(' + argStr + ')';
+      return data.isCommand && !keepParentheses
+        ? base + ' ' + argStr
+        : base + '(' + argStr + ')';
     },
     StringLiteral: (item: ASTLiteral, _data: TransformerDataObject): string => {
       return item.raw.toString();
@@ -712,4 +735,4 @@ export function beautifyFactory(
       return injectImport(context, item);
     }
   };
-}
+};

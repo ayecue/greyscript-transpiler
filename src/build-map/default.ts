@@ -4,7 +4,7 @@ import {
   ASTFeatureImportExpression,
   ASTFeatureIncludeExpression
 } from 'greybel-core';
-import { Context } from 'greybel-transpiler';
+import { Factory } from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
 import {
   ASTAssignmentStatement,
@@ -38,15 +38,12 @@ import { basename } from 'path';
 import { TransformerDataObject } from '../transformer';
 import { injectImport } from '../utils/inject-imports';
 
-export interface BuildMap {
-  [type: string]: (item: ASTBase, _data: TransformerDataObject) => string;
-}
-
-export function defaultFactory(
-  make: (item: ASTBase, _data?: TransformerDataObject) => string,
-  context: Context,
-  environmentVariables: Map<string, string>
-): BuildMap {
+export const defaultFactory: Factory<object> = (
+  _options,
+  make,
+  context,
+  environmentVariables
+) => {
   return {
     ParenthesisExpression: (
       item: ASTParenthesisExpression,
@@ -497,4 +494,4 @@ export function defaultFactory(
       return injectImport(context, item);
     }
   };
-}
+};

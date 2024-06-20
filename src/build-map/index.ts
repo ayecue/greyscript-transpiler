@@ -1,9 +1,7 @@
-import { Context } from 'greybel-transpiler';
-import { ASTBase } from 'miniscript-core';
+import { Factory } from 'greybel-transpiler';
 
-import { TransformerDataObject } from '../transformer';
 import { beautifyFactory } from './beautify';
-import { BuildMap, defaultFactory } from './default';
+import { defaultFactory } from './default';
 import { uglifyFactory } from './uglify';
 
 export enum BuildType {
@@ -11,8 +9,6 @@ export enum BuildType {
   UGLIFY,
   BEAUTIFY
 }
-
-export { BuildMap } from './default';
 
 const FACTORIES = {
   [BuildType.DEFAULT]: defaultFactory,
@@ -22,11 +18,7 @@ const FACTORIES = {
 
 export function getFactory(
   type: BuildType = BuildType.DEFAULT
-): (
-  make: (item: ASTBase, _data: TransformerDataObject) => string,
-  context: Context,
-  environmentVariables: Map<string, string>
-) => BuildMap {
+): Factory<object> {
   const factory = FACTORIES[type];
 
   if (!factory) {

@@ -40,6 +40,7 @@ export class DirectTranspiler extends GreybelDirectTranspiler {
     }
 
     const transformer = new Transformer(
+      this.buildOptions,
       mapFactory,
       context,
       me.environmentVariables
