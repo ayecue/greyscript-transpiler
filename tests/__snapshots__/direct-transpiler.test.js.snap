@@ -1583,16 +1583,28 @@ exports[`parse default scripts multiline-comment.src beautify 1`] = `
 //
 //my Test
 //
-//  **"
+//  **
+print \\"test\\" //
+//
+//  another comment
+//
+//  
+// one line comment "
 `;
 
 exports[`parse default scripts multiline-comment.src beautify with custom settings 1`] = `
-"//
-//
-//
-//my Test
-//
-//  **"
+"/*
+
+
+my Test
+
+  ***/
+print(\\"test\\") /*
+
+  another comment
+
+  */
+// one line comment "
 `;
 
 exports[`parse default scripts multiline-comment.src uglify 1`] = `"print(\\"test\\")"`;

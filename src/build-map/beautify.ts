@@ -4,14 +4,13 @@ import {
   ASTFeatureImportExpression,
   ASTFeatureIncludeExpression
 } from 'greybel-core';
-import { Factory } from 'greybel-transpiler';
+import { BeautifyContext, BeautifyUtils, Factory } from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
 import { BeautifyOptions } from 'greybel-transpiler/dist/build-map/beautify';
 import { createExpressionHash } from 'greybel-transpiler/dist/utils/create-expression-hash';
 import {
   ASTAssignmentStatement,
   ASTBase,
-  ASTBaseBlock,
   ASTCallExpression,
   ASTCallStatement,
   ASTChunk,
@@ -31,7 +30,6 @@ import {
   ASTMapKeyString,
   ASTMemberExpression,
   ASTParenthesisExpression,
-  ASTPosition,
   ASTReturnStatement,
   ASTSliceExpression,
   ASTUnaryExpression,
@@ -42,11 +40,14 @@ import { basename } from 'path';
 import { TransformerDataObject } from '../transformer';
 import { injectImport } from '../utils/inject-imports';
 import {
+  transformBitOperation
+} from './beautify/utils';
+
+const {
   SHORTHAND_OPERATORS,
   countEvaluationExpressions,
-  transformBitOperation,
   unwrap
-} from './beautify/utils';
+} = BeautifyUtils;
 
 export enum IndentationType {
   Tab,
@@ -65,84 +66,13 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
     indentation = IndentationType.Tab,
     indentationSpaces = 2
   } = options;
-  let indent = 0;
-  let isMultilineAllowed = true;
-  const chunks: ASTChunk['lines'][] = [];
-  const usedComments: Set<ASTBase> = new Set();
-  const pushLines = (lines: ASTChunk['lines']) => chunks.push(lines);
-  const popLines = (): ASTChunk['lines'] => chunks.pop();
-  const getLines = (): ASTChunk['lines'] => chunks[chunks.length - 1];
-  const appendComment = (position: ASTPosition, line: string): string => {
-    const items = getLines().get(position.line);
-    const comment = items?.find(
-      (item) => item instanceof ASTComment
-    ) as ASTComment;
-
-    if (comment && !usedComments.has(comment)) {
-      usedComments.add(comment);
-      return line + ' // ' + comment.value.trimStart();
-    }
-
-    return line;
-  };
-  const disableMultiline = () => (isMultilineAllowed = false);
-  const enableMultiline = () => (isMultilineAllowed = true);
-  const incIndent = () => indent++;
-  const decIndent = () => indent--;
-  const putIndent =
-    indentation === IndentationType.Tab
-      ? (str: string, offset: number = 0) =>
-        `${'\t'.repeat(indent + offset)}${str}`
-      : (str: string, offset: number = 0) =>
-        `${' '.repeat(indentationSpaces).repeat(indent + offset)}${str}`;
-  const buildBlock = (block: ASTBaseBlock): string[] => {
-    const body: string[] = [];
-    let previous: ASTBase | null = null;
-
-    for (let index = 0; index < block.body.length; index++) {
-      const bodyItem = block.body[index];
-
-      if (
-        (bodyItem instanceof ASTComment &&
-          getLines().get(bodyItem.start.line).length > 1) ||
-        previous?.end.line === bodyItem.start.line ||
-        usedComments.has(bodyItem)
-      ) {
-        continue;
-      }
-
-      const diff = Math.max(
-        previous
-          ? bodyItem.start.line - previous.end.line - 1
-          : bodyItem.start.line - block.start.line - 1,
-        0
-      );
-
-      if (diff > 0) {
-        body.push(...new Array(diff).fill(''));
-      }
-
-      if (bodyItem instanceof ASTComment) {
-        usedComments.add(bodyItem);
-        const transformed = make(bodyItem, { isCommand: true });
-        body.push(putIndent(transformed));
-      } else {
-        const transformed = make(bodyItem, { isCommand: true });
-        body.push(putIndent(appendComment(bodyItem.end, transformed)));
-      }
-
-      previous = bodyItem;
-    }
-
-    const last = block.body[block.body.length - 1];
-    const size = Math.max(block.end.line - last?.end?.line - 1, 0);
-
-    if (size > 0) {
-      body.push(...new Array(size).fill(''));
-    }
-
-    return body;
-  };
+  const ctx = new BeautifyContext(make, {
+    keepParentheses,
+    indentation,
+    indentationSpaces,
+    isDevMode
+  });
+  
 
   return {
     ParenthesisExpression: (
@@ -152,9 +82,9 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       const expr = make(item.expression);
 
       if (/\n/.test(expr) && !/,(?!\n)/.test(expr)) {
-        incIndent();
-        const expr = putIndent(make(item.expression), 1);
-        decIndent();
+        ctx.incIndent();
+        const expr = ctx.putIndent(make(item.expression), 1);
+        ctx.decIndent();
         return '(\n' + expr + ')';
       }
 
@@ -162,6 +92,10 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
     },
     Comment: (item: ASTComment, _data: TransformerDataObject): string => {
       if (item.isMultiline) {
+        if (isDevMode) {
+          return `/*${item.value}*/`;
+        }
+
         return item.value
           .split('\n')
           .map((line) => `//${line}`)
@@ -210,21 +144,21 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTFunctionStatement,
       _data: TransformerDataObject
     ): string => {
-      disableMultiline();
+      ctx.disableMultiline();
       const parameters = item.parameters.map((item) => make(item));
-      enableMultiline();
+      ctx.enableMultiline();
 
-      const blockStart = appendComment(
+      const blockStart = ctx.appendComment(
         item.start,
         parameters.length === 0
           ? 'function'
           : 'function(' + parameters.join(', ') + ')'
       );
-      const blockEnd = putIndent('end function');
+      const blockEnd = ctx.putIndent('end function');
 
-      incIndent();
-      const body = buildBlock(item);
-      decIndent();
+      ctx.incIndent();
+      const body = ctx.buildBlock(item);
+      ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
     },
@@ -238,28 +172,28 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
 
       if (item.fields.length === 1) {
         const field = make(item.fields[0]);
-        return appendComment(item.fields[0].end, '{ ' + field + ' }');
+        return ctx.appendComment(item.fields[0].end, '{ ' + field + ' }');
       }
 
-      if (isMultilineAllowed) {
+      if (ctx.isMultilineAllowed) {
         const fields = [];
-        const blockEnd = putIndent(appendComment(item.start, '}'));
+        const blockEnd = ctx.putIndent(ctx.appendComment(item.start, '}'));
 
-        incIndent();
+        ctx.incIndent();
 
         for (let index = item.fields.length - 1; index >= 0; index--) {
           const fieldItem = item.fields[index];
-          fields.unshift(appendComment(fieldItem.end, make(fieldItem) + ','));
+          fields.unshift(ctx.appendComment(fieldItem.end, make(fieldItem) + ','));
         }
 
-        decIndent();
+        ctx.decIndent();
 
-        const blockStart = appendComment(item.start, '{');
+        const blockStart = ctx.appendComment(item.start, '{');
 
         return (
           blockStart +
           '\n' +
-          fields.map((field) => putIndent(field, 1)).join('\n') +
+          fields.map((field) => ctx.putIndent(field, 1)).join('\n') +
           '\n' +
           blockEnd
         );
@@ -268,7 +202,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       const fields = [];
       let fieldItem;
       const blockStart = '{';
-      const blockEnd = appendComment(item.start, '}');
+      const blockEnd = ctx.appendComment(item.start, '}');
 
       for (fieldItem of item.fields) {
         fields.push(make(fieldItem));
@@ -277,7 +211,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       return (
         blockStart +
         ' ' +
-        fields.map((field) => putIndent(field, 1)).join(', ') +
+        fields.map((field) => ctx.putIndent(field, 1)).join(', ') +
         ' ' +
         blockEnd
       );
@@ -312,14 +246,14 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       _data: TransformerDataObject
     ): string => {
       const condition = make(unwrap(item.condition));
-      const blockStart = appendComment(item.start, 'while ' + condition);
-      const blockEnd = putIndent('end while');
+      const blockStart = ctx.appendComment(item.start, 'while ' + condition);
+      const blockEnd = ctx.putIndent('end while');
 
-      incIndent();
+      ctx.incIndent();
 
-      const body = buildBlock(item);
+      const body = ctx.buildBlock(item);
 
-      decIndent();
+      ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
     },
@@ -333,22 +267,22 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         return base;
       }
 
-      if (item.arguments.length > 3 && isMultilineAllowed) {
+      if (item.arguments.length > 3 && ctx.isMultilineAllowed) {
         let argItem;
         const args = [];
 
-        incIndent();
+        ctx.incIndent();
 
         for (argItem of item.arguments) {
           args.push(make(argItem));
         }
 
-        decIndent();
+        ctx.decIndent();
 
         return (
           base +
           '(\n' +
-          args.map((item) => putIndent(item, 1)).join(',\n') +
+          args.map((item) => ctx.putIndent(item, 1)).join(',\n') +
           ')'
         );
       }
@@ -357,12 +291,12 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       const argStr = args.join(', ');
 
       if (/\n/.test(argStr) && !/,(?!\n)/.test(argStr)) {
-        incIndent();
+        ctx.incIndent();
         const args = item.arguments.map((argItem) => make(argItem));
-        decIndent();
+        ctx.decIndent();
         const argStr = args.join(', ');
 
-        return base + '(\n' + putIndent(argStr, 1) + ')';
+        return base + '(\n' + ctx.putIndent(argStr, 1) + ')';
       }
 
       return data.isCommand && !keepParentheses
@@ -453,7 +387,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTElseClause,
       _data: TransformerDataObject
     ): string => {
-      const statement = putIndent(make(item.body[0]));
+      const statement = ctx.putIndent(make(item.body[0]));
       return 'else ' + statement;
     },
     NilLiteral: (_item: ASTLiteral, _data: TransformerDataObject): string => {
@@ -465,17 +399,17 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
     ): string => {
       const variable = make(unwrap(item.variable));
       const iterator = make(unwrap(item.iterator));
-      const blockStart = appendComment(
+      const blockStart = ctx.appendComment(
         item.start,
         'for ' + variable + ' in ' + iterator
       );
-      const blockEnd = putIndent('end for');
+      const blockEnd = ctx.putIndent('end for');
 
-      incIndent();
+      ctx.incIndent();
 
-      const body = buildBlock(item);
+      const body = ctx.buildBlock(item);
 
-      decIndent();
+      ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
     },
@@ -490,43 +424,43 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         clauses.push(make(clausesItem));
       }
 
-      return clauses.join('\n') + '\n' + putIndent('end if');
+      return clauses.join('\n') + '\n' + ctx.putIndent('end if');
     },
     IfClause: (item: ASTIfClause, _data: TransformerDataObject): string => {
       const condition = make(unwrap(item.condition));
-      const blockStart = appendComment(item.start, 'if ' + condition + ' then');
+      const blockStart = ctx.appendComment(item.start, 'if ' + condition + ' then');
 
-      incIndent();
+      ctx.incIndent();
 
-      const body = buildBlock(item);
+      const body = ctx.buildBlock(item);
 
-      decIndent();
+      ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n');
     },
     ElseifClause: (item: ASTIfClause, _data: TransformerDataObject): string => {
       const condition = make(unwrap(item.condition));
-      const blockStart = appendComment(
+      const blockStart = ctx.appendComment(
         item.start,
-        putIndent('else if') + ' ' + condition + ' then'
+        ctx.putIndent('else if') + ' ' + condition + ' then'
       );
 
-      incIndent();
+      ctx.incIndent();
 
-      const body = buildBlock(item);
+      const body = ctx.buildBlock(item);
 
-      decIndent();
+      ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n');
     },
     ElseClause: (item: ASTElseClause, _data: TransformerDataObject): string => {
-      const blockStart = appendComment(item.start, putIndent('else'));
+      const blockStart = ctx.appendComment(item.start, ctx.putIndent('else'));
 
-      incIndent();
+      ctx.incIndent();
 
-      const body = buildBlock(item);
+      const body = ctx.buildBlock(item);
 
-      decIndent();
+      ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n');
     },
@@ -594,36 +528,36 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
 
       if (item.fields.length === 1) {
         const field = make(item.fields[0]);
-        return appendComment(item.fields[0].end, '[ ' + field + ' ]');
+        return ctx.appendComment(item.fields[0].end, '[ ' + field + ' ]');
       }
 
       const fields = [];
       let fieldItem;
 
-      if (isMultilineAllowed) {
-        const blockEnd = putIndent(appendComment(item.end, ']'));
+      if (ctx.isMultilineAllowed) {
+        const blockEnd = ctx.putIndent(ctx.appendComment(item.end, ']'));
 
-        incIndent();
+        ctx.incIndent();
 
         for (let index = item.fields.length - 1; index >= 0; index--) {
           const fieldItem = item.fields[index];
-          fields.unshift(appendComment(fieldItem.end, make(fieldItem) + ','));
+          fields.unshift(ctx.appendComment(fieldItem.end, make(fieldItem) + ','));
         }
 
-        decIndent();
+        ctx.decIndent();
 
-        const blockStart = appendComment(item.start, '[');
+        const blockStart = ctx.appendComment(item.start, '[');
 
         return (
           blockStart +
           '\n' +
-          fields.map((field) => putIndent(field, 1)).join('\n') +
+          fields.map((field) => ctx.putIndent(field, 1)).join('\n') +
           '\n' +
           blockEnd
         );
       }
 
-      const blockEnd = putIndent(appendComment(item.end, ']'));
+      const blockEnd = ctx.putIndent(ctx.appendComment(item.end, ']'));
       const blockStart = '[';
 
       for (fieldItem of item.fields) {
@@ -662,7 +596,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         : countEvaluationExpressions(item);
 
       if (count > 3 || data.isEvalMultiline) {
-        if (!data.isEvalMultiline) incIndent();
+        if (!data.isEvalMultiline) ctx.incIndent();
 
         const left = make(item.left, {
           isInEvalExpression: true,
@@ -673,9 +607,9 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
           isEvalMultiline: true
         });
         const operator = item.operator;
-        const expression = left + ' ' + operator + '\n' + putIndent(right);
+        const expression = left + ' ' + operator + '\n' + ctx.putIndent(right);
 
-        if (!data.isEvalMultiline) decIndent();
+        if (!data.isEvalMultiline) ctx.decIndent();
 
         return expression;
       }
@@ -694,7 +628,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         : countEvaluationExpressions(item);
 
       if (count > 3 || data.isEvalMultiline) {
-        if (!data.isEvalMultiline) incIndent();
+        if (!data.isEvalMultiline) ctx.incIndent();
 
         const left = make(item.left, {
           isInEvalExpression: true,
@@ -706,13 +640,13 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         });
         const operator = item.operator;
         const expression = transformBitOperation(
-          left + ' ' + operator + '\n' + putIndent(right),
+          left + ' ' + operator + '\n' + ctx.putIndent(right),
           left,
           right,
           operator
         );
 
-        if (!data.isEvalMultiline) decIndent();
+        if (!data.isEvalMultiline) ctx.decIndent();
 
         return expression;
       }
@@ -739,9 +673,9 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       return operator + arg;
     },
     Chunk: (item: ASTChunk, _data: TransformerDataObject): string => {
-      pushLines(item.lines);
-      const body = buildBlock(item).join('\n');
-      popLines();
+      ctx.pushLines(item.lines);
+      const body = ctx.buildBlock(item).join('\n');
+      ctx.popLines();
       return body;
     },
     ImportCodeExpression: (

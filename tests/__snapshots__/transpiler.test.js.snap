@@ -3168,7 +3168,13 @@ Array [
 //
 //my Test
 //
-//  **",
+//  **
+print \\"test\\" //
+//
+//  another comment
+//
+//  
+// one line comment ",
 ]
 `;
 
