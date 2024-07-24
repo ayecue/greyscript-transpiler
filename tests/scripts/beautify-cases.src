@@ -78,3 +78,8 @@ test = {
 "foo": 13,
 "bar": 45,
 }
+
+// while block with shorthand if else
+while true
+  if true then print("test") else print("xd")
+end while

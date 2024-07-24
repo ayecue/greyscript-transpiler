@@ -387,7 +387,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTElseClause,
       _data: TransformerDataObject
     ): string => {
-      const statement = ctx.putIndent(make(item.body[0]));
+      const statement = make(item.body[0]);
       return 'else ' + statement;
     },
     NilLiteral: (_item: ASTLiteral, _data: TransformerDataObject): string => {

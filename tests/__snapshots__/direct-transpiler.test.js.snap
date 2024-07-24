@@ -677,7 +677,15 @@ end for
 // was
 test={\\"was\\":123}
 // was
-test={\\"was\\":123,\\"foo\\":13,\\"bar\\":45}"
+test={\\"was\\":123,\\"foo\\":13,\\"bar\\":45}
+// while block with shorthand if else
+while true
+if true then
+print(\\"test\\")
+else
+print(\\"xd\\")
+end if
+end while"
 `;
 
 exports[`parse default scripts beautify-cases.src beautify 1`] = `
@@ -843,7 +851,12 @@ test = {
 	\\"was\\": 123, // was
 	\\"foo\\": 13,
 	\\"bar\\": 45,
-}"
+}
+
+// while block with shorthand if else
+while true
+	if true then print(\\"test\\") else print(\\"xd\\")
+end while"
 `;
 
 exports[`parse default scripts beautify-cases.src beautify with custom settings 1`] = `
@@ -1009,7 +1022,12 @@ test = {
           \\"was\\": 123, // was
           \\"foo\\": 13,
           \\"bar\\": 45,
-}"
+}
+
+// while block with shorthand if else
+while true
+          if true then print(\\"test\\") else print(\\"xd\\")
+end while"
 `;
 
 exports[`parse default scripts beautify-cases.src uglify 1`] = `
@@ -1079,7 +1097,14 @@ for I in [M]
 print(V)
 end for
 I={N:M}
-I={N:M,O:13,\\"bar\\":45}"
+I={N:M,O:13,\\"bar\\":45}
+while S
+if S then
+print(V)
+else
+print(W)
+end if
+end while"
 `;
 
 exports[`parse default scripts binary-expressions.src 1`] = `
