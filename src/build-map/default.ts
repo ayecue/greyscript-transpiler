@@ -366,9 +366,9 @@ export const defaultFactory: Factory<DefaultFactoryOptions> = (transformer) => {
       item: ASTFeatureInjectExpression,
       _data: TransformerDataObject
     ): string => {
-      if (isDevMode) return `#inject "${item.path}"`;
+      if (isDevMode) return `#inject "${item.path}";`;
       if (transformer.currentDependency === null)
-        return `#inject "${item.path}"`;
+        return `#inject "${item.path}";`;
 
       const content = transformer.currentDependency.injections.get(item.path);
 
