@@ -1022,7 +1022,11 @@ print(\\"sub-import.src\\")
 \\"true\\"
 //debugger
 print(7)
-print(\\"greybel-utils.src\\")",
+print(\\"greybel-utils.src\\")
+print(\\"print \\"\\"1..\\"\\"
+print \\"\\"2..\\"\\"
+print \\"\\"3..\\"\\"
+print \\"\\"hello world\\"\\"\\")",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
   "test=123
@@ -1519,7 +1523,13 @@ print \\"sub-import.src\\"
 //debugger
 
 print 7
-print \\"greybel-utils.src\\"",
+print \\"greybel-utils.src\\"
+
+print(
+	\\"print \\"\\"1..\\"\\"
+print \\"\\"2..\\"\\"
+print \\"\\"3..\\"\\"
+print \\"\\"hello world\\"\\"\\")",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
   "
@@ -1711,7 +1721,11 @@ print(\\"sub-import.src\\")
 \\"true\\"
 //debugger
 print(7)
-print(\\"greybel-utils.src\\")",
+print(\\"greybel-utils.src\\")
+print(\\"print \\"\\"1..\\"\\"
+print \\"\\"2..\\"\\"
+print \\"\\"3..\\"\\"
+print \\"\\"hello world\\"\\"\\")",
   "o=\\"\\"foo\\"\\"",
   "r=\\"hi\\"",
   "p=AO

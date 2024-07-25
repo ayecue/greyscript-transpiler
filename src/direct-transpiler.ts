@@ -3,14 +3,14 @@ import {
   DirectTranspiler as GreybelDirectTranspiler,
   fetchNamespaces,
   generateCharsetMap,
-  OutputProcessor
+  OutputProcessor,
+  Transformer
 } from 'greybel-transpiler';
 import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 import { ASTLiteral } from 'miniscript-core';
 
 import { HEADER_BOILERPLATE, MAIN_BOILERPLATE } from './boilerplates';
 import { getFactory } from './build-map';
-import { Transformer } from './transformer';
 
 export class DirectTranspiler extends GreybelDirectTranspiler {
   parse(): string {
@@ -39,12 +39,12 @@ export class DirectTranspiler extends GreybelDirectTranspiler {
       literals.forEach((literal: ASTLiteral) => context.literals.add(literal));
     }
 
-    const transformer = new Transformer(
-      this.buildOptions,
+    const transformer = new Transformer({
+      buildOptions: me.buildOptions,
       mapFactory,
       context,
-      me.environmentVariables
-    );
+      environmentVariables: me.environmentVariables
+    });
     const output = new OutputProcessor(context, transformer, {
       main: MAIN_BOILERPLATE,
       header: HEADER_BOILERPLATE

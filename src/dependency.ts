@@ -5,6 +5,7 @@ import {
   BuildError,
   Context,
   ContextDataProperty as GreybelContextDataProperty,
+  DependencyLike,
   fetchNamespaces,
   ResourceHandler
 } from 'greybel-transpiler';
@@ -40,7 +41,7 @@ export type ResourceDependencyMap = Map<string, Dependency>;
 
 export type DependencyCallStack = string[];
 
-export class Dependency extends EventEmitter {
+export class Dependency extends EventEmitter implements DependencyLike {
   target: string;
   id: string;
   resourceHandler: ResourceHandler;
@@ -48,6 +49,7 @@ export class Dependency extends EventEmitter {
   /* eslint-disable no-use-before-define */
   dependencies: Set<Dependency>;
   context: Context;
+  injections: Map<string, string>;
 
   type: DependencyType | number;
   ref?: ASTBase;
@@ -163,6 +165,31 @@ export class Dependency extends EventEmitter {
     }
   }
 
+  async findInjections(): Promise<Map<string, string>> {
+    const me = this;
+    const { injects } = me.chunk;
+    const injections: Map<string, string> = new Map();
+
+    for (const item of injects) {
+      const injectionTarget = await me.resourceHandler.getTargetRelativeTo(
+        me.target,
+        item.path
+      );
+
+      if (!(await me.resourceHandler.has(injectionTarget))) {
+        throw new Error('Injection ' + injectionTarget + ' does not exist...');
+      }
+
+      const content = await me.resourceHandler.get(injectionTarget);
+
+      injections.set(item.path, content);
+    }
+
+    me.injections = injections;
+
+    return injections;
+  }
+
   async findDependencies(): Promise<DependencyFindResult> {
     const me = this;
     const { imports, includes, nativeImports } = me.chunk;
@@ -227,6 +254,8 @@ export class Dependency extends EventEmitter {
       literals.push(...relatedDependencies.literals);
       result.push(dependency);
     }
+
+    await this.findInjections();
 
     const dependencies = new Set<Dependency>(result);
 

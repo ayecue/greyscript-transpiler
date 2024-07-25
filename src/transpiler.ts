@@ -1,5 +1,6 @@
 import {
   OutputProcessor,
+  Transformer,
   Transpiler as GreybelTranspiler,
   TranspilerOptions as GreybelTranspilerOptions,
   TranspilerParseResult
@@ -14,7 +15,6 @@ import { getFactory } from './build-map';
 import { ContextDataProperty } from './context';
 import { Dependency, DependencyType } from './dependency';
 import { Target, TargetParseResult, TargetParseResultItem } from './target';
-import { Transformer } from './transformer';
 import { ProcessImportPathCallback } from './utils/inject-imports';
 
 export interface TranspilerOptions extends GreybelTranspilerOptions {
@@ -49,12 +49,13 @@ export class Transpiler extends GreybelTranspiler {
     });
 
     // create builder
-    const transformer = new Transformer(
-      this.buildOptions,
+    const transformer = new Transformer({
+      buildOptions: me.buildOptions,
       mapFactory,
       context,
-      me.environmentVariables
-    );
+      environmentVariables: me.environmentVariables,
+      resourceHandler: me.resourceHandler
+    });
     const mainModule = targetParseResult.main;
     const moduleBoilerplate = transformer.transform(MODULE_BOILERPLATE);
     const build = (
@@ -73,7 +74,7 @@ export class Transpiler extends GreybelTranspiler {
           moduleName !== mainNamespace &&
           item.type === DependencyType.Import
         ) {
-          const code = transformer.transform(item.chunk);
+          const code = transformer.transform(item.chunk, item);
           modules[moduleName] = moduleBoilerplate
             .replace('"$0"', '"' + moduleName + '"')
             .replace('"$1"', code);
@@ -103,7 +104,7 @@ export class Transpiler extends GreybelTranspiler {
         output.addCode(modules[moduleKey])
       );
 
-      const code = transformer.transform(mainDependency.chunk);
+      const code = transformer.transform(mainDependency.chunk, mainDependency);
 
       output.addCode(code, !isNativeImport);
 

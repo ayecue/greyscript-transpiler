@@ -6,3 +6,5 @@ debugger;
 
 print #line
 print #filename
+
+print #inject "../fixtures/inject.src";

@@ -2,12 +2,18 @@ import {
   ASTFeatureEnvarExpression,
   ASTFeatureFileExpression,
   ASTFeatureImportExpression,
-  ASTFeatureIncludeExpression
+  ASTFeatureIncludeExpression,
+  ASTFeatureInjectExpression
 } from 'greybel-core';
-import { BeautifyContext, BeautifyUtils, Factory } from 'greybel-transpiler';
-import { ASTImportCodeExpression } from 'greyscript-core';
+import {
+  BeautifyContext,
+  BeautifyUtils,
+  Factory,
+  TransformerDataObject
+} from 'greybel-transpiler';
 import { BeautifyOptions } from 'greybel-transpiler/dist/build-map/beautify';
 import { createExpressionHash } from 'greybel-transpiler/dist/utils/create-expression-hash';
+import { ASTImportCodeExpression } from 'greyscript-core';
 import {
   ASTAssignmentStatement,
   ASTBase,
@@ -37,53 +43,41 @@ import {
 } from 'miniscript-core';
 import { basename } from 'path';
 
-import { TransformerDataObject } from '../transformer';
 import { injectImport } from '../utils/inject-imports';
-import {
-  transformBitOperation
-} from './beautify/utils';
+import { transformBitOperation } from './beautify/utils';
 
-const {
-  SHORTHAND_OPERATORS,
-  countEvaluationExpressions,
-  unwrap
-} = BeautifyUtils;
+const { SHORTHAND_OPERATORS, countEvaluationExpressions, unwrap } =
+  BeautifyUtils;
 
 export enum IndentationType {
   Tab,
   Whitespace
 }
 
-export const beautifyFactory: Factory<BeautifyOptions> = (
-  options,
-  make,
-  context,
-  environmentVariables
-) => {
+export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
   const {
     isDevMode = false,
     keepParentheses = false,
     indentation = IndentationType.Tab,
     indentationSpaces = 2
-  } = options;
-  const ctx = new BeautifyContext(make, {
+  } = transformer.buildOptions;
+  const ctx = new BeautifyContext(transformer, {
     keepParentheses,
     indentation,
     indentationSpaces,
     isDevMode
   });
-  
 
   return {
     ParenthesisExpression: (
       item: ASTParenthesisExpression,
       _data: TransformerDataObject
     ): string => {
-      const expr = make(item.expression);
+      const expr = transformer.make(item.expression);
 
       if (/\n/.test(expr) && !/,(?!\n)/.test(expr)) {
         ctx.incIndent();
-        const expr = ctx.putIndent(make(item.expression), 1);
+        const expr = ctx.putIndent(transformer.make(item.expression), 1);
         ctx.decIndent();
         return '(\n' + expr + ')';
       }
@@ -110,7 +104,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
     ): string => {
       const varibale = item.variable;
       const init = item.init;
-      const left = make(varibale);
+      const left = transformer.make(varibale);
 
       // might can create shorthand for expression
       if (
@@ -123,11 +117,11 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         SHORTHAND_OPERATORS.includes(init.operator) &&
         createExpressionHash(varibale) === createExpressionHash(init.left)
       ) {
-        const right = make(unwrap(init.right));
+        const right = transformer.make(unwrap(init.right));
         return left + ' ' + init.operator + '= ' + right;
       }
 
-      const right = make(init);
+      const right = transformer.make(init);
 
       return left + ' = ' + right;
     },
@@ -135,8 +129,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTMemberExpression,
       _data: TransformerDataObject
     ): string => {
-      const identifier = make(item.identifier);
-      const base = make(item.base);
+      const identifier = transformer.make(item.identifier);
+      const base = transformer.make(item.base);
 
       return [base, identifier].join(item.indexer);
     },
@@ -145,7 +139,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       _data: TransformerDataObject
     ): string => {
       ctx.disableMultiline();
-      const parameters = item.parameters.map((item) => make(item));
+      const parameters = item.parameters.map((item) => transformer.make(item));
       ctx.enableMultiline();
 
       const blockStart = ctx.appendComment(
@@ -171,7 +165,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       }
 
       if (item.fields.length === 1) {
-        const field = make(item.fields[0]);
+        const field = transformer.make(item.fields[0]);
         return ctx.appendComment(item.fields[0].end, '{ ' + field + ' }');
       }
 
@@ -183,7 +177,9 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
 
         for (let index = item.fields.length - 1; index >= 0; index--) {
           const fieldItem = item.fields[index];
-          fields.unshift(ctx.appendComment(fieldItem.end, make(fieldItem) + ','));
+          fields.unshift(
+            ctx.appendComment(fieldItem.end, transformer.make(fieldItem) + ',')
+          );
         }
 
         ctx.decIndent();
@@ -205,7 +201,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       const blockEnd = ctx.appendComment(item.start, '}');
 
       for (fieldItem of item.fields) {
-        fields.push(make(fieldItem));
+        fields.push(transformer.make(fieldItem));
       }
 
       return (
@@ -220,8 +216,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTMapKeyString,
       _data: TransformerDataObject
     ): string => {
-      const key = make(item.key);
-      const value = make(item.value);
+      const key = transformer.make(item.key);
+      const value = transformer.make(item.value);
 
       return [key, value].join(': ');
     },
@@ -232,7 +228,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTReturnStatement,
       _data: TransformerDataObject
     ): string => {
-      const arg = item.argument ? make(item.argument) : '';
+      const arg = item.argument ? transformer.make(item.argument) : '';
       return 'return ' + arg;
     },
     NumericLiteral: (
@@ -245,7 +241,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTWhileStatement,
       _data: TransformerDataObject
     ): string => {
-      const condition = make(unwrap(item.condition));
+      const condition = transformer.make(unwrap(item.condition));
       const blockStart = ctx.appendComment(item.start, 'while ' + condition);
       const blockEnd = ctx.putIndent('end while');
 
@@ -261,7 +257,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTCallExpression,
       data: TransformerDataObject
     ): string => {
-      const base = make(item.base);
+      const base = transformer.make(item.base);
 
       if (item.arguments.length === 0) {
         return base;
@@ -274,7 +270,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         ctx.incIndent();
 
         for (argItem of item.arguments) {
-          args.push(make(argItem));
+          args.push(transformer.make(argItem));
         }
 
         ctx.decIndent();
@@ -287,12 +283,12 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         );
       }
 
-      const args = item.arguments.map((argItem) => make(argItem));
+      const args = item.arguments.map((argItem) => transformer.make(argItem));
       const argStr = args.join(', ');
 
       if (/\n/.test(argStr) && !/,(?!\n)/.test(argStr)) {
         ctx.incIndent();
-        const args = item.arguments.map((argItem) => make(argItem));
+        const args = item.arguments.map((argItem) => transformer.make(argItem));
         ctx.decIndent();
         const argStr = args.join(', ');
 
@@ -310,9 +306,9 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTSliceExpression,
       _data: TransformerDataObject
     ): string => {
-      const base = make(item.base);
-      const left = make(item.left);
-      const right = make(item.right);
+      const base = transformer.make(item.base);
+      const left = transformer.make(item.left);
+      const right = transformer.make(item.right);
 
       return base + '[' + [left, right].join(' : ') + ']';
     },
@@ -320,8 +316,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTIndexExpression,
       _data: TransformerDataObject
     ): string => {
-      const base = make(item.base);
-      const index = make(item.index);
+      const base = transformer.make(item.base);
+      const index = transformer.make(item.index);
 
       return base + '[' + index + ']';
     },
@@ -329,7 +325,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTUnaryExpression,
       _data: TransformerDataObject
     ): string => {
-      const arg = make(item.argument);
+      const arg = transformer.make(item.argument);
 
       if (item.operator === 'new') return item.operator + ' ' + arg;
 
@@ -339,7 +335,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTUnaryExpression,
       _data: TransformerDataObject
     ): string => {
-      const arg = make(item.argument);
+      const arg = transformer.make(item.argument);
 
       return 'not ' + arg;
     },
@@ -348,7 +344,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       _data: TransformerDataObject
     ): string => {
       if (isDevMode) return `#envar ${item.name}`;
-      const value = environmentVariables.get(item.name);
+      const value = transformer.environmentVariables.get(item.name);
       if (!value) return 'null';
       return `"${value}"`;
     },
@@ -360,7 +356,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       let clausesItem;
 
       for (clausesItem of item.clauses) {
-        clauses.push(make(clausesItem));
+        clauses.push(transformer.make(clausesItem));
       }
 
       return clauses.join(' ');
@@ -369,8 +365,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTIfClause,
       _data: TransformerDataObject
     ): string => {
-      const condition = make(unwrap(item.condition));
-      const statement = make(item.body[0]);
+      const condition = transformer.make(unwrap(item.condition));
+      const statement = transformer.make(item.body[0]);
 
       return 'if ' + condition + ' then ' + statement;
     },
@@ -378,8 +374,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTIfClause,
       _data: TransformerDataObject
     ): string => {
-      const condition = make(unwrap(item.condition));
-      const statement = make(item.body[0]);
+      const condition = transformer.make(unwrap(item.condition));
+      const statement = transformer.make(item.body[0]);
 
       return 'else if ' + condition + ' then ' + statement;
     },
@@ -387,7 +383,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTElseClause,
       _data: TransformerDataObject
     ): string => {
-      const statement = make(item.body[0]);
+      const statement = transformer.make(item.body[0]);
       return 'else ' + statement;
     },
     NilLiteral: (_item: ASTLiteral, _data: TransformerDataObject): string => {
@@ -397,8 +393,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTForGenericStatement,
       _data: TransformerDataObject
     ): string => {
-      const variable = make(unwrap(item.variable));
-      const iterator = make(unwrap(item.iterator));
+      const variable = transformer.make(unwrap(item.variable));
+      const iterator = transformer.make(unwrap(item.iterator));
       const blockStart = ctx.appendComment(
         item.start,
         'for ' + variable + ' in ' + iterator
@@ -421,14 +417,17 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       let clausesItem;
 
       for (clausesItem of item.clauses) {
-        clauses.push(make(clausesItem));
+        clauses.push(transformer.make(clausesItem));
       }
 
       return clauses.join('\n') + '\n' + ctx.putIndent('end if');
     },
     IfClause: (item: ASTIfClause, _data: TransformerDataObject): string => {
-      const condition = make(unwrap(item.condition));
-      const blockStart = ctx.appendComment(item.start, 'if ' + condition + ' then');
+      const condition = transformer.make(unwrap(item.condition));
+      const blockStart = ctx.appendComment(
+        item.start,
+        'if ' + condition + ' then'
+      );
 
       ctx.incIndent();
 
@@ -439,7 +438,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       return blockStart + '\n' + body.join('\n');
     },
     ElseifClause: (item: ASTIfClause, _data: TransformerDataObject): string => {
-      const condition = make(unwrap(item.condition));
+      const condition = transformer.make(unwrap(item.condition));
       const blockStart = ctx.appendComment(
         item.start,
         ctx.putIndent('else if') + ' ' + condition + ' then'
@@ -477,16 +476,46 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTCallStatement,
       _data: TransformerDataObject
     ): string => {
-      return make(item.expression);
+      return transformer.make(item.expression);
+    },
+    FeatureInjectExpression: (
+      item: ASTFeatureInjectExpression,
+      _data: TransformerDataObject
+    ): string => {
+      if (isDevMode) return `#inject "${item.path}"`;
+      if (transformer.currentDependency === null)
+        return `#inject "${item.path}"`;
+
+      const content = transformer.currentDependency.injections.get(item.path);
+
+      if (content == null) return 'null';
+
+      return `"${content.replace(/"/g, '""')}"`;
     },
     FeatureImportExpression: (
       item: ASTFeatureImportExpression,
       _data: TransformerDataObject
     ): string => {
-      if (isDevMode) return '#import ' + make(item.name) + ' from "' + item.path + '";';
-      if (!item.chunk) return '#import ' + make(item.name) + ' from "' + item.path + '";';
+      if (isDevMode)
+        return (
+          '#import ' +
+          transformer.make(item.name) +
+          ' from "' +
+          item.path +
+          '";'
+        );
+      if (!item.chunk)
+        return (
+          '#import ' +
+          transformer.make(item.name) +
+          ' from "' +
+          item.path +
+          '";'
+        );
 
-      return make(item.name) + ' = __REQUIRE("' + item.namespace + '")';
+      return (
+        transformer.make(item.name) + ' = __REQUIRE("' + item.namespace + '")'
+      );
     },
     FeatureIncludeExpression: (
       item: ASTFeatureIncludeExpression,
@@ -495,7 +524,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       if (isDevMode) return '#include "' + item.path + '";';
       if (!item.chunk) return '#include "' + item.path + '";';
 
-      return make(item.chunk);
+      return transformer.make(item.chunk);
     },
     FeatureDebuggerExpression: (
       _item: ASTBase,
@@ -527,7 +556,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       }
 
       if (item.fields.length === 1) {
-        const field = make(item.fields[0]);
+        const field = transformer.make(item.fields[0]);
         return ctx.appendComment(item.fields[0].end, '[ ' + field + ' ]');
       }
 
@@ -541,7 +570,9 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
 
         for (let index = item.fields.length - 1; index >= 0; index--) {
           const fieldItem = item.fields[index];
-          fields.unshift(ctx.appendComment(fieldItem.end, make(fieldItem) + ','));
+          fields.unshift(
+            ctx.appendComment(fieldItem.end, transformer.make(fieldItem) + ',')
+          );
         }
 
         ctx.decIndent();
@@ -561,13 +592,13 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       const blockStart = '[';
 
       for (fieldItem of item.fields) {
-        fields.push(make(fieldItem));
+        fields.push(transformer.make(fieldItem));
       }
 
       return blockStart + ' ' + fields.join(', ') + ' ' + blockEnd;
     },
     ListValue: (item: ASTListValue, _data: TransformerDataObject): string => {
-      return make(item.value);
+      return transformer.make(item.value);
     },
     BooleanLiteral: (
       item: ASTLiteral,
@@ -582,8 +613,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTEvaluationExpression,
       _data: TransformerDataObject
     ): string => {
-      const left = make(item.left);
-      const right = make(item.right);
+      const left = transformer.make(item.left);
+      const right = transformer.make(item.right);
 
       return left + ' ' + item.operator + ' ' + right;
     },
@@ -598,11 +629,11 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       if (count > 3 || data.isEvalMultiline) {
         if (!data.isEvalMultiline) ctx.incIndent();
 
-        const left = make(item.left, {
+        const left = transformer.make(item.left, {
           isInEvalExpression: true,
           isEvalMultiline: true
         });
-        const right = make(item.right, {
+        const right = transformer.make(item.right, {
           isInEvalExpression: true,
           isEvalMultiline: true
         });
@@ -614,8 +645,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         return expression;
       }
 
-      const left = make(item.left, { isInEvalExpression: true });
-      const right = make(item.right, { isInEvalExpression: true });
+      const left = transformer.make(item.left, { isInEvalExpression: true });
+      const right = transformer.make(item.right, { isInEvalExpression: true });
 
       return left + ' ' + item.operator + ' ' + right;
     },
@@ -630,11 +661,11 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       if (count > 3 || data.isEvalMultiline) {
         if (!data.isEvalMultiline) ctx.incIndent();
 
-        const left = make(item.left, {
+        const left = transformer.make(item.left, {
           isInEvalExpression: true,
           isEvalMultiline: true
         });
-        const right = make(item.right, {
+        const right = transformer.make(item.right, {
           isInEvalExpression: true,
           isEvalMultiline: true
         });
@@ -651,8 +682,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
         return expression;
       }
 
-      const left = make(item.left, { isInEvalExpression: true });
-      const right = make(item.right, { isInEvalExpression: true });
+      const left = transformer.make(item.left, { isInEvalExpression: true });
+      const right = transformer.make(item.right, { isInEvalExpression: true });
       const operator = item.operator;
       const expression = transformBitOperation(
         left + ' ' + operator + ' ' + right,
@@ -667,7 +698,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTUnaryExpression,
       _data: TransformerDataObject
     ): string => {
-      const arg = make(item.argument);
+      const arg = transformer.make(item.argument);
       const operator = item.operator;
 
       return operator + arg;
@@ -682,7 +713,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (
       item: ASTImportCodeExpression,
       _data: TransformerDataObject
     ): string => {
-      return injectImport(context, item);
+      return injectImport(transformer.context, item);
     }
   };
 };
