@@ -17,21 +17,24 @@ import { ASTImportCodeExpression } from 'greyscript-core';
 import {
   ASTAssignmentStatement,
   ASTBase,
+  ASTBinaryExpression,
   ASTCallExpression,
   ASTCallStatement,
   ASTChunk,
   ASTComment,
+  ASTComparisonGroupExpression,
   ASTElseClause,
-  ASTEvaluationExpression,
   ASTForGenericStatement,
   ASTFunctionStatement,
   ASTIdentifier,
   ASTIfClause,
   ASTIfStatement,
   ASTIndexExpression,
+  ASTIsaExpression,
   ASTListConstructorExpression,
   ASTListValue,
   ASTLiteral,
+  ASTLogicalExpression,
   ASTMapConstructorExpression,
   ASTMapKeyString,
   ASTMemberExpression,
@@ -46,7 +49,7 @@ import { basename } from 'path';
 import { injectImport } from '../utils/inject-imports';
 import { transformBitOperation } from './beautify/utils';
 
-const { SHORTHAND_OPERATORS, countEvaluationExpressions, unwrap } =
+const { SHORTHAND_OPERATORS, countRightBinaryExpressions, unwrap } =
   BeautifyUtils;
 
 export enum IndentationType {
@@ -71,16 +74,11 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
   return {
     ParenthesisExpression: (
       item: ASTParenthesisExpression,
-      _data: TransformerDataObject
+      data: TransformerDataObject
     ): string => {
-      const expr = transformer.make(item.expression);
-
-      if (/\n/.test(expr) && !/,(?!\n)/.test(expr)) {
-        ctx.incIndent();
-        const expr = ctx.putIndent(transformer.make(item.expression), 1);
-        ctx.decIndent();
-        return '(\n' + expr + ')';
-      }
+      const expr = transformer.make(item.expression, {
+        hasLogicalIndentActive: data.hasLogicalIndentActive
+      });
 
       return '(' + expr + ')';
     },
@@ -111,7 +109,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
         isDevMode &&
         (varibale instanceof ASTIdentifier ||
           varibale instanceof ASTMemberExpression) &&
-        init instanceof ASTEvaluationExpression &&
+        init instanceof ASTBinaryExpression &&
         (init.left instanceof ASTIdentifier ||
           init.left instanceof ASTMemberExpression) &&
         SHORTHAND_OPERATORS.includes(init.operator) &&
@@ -476,7 +474,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       item: ASTCallStatement,
       _data: TransformerDataObject
     ): string => {
-      return transformer.make(item.expression);
+      return transformer.make(item.expression, { isCommand: true });
     },
     FeatureInjectExpression: (
       item: ASTFeatureInjectExpression,
@@ -610,80 +608,60 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       return '';
     },
     IsaExpression: (
-      item: ASTEvaluationExpression,
-      _data: TransformerDataObject
+      item: ASTIsaExpression,
+      data: TransformerDataObject
     ): string => {
-      const left = transformer.make(item.left);
-      const right = transformer.make(item.right);
+      const left = transformer.make(item.left, {
+        hasLogicalIndentActive: data.hasLogicalIndentActive
+      });
+      const right = transformer.make(item.right, {
+        hasLogicalIndentActive: data.hasLogicalIndentActive
+      });
 
       return left + ' ' + item.operator + ' ' + right;
     },
     LogicalExpression: (
-      item: ASTEvaluationExpression,
+      item: ASTLogicalExpression,
       data: TransformerDataObject
     ): string => {
-      const count = data.isInEvalExpression
-        ? 0
-        : countEvaluationExpressions(item);
+      const count = countRightBinaryExpressions(item.right);
 
-      if (count > 3 || data.isEvalMultiline) {
-        if (!data.isEvalMultiline) ctx.incIndent();
+      if (count > 2) {
+        if (!data.hasLogicalIndentActive) ctx.incIndent();
 
         const left = transformer.make(item.left, {
-          isInEvalExpression: true,
-          isEvalMultiline: true
+          hasLogicalIndentActive: true
         });
         const right = transformer.make(item.right, {
-          isInEvalExpression: true,
-          isEvalMultiline: true
+          hasLogicalIndentActive: true
         });
         const operator = item.operator;
         const expression = left + ' ' + operator + '\n' + ctx.putIndent(right);
 
-        if (!data.isEvalMultiline) ctx.decIndent();
+        if (!data.hasLogicalIndentActive) ctx.decIndent();
 
         return expression;
       }
 
-      const left = transformer.make(item.left, { isInEvalExpression: true });
-      const right = transformer.make(item.right, { isInEvalExpression: true });
+      const left = transformer.make(item.left, {
+        hasLogicalIndentActive: data.hasLogicalIndentActive
+      });
+      const right = transformer.make(item.right, {
+        hasLogicalIndentActive: data.hasLogicalIndentActive
+      });
 
       return left + ' ' + item.operator + ' ' + right;
     },
     BinaryExpression: (
-      item: ASTEvaluationExpression,
+      item: ASTBinaryExpression,
       data: TransformerDataObject
     ): string => {
-      const count = data.isInBinaryExpression
-        ? 0
-        : countEvaluationExpressions(item);
-
-      if (count > 3 || data.isEvalMultiline) {
-        if (!data.isEvalMultiline) ctx.incIndent();
-
-        const left = transformer.make(item.left, {
-          isInEvalExpression: true,
-          isEvalMultiline: true
-        });
-        const right = transformer.make(item.right, {
-          isInEvalExpression: true,
-          isEvalMultiline: true
-        });
-        const operator = item.operator;
-        const expression = transformBitOperation(
-          left + ' ' + operator + '\n' + ctx.putIndent(right),
-          left,
-          right,
-          operator
-        );
-
-        if (!data.isEvalMultiline) ctx.decIndent();
-
-        return expression;
-      }
-
-      const left = transformer.make(item.left, { isInEvalExpression: true });
-      const right = transformer.make(item.right, { isInEvalExpression: true });
+      const left = transformer.make(item.left, {
+        hasLogicalIndentActive: data.hasLogicalIndentActive
+      });
+      const right = transformer.make(item.right, {
+        hasLogicalIndentActive: data.hasLogicalIndentActive
+      });
       const operator = item.operator;
       const expression = transformBitOperation(
         left + ' ' + operator + ' ' + right,
@@ -702,6 +680,21 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       const operator = item.operator;
 
       return operator + arg;
+    },
+    ComparisonGroupExpression: (
+      item: ASTComparisonGroupExpression,
+      _data: TransformerDataObject
+    ): string => {
+      const expressions: string[] = item.expressions.map((it) =>
+        transformer.make(it)
+      );
+      const segments: string[] = [expressions[0]];
+
+      for (let index = 0; index < item.operators.length; index++) {
+        segments.push(item.operators[index], expressions[index + 1]);
+      }
+
+      return segments.join(' ');
     },
     Chunk: (item: ASTChunk, _data: TransformerDataObject): string => {
       ctx.pushLines(item.lines);

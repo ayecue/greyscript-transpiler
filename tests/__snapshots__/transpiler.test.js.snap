@@ -469,25 +469,8 @@ end while",
 exports[`parse default scripts beautify-cases.src beautify 1`] = `
 Array [
   "// binary + logical
-test = 1 +
-	2 +
-	3 +
-	4 +
-	5 +
-	6 and
-	(
-			2 +
-			3 +
-			4 +
-			5 +
-			6 +
-			(
-					2 +
-					3 +
-					4 +
-					5 +
-					6 +
-					7))
+test = 1 + 2 + 3 + 4 + 5 + 6 and
+	(2 + 3 + 4 + 5 + 6 + (2 + 3 + 4 + 5 + 6 + 7))
 
 // call expression
 printAlign(

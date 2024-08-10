@@ -11,21 +11,24 @@ import { ASTImportCodeExpression } from 'greyscript-core';
 import {
   ASTAssignmentStatement,
   ASTBase,
+  ASTBinaryExpression,
   ASTCallExpression,
   ASTCallStatement,
   ASTChunk,
   ASTComment,
+  ASTComparisonGroupExpression,
   ASTElseClause,
-  ASTEvaluationExpression,
   ASTForGenericStatement,
   ASTFunctionStatement,
   ASTIdentifier,
   ASTIfClause,
   ASTIfStatement,
   ASTIndexExpression,
+  ASTIsaExpression,
   ASTListConstructorExpression,
   ASTListValue,
   ASTLiteral,
+  ASTLogicalExpression,
   ASTMapConstructorExpression,
   ASTMapKeyString,
   ASTMemberExpression,
@@ -510,7 +513,7 @@ export const uglifyFactory: Factory<DefaultFactoryOptions> = (transformer) => {
       return '';
     },
     IsaExpression: (
-      item: ASTEvaluationExpression,
+      item: ASTIsaExpression,
       _data: TransformerDataObject
     ): string => {
       const left = transformer.make(item.left);
@@ -519,7 +522,7 @@ export const uglifyFactory: Factory<DefaultFactoryOptions> = (transformer) => {
       return left + ' ' + item.operator + ' ' + right;
     },
     LogicalExpression: (
-      item: ASTEvaluationExpression,
+      item: ASTLogicalExpression,
       _data: TransformerDataObject
     ): string => {
       const left = transformer.make(item.left);
@@ -528,7 +531,7 @@ export const uglifyFactory: Factory<DefaultFactoryOptions> = (transformer) => {
       return left + ' ' + item.operator + ' ' + right;
     },
     BinaryExpression: (
-      item: ASTEvaluationExpression,
+      item: ASTBinaryExpression,
       _data: TransformerDataObject
     ): string => {
       const left = transformer.make(item.left);
@@ -557,6 +560,21 @@ export const uglifyFactory: Factory<DefaultFactoryOptions> = (transformer) => {
       const operator = item.operator;
 
       return operator + arg;
+    },
+    ComparisonGroupExpression: (
+      item: ASTComparisonGroupExpression,
+      _data: TransformerDataObject
+    ): string => {
+      const expressions: string[] = item.expressions.map((it) =>
+        transformer.make(it)
+      );
+      const segments: string[] = [expressions[0]];
+
+      for (let index = 0; index < item.operators.length; index++) {
+        segments.push(item.operators[index], expressions[index + 1]);
+      }
+
+      return segments.join('');
     },
     Chunk: (item: ASTChunk, _data: TransformerDataObject): string => {
       const body = [];
