@@ -462,6 +462,31 @@ print(\\"test\\")
 else
 print(\\"xd\\")
 end if
+end while
+if true then
+stacktrace=function()
+print(\\"test\\")
+end function
+end if
+if false then
+stacktrace=function()
+print(\\"abc\\")
+end function
+end if
+print(\\"abc\\">[42])
+//foo
+test[25]
+//foo
+test[25]
+//bar
+test[123][25]
+//foo
+test[25](11)
+//bar
+test(11)[25]
+//foo
+while true
+//bar
 end while",
 ]
 `;
@@ -618,6 +643,26 @@ test = {
 // while block with shorthand if else
 while true
 	if true then print(\\"test\\") else print(\\"xd\\")
+end while
+
+
+if true then stacktrace = function
+	print \\"test\\"
+end function
+if false then stacktrace = function
+	print \\"abc\\"
+end function
+
+print \\"abc\\" > [ 42 ] // foo
+
+test[25] // foo
+test[25] // bar
+test[123][25] // foo
+test[25] 11 // bar
+test(11)[25] // foo
+
+while true // bar
+
 end while",
 ]
 `;
@@ -625,78 +670,97 @@ end while",
 exports[`parse default scripts beautify-cases.src uglify 1`] = `
 Array [
   "globals.H=globals
-H.U=1
-H.X=4
-H.T=5
-H.O=\\"foo\\"
-H.M=123
-H.N=\\"was\\"
-H.P=\\"wo\\"
-H.Q=\\"abc\\"
-H.R=234
-H.S=true
-H.V=\\"test\\"
-H.W=\\"xd\\"
-I=U+2+3+X+T+6 and (2+3+X+T+6+(2+3+X+T+6+7))
-J(\\"dieFace[1] - dieFace[6]\\",[K[U],K[2],K[3],K[X],K[T],K[6],{O:M,N:P}].join,M,M)
-J(U,2,3,X)
+H.V=1
+H.Y=4
+H.U=5
+H.P=\\"foo\\"
+H.N=123
+H.O=\\"was\\"
+H.Q=\\"wo\\"
+H.R=\\"abc\\"
+H.S=234
+H.T=true
+H.W=\\"test\\"
+H.X=\\"xd\\"
+I=V+2+3+Y+U+6 and (2+3+Y+U+6+(2+3+Y+U+6+7))
+J(\\"dieFace[1] - dieFace[6]\\",[K[V],K[2],K[3],K[Y],K[U],K[6],{P:N,O:Q}].join,N,N)
+J(V,2,3,Y)
 I={}
-I={N:M}
-I={O:M,N:[Q,U,R],\\"xx\\":{O:M,\\"ooo\\":{O:M,N:P},N:P},\\"123\\":\\"3\\"}
+I={O:N}
+I={P:N,O:[R,V,S],\\"xx\\":{P:N,\\"ooo\\":{P:N,O:Q},O:Q},\\"123\\":\\"3\\"}
 I=[]
-I=[N]
-I=[Q,U,[Q,U,R],[Q,[Q,U,R],U,R],R]
-I=I+T
-I=I+X+T
-I.abc=I.abc+T
-I.abc=I.abc+X+T
-if (S) then
-print(V)
-end if
-if (S) then
-print(V)
-else
+I=[O]
+I=[R,V,[R,V,S],[R,[R,V,S],V,S],S]
+I=I+U
+I=I+Y+U
+I.abc=I.abc+U
+I.abc=I.abc+Y+U
+if (T) then
 print(W)
 end if
-if (S) then
-I=[U,2,3,X,T]
-end if
-if (S) then
-I=[U,2,3,X,T]
-else
-I=[T,X,3,2,U]
-end if
-if (S) then
-print(V)
-else
+if (T) then
 print(W)
+else
+print(X)
 end if
-if (S) then
-print(V)
+if (T) then
+I=[V,2,3,Y,U]
+end if
+if (T) then
+I=[V,2,3,Y,U]
+else
+I=[U,Y,3,2,V]
+end if
+if (T) then
+print(W)
+else
+print(X)
+end if
+if (T) then
+print(W)
 else if (false) then
 print(\\"xa\\")
 else
-print(W)
+print(X)
 end if
 I=function
-return [U,2,3,X,T]
+return [V,2,3,Y,U]
 end function
-I=I+T
-I=[U,2,3,X]
+I=I+U
+I=[V,2,3,Y]
 I=function
-return M
+return N
 end function
-for I in [M]
-print(V)
+for I in [N]
+print(W)
 end for
-I={N:M}
-I={N:M,O:13,\\"bar\\":45}
-while S
-if S then
-print(V)
-else
+I={O:N}
+I={O:N,P:13,\\"bar\\":45}
+while T
+if T then
 print(W)
+else
+print(X)
 end if
+end while
+if T then
+M=function
+print(W)
+end function
+end if
+if false then
+M=function
+print(R)
+end function
+end if
+print(R>[42])
+I[25]
+I[25]
+I[N][25]
+I[25](11)
+I(11)[25]
+while T
+
 end while",
 ]
 `;

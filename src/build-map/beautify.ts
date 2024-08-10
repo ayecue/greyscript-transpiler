@@ -316,12 +316,15 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
     },
     IndexExpression: (
       item: ASTIndexExpression,
-      _data: TransformerDataObject
+      data: TransformerDataObject
     ): string => {
+      const commentAtEnd = data.isCommand
+        ? ctx.useComment(item.index.end)
+        : '';
       const base = transformer.make(item.base);
       const index = transformer.make(item.index);
 
-      return base + '[' + index + ']';
+      return base + '[' + index + ']' + commentAtEnd;
     },
     UnaryExpression: (
       item: ASTUnaryExpression,
