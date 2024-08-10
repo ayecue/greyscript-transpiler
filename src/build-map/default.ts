@@ -12,6 +12,7 @@ import {
   ASTAssignmentStatement,
   ASTBase,
   ASTBinaryExpression,
+  ASTBooleanLiteral,
   ASTCallExpression,
   ASTCallStatement,
   ASTChunk,
@@ -32,13 +33,12 @@ import {
   ASTMapConstructorExpression,
   ASTMapKeyString,
   ASTMemberExpression,
+  ASTNumericLiteral,
   ASTParenthesisExpression,
   ASTReturnStatement,
   ASTSliceExpression,
   ASTUnaryExpression,
-  ASTWhileStatement,
-  ASTBooleanLiteral,
-  ASTNumericLiteral
+  ASTWhileStatement
 } from 'miniscript-core';
 import { basename } from 'path';
 

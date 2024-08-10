@@ -18,6 +18,7 @@ import {
   ASTAssignmentStatement,
   ASTBase,
   ASTBinaryExpression,
+  ASTBooleanLiteral,
   ASTCallExpression,
   ASTCallStatement,
   ASTChunk,
@@ -38,13 +39,12 @@ import {
   ASTMapConstructorExpression,
   ASTMapKeyString,
   ASTMemberExpression,
+  ASTNumericLiteral,
   ASTParenthesisExpression,
   ASTReturnStatement,
   ASTSliceExpression,
   ASTUnaryExpression,
-  ASTWhileStatement,
-  ASTBooleanLiteral,
-  ASTNumericLiteral
+  ASTWhileStatement
 } from 'miniscript-core';
 import { basename } from 'path';
 
@@ -258,9 +258,10 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       data: TransformerDataObject
     ): string => {
       const base = transformer.make(item.base);
+      const commentAtEnd = ctx.useComment(item.end);
 
       if (item.arguments.length === 0) {
-        return base;
+        return base + commentAtEnd;
       }
 
       if (item.arguments.length > 3 && ctx.isMultilineAllowed) {
@@ -279,7 +280,8 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
           base +
           '(\n' +
           args.map((item) => ctx.putIndent(item, 1)).join(',\n') +
-          ')'
+          ')' +
+          commentAtEnd
         );
       }
 
@@ -292,12 +294,12 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
         ctx.decIndent();
         const argStr = args.join(', ');
 
-        return base + '(\n' + ctx.putIndent(argStr, 1) + ')';
+        return base + '(\n' + ctx.putIndent(argStr, 1) + ')' + commentAtEnd;
       }
 
       return data.isCommand && !keepParentheses
-        ? base + ' ' + argStr
-        : base + '(' + argStr + ')';
+        ? base + ' ' + argStr + commentAtEnd
+        : base + '(' + argStr + ')' + commentAtEnd;
     },
     StringLiteral: (item: ASTLiteral, _data: TransformerDataObject): string => {
       return item.raw.toString();

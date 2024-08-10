@@ -12,6 +12,7 @@ import {
   ASTAssignmentStatement,
   ASTBase,
   ASTBinaryExpression,
+  ASTBooleanLiteral,
   ASTCallExpression,
   ASTCallStatement,
   ASTChunk,
@@ -32,13 +33,12 @@ import {
   ASTMapConstructorExpression,
   ASTMapKeyString,
   ASTMemberExpression,
+  ASTNumericLiteral,
   ASTParenthesisExpression,
   ASTReturnStatement,
   ASTSliceExpression,
   ASTUnaryExpression,
-  ASTWhileStatement,
-  ASTNumericLiteral,
-  ASTBooleanLiteral
+  ASTWhileStatement
 } from 'miniscript-core';
 import { basename } from 'path';
 
@@ -509,7 +509,7 @@ export const uglifyFactory: Factory<DefaultFactoryOptions> = (transformer) => {
       const literal = transformer.context.literals.get(item);
       if (!isArgument && literal != null && literal.namespace != null)
         return literal.namespace;
-      return (item.negated ? '-' : '') +  item.raw.toString();
+      return (item.negated ? '-' : '') + item.raw.toString();
     },
     EmptyExpression: (_item: ASTBase, _data: TransformerDataObject): string => {
       return '';
