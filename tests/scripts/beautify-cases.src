@@ -115,3 +115,11 @@ end function
 
 test = function
 end function
+
+if test() == null then // foo
+  print "foo"
+else if test() == null then // bar
+  print "bar"
+else // nil
+  print "nil"
+end if

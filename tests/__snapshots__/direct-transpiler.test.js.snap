@@ -725,7 +725,17 @@ end if
 end function
 test=function()
 
-end function"
+end function
+if test==null then
+// foo
+print(\\"foo\\")
+else if test==null then
+// bar
+print(\\"bar\\")
+else
+// nil
+print(\\"nil\\")
+end if"
 `;
 
 exports[`parse default scripts beautify-cases.src beautify 1`] = `
@@ -909,7 +919,15 @@ foo.bar = function(key = 0, val = 0, nil = 0, nul = 0)
 end function
 
 test = function
-end function"
+end function
+
+if test == null then // foo
+	print \\"foo\\"
+else if test == null then // bar
+	print \\"bar\\"
+else // nil
+	print \\"nil\\"
+end if"
 `;
 
 exports[`parse default scripts beautify-cases.src beautify with custom settings 1`] = `
@@ -1093,7 +1111,15 @@ foo.bar = function(key = 0, val = 0, nil = 0, nul = 0)
 end function
 
 test = function
-end function"
+end function
+
+if test == null then // foo
+          print(\\"foo\\")
+else if test == null then // bar
+          print(\\"bar\\")
+else // nil
+          print(\\"nil\\")
+end if"
 `;
 
 exports[`parse default scripts beautify-cases.src uglify 1`] = `
@@ -1202,7 +1228,14 @@ end if
 end function
 I=function
 
-end function"
+end function
+if I==null then
+print(V)
+else if I==null then
+print(\\"bar\\")
+else
+print(\\"nil\\")
+end if"
 `;
 
 exports[`parse default scripts binary-expressions.src 1`] = `
