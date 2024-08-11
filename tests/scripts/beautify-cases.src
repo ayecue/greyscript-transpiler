@@ -104,3 +104,14 @@ test(11)[25] //foo
 
 while true //bar
 end while
+
+if x.remove( @key ) then return "foo:"+@key+"!" //foo
+
+foo.bar = function( key=0, val=0, nil=0, nul=0 )
+if true then return function //bar
+  print "test"
+end function
+end function
+
+test = function
+end function

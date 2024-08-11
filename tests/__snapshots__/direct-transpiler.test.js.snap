@@ -710,7 +710,22 @@ test(11)[25]
 //foo
 while true
 //bar
-end while"
+end while
+if x.remove(@key) then
+return \\"foo:\\"+@key+\\"!\\"
+end if
+//foo
+foo.bar=function(key=0,val=0,nil=0,nul=0)
+if true then
+return function()
+//bar
+print(\\"test\\")
+end function
+end if
+end function
+test=function()
+
+end function"
 `;
 
 exports[`parse default scripts beautify-cases.src beautify 1`] = `
@@ -883,8 +898,18 @@ test[25] 11 // bar
 test(11)[25] // foo
 
 while true // bar
+end while
 
-end while"
+if x.remove(@key) then return \\"foo:\\" + @key + \\"!\\" // foo
+
+foo.bar = function(key = 0, val = 0, nil = 0, nul = 0)
+	if true then return function // bar
+		print \\"test\\"
+	end function
+end function
+
+test = function
+end function"
 `;
 
 exports[`parse default scripts beautify-cases.src beautify with custom settings 1`] = `
@@ -1057,104 +1082,127 @@ test[25](11) // bar
 test(11)[25] // foo
 
 while true // bar
+end while
 
-end while"
+if x.remove(@key) then return \\"foo:\\" + @key + \\"!\\" // foo
+
+foo.bar = function(key = 0, val = 0, nil = 0, nul = 0)
+          if true then return function // bar
+                    print(\\"test\\")
+          end function
+end function
+
+test = function
+end function"
 `;
 
 exports[`parse default scripts beautify-cases.src uglify 1`] = `
 "globals.H=globals
-H.V=1
-H.Y=4
-H.U=5
-H.P=\\"foo\\"
-H.N=123
-H.O=\\"was\\"
-H.Q=\\"wo\\"
-H.R=\\"abc\\"
-H.S=234
-H.T=true
-H.W=\\"test\\"
-H.X=\\"xd\\"
-I=V+2+3+Y+U+6 and (2+3+Y+U+6+(2+3+Y+U+6+7))
-J(\\"dieFace[1] - dieFace[6]\\",[K[V],K[2],K[3],K[Y],K[U],K[6],{P:N,O:Q}].join,N,N)
-J(V,2,3,Y)
+H.b=1
+H.e=4
+H.a=5
+H.V=\\"foo\\"
+H.T=123
+H.U=\\"was\\"
+H.W=\\"wo\\"
+H.X=\\"abc\\"
+H.Y=234
+H.Z=true
+H.c=\\"test\\"
+H.d=\\"xd\\"
+I=b+2+3+e+a+6 and (2+3+e+a+6+(2+3+e+a+6+7))
+J(\\"dieFace[1] - dieFace[6]\\",[K[b],K[2],K[3],K[e],K[a],K[6],{V:T,U:W}].join,T,T)
+J(b,2,3,e)
 I={}
-I={O:N}
-I={P:N,O:[R,V,S],\\"xx\\":{P:N,\\"ooo\\":{P:N,O:Q},O:Q},\\"123\\":\\"3\\"}
+I={U:T}
+I={V:T,U:[X,b,Y],\\"xx\\":{V:T,\\"ooo\\":{V:T,U:W},U:W},\\"123\\":\\"3\\"}
 I=[]
-I=[O]
-I=[R,V,[R,V,S],[R,[R,V,S],V,S],S]
-I=I+U
-I=I+Y+U
-I.abc=I.abc+U
-I.abc=I.abc+Y+U
-if (T) then
-print(W)
+I=[U]
+I=[X,b,[X,b,Y],[X,[X,b,Y],b,Y],Y]
+I=I+a
+I=I+e+a
+I.abc=I.abc+a
+I.abc=I.abc+e+a
+if (Z) then
+print(c)
 end if
-if (T) then
-print(W)
+if (Z) then
+print(c)
 else
-print(X)
+print(d)
 end if
-if (T) then
-I=[V,2,3,Y,U]
+if (Z) then
+I=[b,2,3,e,a]
 end if
-if (T) then
-I=[V,2,3,Y,U]
+if (Z) then
+I=[b,2,3,e,a]
 else
-I=[U,Y,3,2,V]
+I=[a,e,3,2,b]
 end if
-if (T) then
-print(W)
+if (Z) then
+print(c)
 else
-print(X)
+print(d)
 end if
-if (T) then
-print(W)
+if (Z) then
+print(c)
 else if (false) then
 print(\\"xa\\")
 else
-print(X)
+print(d)
 end if
 I=function
-return [V,2,3,Y,U]
+return [b,2,3,e,a]
 end function
-I=I+U
-I=[V,2,3,Y]
+I=I+a
+I=[b,2,3,e]
 I=function
-return N
+return T
 end function
-for I in [N]
-print(W)
+for I in [T]
+print(c)
 end for
-I={O:N}
-I={O:N,P:13,\\"bar\\":45}
-while T
-if T then
-print(W)
+I={U:T}
+I={U:T,V:13,\\"bar\\":45}
+while Z
+if Z then
+print(c)
 else
-print(X)
+print(d)
 end if
 end while
-if T then
+if Z then
 M=function
-print(W)
+print(c)
 end function
 end if
 if false then
 M=function
-print(R)
+print(X)
 end function
 end if
-print(R>[42])
+print(X>[42])
 I[25]
 I[25]
-I[N][25]
+I[T][25]
 I[25](11)
 I(11)[25]
-while T
+while Z
 
-end while"
+end while
+if N.remove(@O) then
+return \\"foo:\\"+@O+\\"!\\"
+end if
+P.bar=function(O=0,val=0,R=0,S=0)
+if Z then
+return function
+print(c)
+end function
+end if
+end function
+I=function
+
+end function"
 `;
 
 exports[`parse default scripts binary-expressions.src 1`] = `

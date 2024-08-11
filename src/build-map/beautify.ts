@@ -51,8 +51,13 @@ import { basename } from 'path';
 import { injectImport } from '../utils/inject-imports';
 import { transformBitOperation } from './beautify/utils';
 
-const { SHORTHAND_OPERATORS, countRightBinaryExpressions, unwrap } =
-  BeautifyUtils;
+const {
+  SHORTHAND_OPERATORS,
+  countRightBinaryExpressions,
+  unwrap,
+  containsMultilineItemInShortcutClauses,
+  hasEmptyBody
+} = BeautifyUtils;
 
 export enum IndentationType {
   Tab,
@@ -150,6 +155,10 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       );
       const blockEnd = ctx.putIndent('end function');
 
+      if (hasEmptyBody(item.body)) {
+        return blockStart + '\n' + blockEnd;
+      }
+
       ctx.incIndent();
       const body = ctx.buildBlock(item);
       ctx.decIndent();
@@ -241,14 +250,17 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       item: ASTWhileStatement,
       _data: TransformerDataObject
     ): string => {
+      const commentAtStart = ctx.useComment(item.start);
       const condition = transformer.make(unwrap(item.condition));
-      const blockStart = ctx.appendComment(item.start, 'while ' + condition);
+      const blockStart = 'while ' + condition + commentAtStart;
       const blockEnd = ctx.putIndent('end while');
 
+      if (hasEmptyBody(item.body)) {
+        return blockStart + '\n' + blockEnd;
+      }
+
       ctx.incIndent();
-
       const body = ctx.buildBlock(item);
-
       ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
@@ -318,9 +330,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       item: ASTIndexExpression,
       data: TransformerDataObject
     ): string => {
-      const commentAtEnd = data.isCommand
-        ? ctx.useComment(item.index.end)
-        : '';
+      const commentAtEnd = data.isCommand ? ctx.useComment(item.index.end) : '';
       const base = transformer.make(item.base);
       const index = transformer.make(item.index);
 
@@ -358,13 +368,19 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       _data: TransformerDataObject
     ): string => {
       const clauses = [];
+      const commentAtEnd = !containsMultilineItemInShortcutClauses(
+        item.start,
+        item.clauses
+      )
+        ? ctx.useComment(item.start)
+        : '';
       let clausesItem;
 
       for (clausesItem of item.clauses) {
         clauses.push(transformer.make(clausesItem));
       }
 
-      return clauses.join(' ');
+      return clauses.join(' ') + commentAtEnd;
     },
     IfShortcutClause: (
       item: ASTIfClause,
@@ -398,18 +414,18 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       item: ASTForGenericStatement,
       _data: TransformerDataObject
     ): string => {
+      const commentAtStart = ctx.useComment(item.start);
       const variable = transformer.make(unwrap(item.variable));
       const iterator = transformer.make(unwrap(item.iterator));
-      const blockStart = ctx.appendComment(
-        item.start,
-        'for ' + variable + ' in ' + iterator
-      );
+      const blockStart = 'for ' + variable + ' in ' + iterator + commentAtStart;
       const blockEnd = ctx.putIndent('end for');
 
+      if (hasEmptyBody(item.body)) {
+        return blockStart + '\n' + blockEnd;
+      }
+
       ctx.incIndent();
-
       const body = ctx.buildBlock(item);
-
       ctx.decIndent();
 
       return blockStart + '\n' + body.join('\n') + '\n' + blockEnd;
