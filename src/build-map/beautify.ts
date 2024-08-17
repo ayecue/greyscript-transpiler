@@ -169,31 +169,39 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       item: ASTMapConstructorExpression,
       _data: TransformerDataObject
     ): string => {
+      const commentStart = ctx.useComment(item.start);
+      const commentEnd = ctx.useComment(item.end);
+      
       if (item.fields.length === 0) {
-        return '{}';
+        return '{}' + commentStart;
       }
 
       if (item.fields.length === 1) {
         const field = transformer.make(item.fields[0]);
-        return ctx.appendComment(item.fields[0].end, '{ ' + field + ' }');
+        return '{ ' + field + ' }' + commentStart;
       }
 
       if (ctx.isMultilineAllowed) {
         const fields = [];
-        const blockEnd = ctx.putIndent(ctx.appendComment(item.start, '}'));
+        const blockEnd = ctx.putIndent(
+          '}' + commentEnd
+        );
 
         ctx.incIndent();
 
         for (let index = item.fields.length - 1; index >= 0; index--) {
           const fieldItem = item.fields[index];
           fields.unshift(
-            ctx.appendComment(fieldItem.end, transformer.make(fieldItem) + ',')
+            ctx.appendComment(
+              fieldItem.end,
+              transformer.make(fieldItem) + ','
+            )
           );
         }
 
         ctx.decIndent();
 
-        const blockStart = ctx.appendComment(item.start, '{');
+        const blockStart = '{' + commentStart;
 
         return (
           blockStart +
@@ -207,7 +215,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       const fields = [];
       let fieldItem;
       const blockStart = '{';
-      const blockEnd = ctx.appendComment(item.start, '}');
+      const blockEnd = '}' + commentStart;
 
       for (fieldItem of item.fields) {
         fields.push(transformer.make(fieldItem));
@@ -569,33 +577,41 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
       item: ASTListConstructorExpression,
       _data: TransformerDataObject
     ): string => {
+      const commentStart = ctx.useComment(item.start);
+      const commentEnd = ctx.useComment(item.end);
+
       if (item.fields.length === 0) {
-        return '[]';
+        return '[]' + commentStart;
       }
 
       if (item.fields.length === 1) {
         const field = transformer.make(item.fields[0]);
-        return ctx.appendComment(item.fields[0].end, '[ ' + field + ' ]');
+        return '[ ' + field + ' ]' + commentStart;
       }
 
       const fields = [];
       let fieldItem;
 
       if (ctx.isMultilineAllowed) {
-        const blockEnd = ctx.putIndent(ctx.appendComment(item.end, ']'));
+        const blockEnd = ctx.putIndent(
+          ']' + commentEnd
+        );
 
         ctx.incIndent();
 
         for (let index = item.fields.length - 1; index >= 0; index--) {
           const fieldItem = item.fields[index];
           fields.unshift(
-            ctx.appendComment(fieldItem.end, transformer.make(fieldItem) + ',')
+            ctx.appendComment(
+              fieldItem.end,
+              transformer.make(fieldItem) + ','
+            )
           );
         }
 
         ctx.decIndent();
 
-        const blockStart = ctx.appendComment(item.start, '[');
+        const blockStart = '[' + commentStart;
 
         return (
           blockStart +
@@ -606,7 +622,7 @@ export const beautifyFactory: Factory<BeautifyOptions> = (transformer) => {
         );
       }
 
-      const blockEnd = ctx.putIndent(ctx.appendComment(item.end, ']'));
+      const blockEnd = ctx.putIndent(']' + commentStart);
       const blockStart = '[';
 
       for (fieldItem of item.fields) {

@@ -512,7 +512,11 @@ print(\\"bar\\")
 else
 // nil
 print(\\"nil\\")
-end if",
+end if
+IV=IV+([floor(rnd(byte)*256)])
+// Warning: rnd is not cryptographically secure
+IV=IV+({\\"was\\":floor(rnd(byte))})
+// Warning: rnd is not cryptographically secure",
 ]
 `;
 
@@ -645,9 +649,9 @@ end function
 
 // comments
 test = test + 5 // test
-test = [
+test = [ // :D
 	1,
-	2, // :D
+	2,
 	3,
 	4,
 ] // its a list
@@ -658,7 +662,9 @@ for test in [ 123 ] // my for loop
 	print \\"test\\" // some print
 end for // end for loop
 
-test = { \\"was\\": 123 } // was
+test = { \\"was\\": 123 }
+// was
+
 test = {
 	\\"was\\": 123, // was
 	\\"foo\\": 13,
@@ -706,112 +712,115 @@ else if test == null then // bar
 	print \\"bar\\"
 else // nil
 	print \\"nil\\"
-end if",
+end if
+
+IV = IV + ([ floor(rnd(byte) * 256) ] // Warning: rnd is not cryptographically secure)
+IV = IV + ({ \\"was\\": floor(rnd(byte)) } // Warning: rnd is not cryptographically secure)",
 ]
 `;
 
 exports[`parse default scripts beautify-cases.src uglify 1`] = `
 Array [
   "globals.H=globals
-H.b=1
-H.e=4
-H.a=5
-H.V=\\"foo\\"
-H.T=123
-H.U=\\"was\\"
-H.W=\\"wo\\"
-H.X=\\"abc\\"
-H.Y=234
-H.Z=true
-H.c=\\"test\\"
-H.d=\\"xd\\"
-I=b+2+3+e+a+6 and (2+3+e+a+6+(2+3+e+a+6+7))
-J(\\"dieFace[1] - dieFace[6]\\",[K[b],K[2],K[3],K[e],K[a],K[6],{V:T,U:W}].join,T,T)
-J(b,2,3,e)
+H.d=1
+H.g=4
+H.c=5
+H.X=\\"foo\\"
+H.V=123
+H.W=\\"was\\"
+H.Y=\\"wo\\"
+H.Z=\\"abc\\"
+H.a=234
+H.b=true
+H.e=\\"test\\"
+H.f=\\"xd\\"
+I=d+2+3+g+c+6 and (2+3+g+c+6+(2+3+g+c+6+7))
+J(\\"dieFace[1] - dieFace[6]\\",[K[d],K[2],K[3],K[g],K[c],K[6],{X:V,W:Y}].join,V,V)
+J(d,2,3,g)
 I={}
-I={U:T}
-I={V:T,U:[X,b,Y],\\"xx\\":{V:T,\\"ooo\\":{V:T,U:W},U:W},\\"123\\":\\"3\\"}
+I={W:V}
+I={X:V,W:[Z,d,a],\\"xx\\":{X:V,\\"ooo\\":{X:V,W:Y},W:Y},\\"123\\":\\"3\\"}
 I=[]
-I=[U]
-I=[X,b,[X,b,Y],[X,[X,b,Y],b,Y],Y]
-I=I+a
-I=I+e+a
-I.abc=I.abc+a
-I.abc=I.abc+e+a
-if (Z) then
-print(c)
+I=[W]
+I=[Z,d,[Z,d,a],[Z,[Z,d,a],d,a],a]
+I=I+c
+I=I+g+c
+I.abc=I.abc+c
+I.abc=I.abc+g+c
+if (b) then
+print(e)
 end if
-if (Z) then
-print(c)
+if (b) then
+print(e)
 else
-print(d)
+print(f)
 end if
-if (Z) then
-I=[b,2,3,e,a]
+if (b) then
+I=[d,2,3,g,c]
 end if
-if (Z) then
-I=[b,2,3,e,a]
+if (b) then
+I=[d,2,3,g,c]
 else
-I=[a,e,3,2,b]
+I=[c,g,3,2,d]
 end if
-if (Z) then
-print(c)
+if (b) then
+print(e)
 else
-print(d)
+print(f)
 end if
-if (Z) then
-print(c)
+if (b) then
+print(e)
 else if (false) then
 print(\\"xa\\")
 else
-print(d)
+print(f)
 end if
 I=function
-return [b,2,3,e,a]
+return [d,2,3,g,c]
 end function
-I=I+a
-I=[b,2,3,e]
+I=I+c
+I=[d,2,3,g]
 I=function
-return T
+return V
 end function
-for I in [T]
-print(c)
+for I in [V]
+print(e)
 end for
-I={U:T}
-I={U:T,V:13,\\"bar\\":45}
-while Z
-if Z then
-print(c)
+I={W:V}
+I={W:V,X:13,\\"bar\\":45}
+while b
+if b then
+print(e)
 else
-print(d)
+print(f)
 end if
 end while
-if Z then
+if b then
 M=function
-print(c)
+print(e)
 end function
 end if
 if false then
 M=function
-print(X)
+print(Z)
 end function
 end if
-print(X>[42])
+print(Z>[42])
 I[25]
 I[25]
-I[T][25]
+I[V][25]
 I[25](11)
 I(11)[25]
-while Z
+while b
 
 end while
 if N.remove(@O) then
 return \\"foo:\\"+@O+\\"!\\"
 end if
-P.bar=function(O=0,val=0,R=0,S=0)
-if Z then
+P.bar=function(O=0,val=0,T=0,U=0)
+if b then
 return function
-print(c)
+print(e)
 end function
 end if
 end function
@@ -819,12 +828,14 @@ I=function
 
 end function
 if I==null then
-print(V)
+print(X)
 else if I==null then
 print(\\"bar\\")
 else
 print(\\"nil\\")
-end if",
+end if
+R=R+([floor(rnd(S)*256)])
+R=R+({W:floor(rnd(S))})",
 ]
 `;
 

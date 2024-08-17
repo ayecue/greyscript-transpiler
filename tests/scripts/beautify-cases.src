@@ -123,3 +123,6 @@ else if test() == null then // bar
 else // nil
   print "nil"
 end if
+
+IV += [ floor(rnd(byte) * 256) ] // Warning: rnd is not cryptographically secure
+IV += { "was":  floor(rnd(byte)) } // Warning: rnd is not cryptographically secure
