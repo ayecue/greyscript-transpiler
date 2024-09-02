@@ -714,8 +714,8 @@ else // nil
 	print \\"nil\\"
 end if
 
-IV = IV + ([ floor(rnd(byte) * 256) ] // Warning: rnd is not cryptographically secure)
-IV = IV + ({ \\"was\\": floor(rnd(byte)) } // Warning: rnd is not cryptographically secure)",
+IV = IV + ([ floor(rnd(byte) * 256) ]) // Warning: rnd is not cryptographically secure
+IV = IV + ({ \\"was\\": floor(rnd(byte)) }) // Warning: rnd is not cryptographically secure",
 ]
 `;
 
