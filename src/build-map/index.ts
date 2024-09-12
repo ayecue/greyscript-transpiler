@@ -1,9 +1,8 @@
-import { Factory } from 'greybel-transpiler';
+import { FactoryConstructor } from 'greybel-transpiler';
+import { BeautifyFactory } from './beautify';
+import { DefaultFactory } from './default';
+import { UglifyFactory } from './uglify';
 import { DefaultFactoryOptions } from 'greybel-transpiler/dist/build-map/factory';
-
-import { beautifyFactory } from './beautify';
-import { defaultFactory } from './default';
-import { uglifyFactory } from './uglify';
 
 export enum BuildType {
   DEFAULT,
@@ -11,15 +10,18 @@ export enum BuildType {
   BEAUTIFY
 }
 
-const FACTORIES = {
-  [BuildType.DEFAULT]: defaultFactory,
-  [BuildType.UGLIFY]: uglifyFactory,
-  [BuildType.BEAUTIFY]: beautifyFactory
+const FACTORIES: Record<
+  BuildType,
+  FactoryConstructor<DefaultFactoryOptions>
+> = {
+  [BuildType.DEFAULT]: DefaultFactory,
+  [BuildType.UGLIFY]: UglifyFactory,
+  [BuildType.BEAUTIFY]: BeautifyFactory
 };
 
 export function getFactory(
   type: BuildType = BuildType.DEFAULT
-): Factory<DefaultFactoryOptions> {
+): FactoryConstructor<DefaultFactoryOptions> {
   const factory = FACTORIES[type];
 
   if (!factory) {
