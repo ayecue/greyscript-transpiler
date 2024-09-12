@@ -625,22 +625,10 @@ test=test+4+5
 test.abc=test.abc+5
 test.abc=test.abc+4+5
 // if
-if (true) then
-print(\\"test\\")
-end if
-if (true) then
-print(\\"test\\")
-else
-print(\\"xd\\")
-end if
-if (true) then
-test=[1,2,3,4,5]
-end if
-if (true) then
-test=[1,2,3,4,5]
-else
-test=[5,4,3,2,1]
-end if
+if (true) then print(\\"test\\")
+if (true) then print(\\"test\\") else print(\\"xd\\")
+if (true) then test=[1,2,3,4,5]
+if (true) then test=[1,2,3,4,5] else test=[5,4,3,2,1]
 if (true) then
 print(\\"test\\")
 else
@@ -653,7 +641,7 @@ print(\\"xa\\")
 else
 print(\\"xd\\")
 end if
-test=function()
+test=function
 return [1,2,3,4,5]
 end function
 // comments
@@ -662,7 +650,7 @@ test=test+5
 // :D
 test=[1,2,3,4]
 // its a list
-test=function()
+test=function
 // its a function
 return 123
 // it a return
@@ -680,22 +668,14 @@ test={\\"was\\":123}
 test={\\"was\\":123,\\"foo\\":13,\\"bar\\":45}
 // while block with shorthand if else
 while true
-if true then
-print(\\"test\\")
-else
-print(\\"xd\\")
-end if
+if true then print(\\"test\\") else print(\\"xd\\")
 end while
-if true then
-stacktrace=function()
+if true then stacktrace=function
 print(\\"test\\")
 end function
-end if
-if false then
-stacktrace=function()
+if false then stacktrace=function
 print(\\"abc\\")
 end function
-end if
 print(\\"abc\\">[42])
 //foo
 test[25]
@@ -711,20 +691,15 @@ test(11)[25]
 while true
 //bar
 end while
-if x.remove(@key) then
-return \\"foo:\\"+@key+\\"!\\"
-end if
+if x.remove(@key) then return \\"foo:\\"+@key+\\"!\\"
 //foo
 foo.bar=function(key=0,val=0,nil=0,nul=0)
-if true then
-return function()
+if true then return function
 //bar
 print(\\"test\\")
 end function
-end if
 end function
-test=function()
-
+test=function
 end function
 if test==null then
 // foo
@@ -744,7 +719,7 @@ IV=IV+({\\"was\\":floor(rnd(byte))})
 
 exports[`parse default scripts beautify-cases.src beautify 1`] = `
 "// binary + logical
-test = 1 + 2 + 3 + 4 + 5 + 6 and
+test = 1 + 2 + 3 + 4 + 5 + 6 and 
 	(2 + 3 + 4 + 5 + 6 + (2 + 3 + 4 + 5 + 6 + 7))
 
 // call expression
@@ -870,12 +845,14 @@ end function
 
 // comments
 test = test + 5 // test
-test = [ // :D
+test = [
 	1,
 	2,
 	3,
 	4,
-] // its a list
+]
+// :D
+// its a list
 test = function // its a function
 	return 123 // it a return
 end function // its function end
@@ -887,10 +864,14 @@ test = { \\"was\\": 123 }
 // was
 
 test = {
-	\\"was\\": 123, // was
+	\\"was\\": 123,
 	\\"foo\\": 13,
 	\\"bar\\": 45,
 }
+// was
+
+
+
 
 // while block with shorthand if else
 while true
@@ -941,7 +922,7 @@ IV = IV + ({ \\"was\\": floor(rnd(byte)) }) // Warning: rnd is not cryptographic
 
 exports[`parse default scripts beautify-cases.src beautify with custom settings 1`] = `
 "// binary + logical
-test = 1 + 2 + 3 + 4 + 5 + 6 and
+test = 1 + 2 + 3 + 4 + 5 + 6 and 
           (2 + 3 + 4 + 5 + 6 + (2 + 3 + 4 + 5 + 6 + 7))
 
 // call expression
@@ -1067,12 +1048,14 @@ end function
 
 // comments
 test += 5 // test
-test = [ // :D
+test = [
           1,
           2,
           3,
           4,
-] // its a list
+]
+// :D
+// its a list
 test = function // its a function
           return 123 // it a return
 end function // its function end
@@ -1084,10 +1067,14 @@ test = { \\"was\\": 123 }
 // was
 
 test = {
-          \\"was\\": 123, // was
+          \\"was\\": 123,
           \\"foo\\": 13,
           \\"bar\\": 45,
 }
+// was
+
+
+
 
 // while block with shorthand if else
 while true
@@ -1150,35 +1137,29 @@ H.a=234
 H.b=true
 H.e=\\"test\\"
 H.f=\\"xd\\"
+
 I=d+2+3+g+c+6 and (2+3+g+c+6+(2+3+g+c+6+7))
+
 J(\\"dieFace[1] - dieFace[6]\\",[K[d],K[2],K[3],K[g],K[c],K[6],{X:V,W:Y}].join,V,V)
 J(d,2,3,g)
+
 I={}
 I={W:V}
 I={X:V,W:[Z,d,a],\\"xx\\":{X:V,\\"ooo\\":{X:V,W:Y},W:Y},\\"123\\":\\"3\\"}
+
 I=[]
 I=[W]
 I=[Z,d,[Z,d,a],[Z,[Z,d,a],d,a],a]
+
 I=I+c
 I=I+g+c
 I.abc=I.abc+c
 I.abc=I.abc+g+c
-if (b) then
-print(e)
-end if
-if (b) then
-print(e)
-else
-print(f)
-end if
-if (b) then
-I=[d,2,3,g,c]
-end if
-if (b) then
-I=[d,2,3,g,c]
-else
-I=[c,g,3,2,d]
-end if
+
+if (b) then print(e)
+if (b) then print(e) else print(f)
+if (b) then I=[d,2,3,g,c]
+if (b) then I=[d,2,3,g,c] else I=[c,g,3,2,d]
 if (b) then
 print(e)
 else
@@ -1194,64 +1175,77 @@ end if
 I=function
 return [d,2,3,g,c]
 end function
+
 I=I+c
+
+
 I=[d,2,3,g]
+
 I=function
+
 return V
+
 end function
+
 for I in [V]
+
 print(e)
+
 end for
+
+
 I={W:V}
+
 I={W:V,X:13,\\"bar\\":45}
+
 while b
-if b then
-print(e)
-else
-print(f)
-end if
+if b then print(e) else print(f)
 end while
-if b then
-M=function
+if b then M=function
 print(e)
 end function
-end if
-if false then
-M=function
+if false then M=function
 print(Z)
 end function
-end if
 print(Z>[42])
+
 I[25]
+
 I[25]
+
 I[V][25]
+
 I[25](11)
+
 I(11)[25]
+
 while b
 
 end while
-if N.remove(@O) then
-return \\"foo:\\"+@O+\\"!\\"
-end if
+if N.remove(@O) then return \\"foo:\\"+@O+\\"!\\"
+
 P.bar=function(O=0,val=0,T=0,U=0)
-if b then
-return function
+if b then return function
+
 print(e)
 end function
-end if
 end function
 I=function
-
 end function
 if I==null then
+
 print(X)
 else if I==null then
+
 print(\\"bar\\")
 else
+
 print(\\"nil\\")
 end if
 R=R+([floor(rnd(S)*256)])
-R=R+({W:floor(rnd(S))})"
+
+R=R+({W:floor(rnd(S))})
+"
 `;
 
 exports[`parse default scripts binary-expressions.src 1`] = `
@@ -1335,8 +1329,11 @@ test = 2 // comment3"
 `;
 
 exports[`parse default scripts comments.src uglify 1`] = `
-"I
-J=2"
+"
+I
+
+J=2
+"
 `;
 
 exports[`parse default scripts default-args.src 1`] = `
@@ -1382,7 +1379,7 @@ var3 = \\"test\\""
 exports[`parse default scripts default-args.src uglify 1`] = `
 "globals.H=globals
 H.O=\\"test\\"
-I=function(M=0,N=\\"test\\")
+I=function(M=0,N=O)
 print(M)
 print(N)
 end function
@@ -1592,30 +1589,26 @@ print \\"abc\\" isa string
 print \\"abc\\" isa list
 print \\"abc\\" isa map
 
-print(
-	[
-		1,
-		2,
-		3,
-	] isa number)
-print(
-	[
-		1,
-		2,
-		3,
-	] isa string)
-print(
-	[
-		1,
-		2,
-		3,
-	] isa list)
-print(
-	[
-		1,
-		2,
-		3,
-	] isa map)
+print [
+	1,
+	2,
+	3,
+] isa number
+print [
+	1,
+	2,
+	3,
+] isa string
+print [
+	1,
+	2,
+	3,
+] isa list
+print [
+	1,
+	2,
+	3,
+] isa map
 
 print {} isa number
 print {} isa string
@@ -1637,30 +1630,26 @@ print(\\"abc\\" isa string)
 print(\\"abc\\" isa list)
 print(\\"abc\\" isa map)
 
-print(
-          [
-                    1,
-                    2,
-                    3,
-          ] isa number)
-print(
-          [
-                    1,
-                    2,
-                    3,
-          ] isa string)
-print(
-          [
-                    1,
-                    2,
-                    3,
-          ] isa list)
-print(
-          [
-                    1,
-                    2,
-                    3,
-          ] isa map)
+print([
+          1,
+          2,
+          3,
+] isa number)
+print([
+          1,
+          2,
+          3,
+] isa string)
+print([
+          1,
+          2,
+          3,
+] isa list)
+print([
+          1,
+          2,
+          3,
+] isa map)
 
 print({} isa number)
 print({} isa string)
@@ -1766,8 +1755,7 @@ print \\"test\\" //
 //
 //  another comment
 //
-//  
-// one line comment "
+// // one line comment"
 `;
 
 exports[`parse default scripts multiline-comment.src beautify with custom settings 1`] = `
@@ -1781,11 +1769,15 @@ print(\\"test\\") /*
 
   another comment
 
-  */
-// one line comment "
+  */ // one line comment"
 `;
 
-exports[`parse default scripts multiline-comment.src uglify 1`] = `"print(\\"test\\")"`;
+exports[`parse default scripts multiline-comment.src uglify 1`] = `
+"
+print(\\"test\\")
+
+"
+`;
 
 exports[`parse default scripts negation.src 1`] = `
 "test=-1+2+-2+3
@@ -1842,12 +1834,11 @@ myObject = {
 	\\"idtf\\": valueOfIdentifier,
 }
 
-print(
-	[
-		myObject.test.another,
-		myObject.value,
-		myObject.idtf,
-	])
+print [
+	myObject.test.another,
+	myObject.value,
+	myObject.idtf,
+]
 
 myList = [
 	{ \\"another\\": \\"123\\" },
@@ -1867,12 +1858,11 @@ myObject = {
           \\"idtf\\": valueOfIdentifier,
 }
 
-print(
-          [
-                    myObject.test.another,
-                    myObject.value,
-                    myObject.idtf,
-          ])
+print([
+          myObject.test.another,
+          myObject.value,
+          myObject.idtf,
+])
 
 myList = [
           { \\"another\\": \\"123\\" },
@@ -2002,24 +1992,16 @@ K(O)"
 `;
 
 exports[`parse default scripts outer.src 1`] = `
-"main=function()
+"main=function
 num=0
-iterate=function()
+iterate=function
 clear_screen
 text=\\"<mark=green><color=black>\\"+outer.num
 print(outer.hasIndex(\\"num\\"))
-if (outer.num>20) then
-text=\\"<mark=yellow><color=green>\\"+outer.num
-end if
-if (outer.num>40) then
-text=\\"<mark=red><color=yellow>\\"+outer.num
-end if
-if (outer.num<-20) then
-text=\\"<mark=green><color=yellow>\\"+outer.num
-end if
-if (outer.num<-40) then
-text=\\"<mark=yellow><color=red>\\"+outer.num
-end if
+if (outer.num>20) then text=\\"<mark=yellow><color=green>\\"+outer.num
+if (outer.num>40) then text=\\"<mark=red><color=yellow>\\"+outer.num
+if (outer.num<-20) then text=\\"<mark=green><color=yellow>\\"+outer.num
+if (outer.num<-40) then text=\\"<mark=yellow><color=red>\\"+outer.num
 print(text)
 key=user_input(\\"test\\",false,true)
 if (key==\\"UpArrow\\") then
@@ -2064,7 +2046,7 @@ exports[`parse default scripts outer.src beautify 1`] = `
 		end if
 	end function
 
-	while true
+	while (true)
 		iterate
 	end while
 end function
@@ -2099,7 +2081,7 @@ exports[`parse default scripts outer.src beautify with custom settings 1`] = `
                     end if
           end function
 
-          while true
+          while (true)
                     iterate
           end while
 end function
@@ -2114,18 +2096,10 @@ K=function
 clear_screen
 L=\\"<mark=green><color=black>\\"+outer.J
 print(outer.hasIndex(\\"J\\"))
-if (outer.J>20) then
-L=\\"<mark=yellow><color=green>\\"+outer.J
-end if
-if (outer.J>40) then
-L=\\"<mark=red><color=yellow>\\"+outer.J
-end if
-if (outer.J<-20) then
-L=\\"<mark=green><color=yellow>\\"+outer.J
-end if
-if (outer.J<-40) then
-L=\\"<mark=yellow><color=red>\\"+outer.J
-end if
+if (outer.J>20) then L=\\"<mark=yellow><color=green>\\"+outer.J
+if (outer.J>40) then L=\\"<mark=red><color=yellow>\\"+outer.J
+if (outer.J<-20) then L=\\"<mark=green><color=yellow>\\"+outer.J
+if (outer.J<-40) then L=\\"<mark=yellow><color=red>\\"+outer.J
 print(L)
 M=user_input(\\"test\\",false,true)
 if (M==\\"UpArrow\\") then
@@ -2149,7 +2123,7 @@ PasswordGenerator.MAX_PASSWORD_LENGTH=15
 PasswordGenerator.ALPHABETIC_CHARACTERS=\\"qwertzuiopasdfghjklyxcvbnm\\"
 PasswordGenerator.NUMBER_CHARACTERS=\\"0123456789\\"
 PasswordGenerator.ALPHA_NUMERIC=PasswordGenerator.ALPHABETIC_CHARACTERS+PasswordGenerator.ALPHABETIC_CHARACTERS.upper+PasswordGenerator.NUMBER_CHARACTERS
-PasswordGenerator.constructor=function()
+PasswordGenerator.constructor=function
 me=self
 me.buffer=[0]
 me.characters=me.ALPHA_NUMERIC
@@ -2159,9 +2133,7 @@ PasswordGenerator.increaseBuffer=function(i)
 me=self
 currentCharBuffer=me.buffer
 maxBufferSize=me.characters.len
-if (i==null) then
-i=currentCharBuffer.len-1
-end if
+if (i==null) then i=currentCharBuffer.len-1
 p=currentCharBuffer[i]
 p=p+1
 currentCharBuffer[i]=p
@@ -2174,7 +2146,7 @@ me.increaseBuffer(i-1)
 end if
 end if
 end function
-PasswordGenerator.gen=function()
+PasswordGenerator.gen=function
 me=self
 currentCharBuffer=me.buffer
 generatorCharacters=me.characters
@@ -2183,9 +2155,7 @@ index=0
 while index<currentCharBuffer.len
 pointer=currentCharBuffer[index]
 password=password+generatorCharacters[pointer]
-if (index==currentCharBuffer.len-1) then
-self.increaseBuffer
-end if
+if (index==currentCharBuffer.len-1) then self.increaseBuffer
 index=index+1
 end while
 if (currentCharBuffer.len>me.MAX_PASSWORD_LENGTH) then
@@ -2264,7 +2234,7 @@ index = 0
 max = 10
 result = []
 
-while index < max
+while (index < max)
 	result.push pgen.gen
 	index = index + 1
 end while
@@ -2332,7 +2302,7 @@ index = 0
 max = 10
 result = []
 
-while index < max
+while (index < max)
           result.push(pgen.gen)
           index += 1
 end while
@@ -2356,9 +2326,7 @@ I.increaseBuffer=function(X)
 U=self
 Y=U.buffer
 Z=U.characters.len
-if (X==null) then
-X=Y.len-1
-end if
+if (X==null) then X=Y.len-1
 a=Y[X]
 a=a+1
 Y[X]=a
@@ -2380,9 +2348,7 @@ R=0
 while R<Y.len
 d=Y[R]
 c=c+b[d]
-if (R==Y.len-1) then
-self.increaseBuffer
-end if
+if (R==Y.len-1) then self.increaseBuffer
 R=R+1
 end while
 if (Y.len>U.MAX_PASSWORD_LENGTH) then
@@ -2432,10 +2398,10 @@ end function
 String.remove=function(str)
 return (new self).constructor(self.str.remove(str))
 end function
-String.toString=function()
+String.toString=function
 return self.str
 end function
-String.length=function()
+String.length=function
 return self.str.len
 end function
 String.split=function(seperator)
@@ -2454,7 +2420,7 @@ m.message=(new m.String).constructor(message).parse(values).toString
 end if
 return m
 end function
-Error.throw=function()
+Error.throw=function
 exit(\\"<color=#ff0000>\\"+self.message+\\"</color>\\")
 end function
 Crypto={}
@@ -2467,15 +2433,9 @@ me=self
 me.defaultSecret=defaultSecret
 me.table=charset
 me.hashFn=@hashFn
-if (@hashFn==null) then
-me.hashFn=@md5
-end if
-if charset==null then
-me.table=me.defaultCharset
-end if
-if me.table.len!=64 then
-(new me.Error).constructor(\\"Invalid charset $0...\\",[me.table]).throw
-end if
+if (@hashFn==null) then me.hashFn=@md5
+if charset==null then me.table=me.defaultCharset
+if me.table.len!=64 then (new me.Error).constructor(\\"Invalid charset $0...\\",[me.table]).throw
 return me
 end function
 Crypto.getHash=function(pw)
@@ -2490,9 +2450,7 @@ return hash
 end function
 Crypto.encrypt=function(str,pw)
 me=self
-if (pw==null) then
-pw=me.defaultSecret
-end if
+if (pw==null) then pw=me.defaultSecret
 hash=me.getHash(pw)
 hashPointer=0
 output=[]
@@ -2546,9 +2504,7 @@ return output.join(\\"\\")
 end function
 Crypto.decrypt=function(str,pw)
 me=self
-if (pw==null) then
-pw=me.defaultSecret
-end if
+if (pw==null) then pw=me.defaultSecret
 hash=me.getHash(pw)
 hashPointer=0
 hashLength=hash.len
@@ -2575,18 +2531,14 @@ bitStorage=buffer
 end if
 if (currentBit%4) then
 expectedHashIndex=(floor(hashPointer/3)*3)%hashLength-1
-if (not hash.hasIndex(expectedHashIndex)) then
-break
-end if
+if (not hash.hasIndex(expectedHashIndex)) then break
 m=hash[expectedHashIndex]
 operation=AND(-2*bitCounter,6)
 operation=RSHIFT(bitStorage,operation)
 operation=AND(255,operation)
 if (operation!=0) then
 charCode=operation-m
-if (charCode>me.maxCharCode) then
-break
-end if
+if (charCode>me.maxCharCode) then break
 output.push(char(charCode))
 end if
 hashPointer=hashPointer+1
@@ -3103,15 +3055,9 @@ o=self
 o.defaultSecret=U
 o.table=n
 o.hashFn=@m
-if (@m==Ϲ) then
-o.hashFn=@md5
-end if
-if n==Ϲ then
-o.table=o.defaultCharset
-end if
-if o.table.len!=64 then
-(new o.Error).constructor(\\"Invalid charset $0...\\",[o.table]).throw
-end if
+if (@m==Ϲ) then o.hashFn=@md5
+if n==Ϲ then o.table=o.defaultCharset
+if o.table.len!=64 then (new o.Error).constructor(\\"Invalid charset $0...\\",[o.table]).throw
 return o
 end function
 S.getHash=function(q)
@@ -3126,9 +3072,7 @@ return hash
 end function
 S.encrypt=function(str,q)
 o=self
-if (q==Ϲ) then
-q=o.defaultSecret
-end if
+if (q==Ϲ) then q=o.defaultSecret
 hash=o.getHash(q)
 t=0
 u=[]
@@ -3182,9 +3126,7 @@ return u.join(\\"\\")
 end function
 S.decrypt=function(str,q)
 o=self
-if (q==Ϲ) then
-q=o.defaultSecret
-end if
+if (q==Ϲ) then q=o.defaultSecret
 hash=o.getHash(q)
 t=0
 ϲ=hash.len
@@ -3211,18 +3153,14 @@ else
 end if
 if (ϵ%4) then
 ϶=(floor(t/3)*3)%ϲ-ϻ
-if (not hash.hasIndex(϶)) then
-break
-end if
+if (not hash.hasIndex(϶)) then break
 l=hash[϶]
 Ϸ=z(-2*ϳ,6)
 Ϸ=Ϩ(ϴ,Ϸ)
 Ϸ=z(255,Ϸ)
 if (Ϸ!=0) then
 ϸ=Ϸ-l
-if (ϸ>o.maxCharCode) then
-break
-end if
+if (ϸ>o.maxCharCode) then break
 u.push(char(ϸ))
 end if
 t=t+ϻ
@@ -3258,17 +3196,11 @@ end function
 Random.gen=function(min,max,seed,inc)
 me=self
 pool=me.pool
-if (inc==null) then
-inc=true
-end if
-if (seed==null) then
-seed=me.defaultSeed
-end if
+if (inc==null) then inc=true
+if (seed==null) then seed=me.defaultSeed
 if (pool.hasIndex(seed)) then
 ps=pool[seed]
-if (not inc) then
-return ps.value
-end if
+if (not inc) then return ps.value
 ps.generation=ps.generation+1
 val=floor((rnd(ps.value+ps.generation)*(max-min))+min)
 ps.value=val
@@ -3288,9 +3220,7 @@ temp=me.gen(min,max,seed)
 result.push(temp)
 index=index+1
 end while
-if (keepPool!=true) then
-me.pool.remove(seed)
-end if
+if (keepPool!=true) then me.pool.remove(seed)
 return result
 end function
 Random.get=function(min,max)
@@ -3366,12 +3296,11 @@ Random.get = function(min, max)
 end function
 
 print Random.get(100, 500)
-print(
-	Random.seq(
-		100,
-		500,
-		\\"test\\",
-		10))"
+print Random.seq(
+	100,
+	500,
+	\\"test\\",
+	10)"
 `;
 
 exports[`parse default scripts random.src beautify with custom settings 1`] = `
@@ -3440,12 +3369,11 @@ Random.get = function(min, max)
 end function
 
 print(Random.get(100, 500))
-print(
-          Random.seq(
-                    100,
-                    500,
-                    \\"test\\",
-                    10))"
+print(Random.seq(
+          100,
+          500,
+          \\"test\\",
+          10))"
 `;
 
 exports[`parse default scripts random.src uglify 1`] = `
@@ -3467,17 +3395,11 @@ end function
 I.gen=function(T,U,Q,V)
 W=self
 J=W.pool
-if (V==null) then
-V=true
-end if
-if (Q==null) then
-Q=W.defaultSeed
-end if
+if (V==null) then V=true
+if (Q==null) then Q=W.defaultSeed
 if (J.hasIndex(Q)) then
 X=J[Q]
-if (not V) then
-return X.value
-end if
+if (not V) then return X.value
 X.generation=X.generation+1
 val=floor((rnd(X.value+X.generation)*(U-T))+T)
 X.value=val
@@ -3497,9 +3419,7 @@ e=W.gen(T,U,Q)
 d.push(e)
 c=c+1
 end while
-if (b!=true) then
-W.pool.remove(Q)
-end if
+if (b!=true) then W.pool.remove(Q)
 return d
 end function
 I.get=function(T,U)
@@ -3512,7 +3432,7 @@ print(I.seq(100,500,\\"test\\",10))"
 exports[`parse default scripts simple-object.src 1`] = `
 "test={}
 test.here=\\"was\\"
-test.was=function()
+test.was=function
 super.here
 print(self.here)
 end function
@@ -3622,7 +3542,7 @@ print(I(\\"blahhblahhblahhblahhblahhblahhgad\\",5))"
 `;
 
 exports[`parse default scripts unary.src 1`] = `
-"test=function()
+"test=function
 return null
 end function
 print(@\\"was\\".split and (false or not false))

@@ -3,10 +3,9 @@ import {
   ASTBase
 } from 'miniscript-core';
 
-import { DefaultFactory as BasicDefaultFactory, TokenType, TransformerDataObject, TransformerLike } from 'greybel-transpiler';
+import { DefaultFactory as BasicDefaultFactory, DefaultFactoryOptions, TokenType, TransformerDataObject, TransformerLike } from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
 import { injectImport } from '../utils/inject-imports';
-import { DefaultFactoryOptions } from 'greybel-transpiler/dist/build-map/factory';
 
 export class DefaultFactory extends BasicDefaultFactory {
   constructor(options: TransformerLike<DefaultFactoryOptions>) {

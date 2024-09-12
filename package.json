@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "blueimp-md5": "^2.19.0",
-    "greybel-transpiler": "~3.1.2",
+    "greybel-transpiler": "~3.1.5",
     "greyscript-core": "~2.1.1"
   },
   "keywords": [

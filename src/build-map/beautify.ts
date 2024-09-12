@@ -5,10 +5,9 @@ import {
   ASTBinaryExpression
 } from 'miniscript-core';
 
-import { BeautifyFactory as BasicBeautifyFactory, BeautifyOptions, createExpressionHash, TokenType, TransformerDataObject, TransformerLike, unwrap } from 'greybel-transpiler';
+import { BeautifyFactory as BasicBeautifyFactory, BeautifyOptions, BeautifyUtils, createExpressionHash, TokenType, TransformerDataObject, TransformerLike, unwrap } from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
 import { injectImport } from '../utils/inject-imports';
-import { SHORTHAND_OPERATORS } from 'greybel-transpiler/dist/build-map/beautify/utils';
 
 export class BeautifyFactory extends BasicBeautifyFactory {
   constructor(options: TransformerLike<BeautifyOptions>) {
@@ -37,7 +36,7 @@ export class BeautifyFactory extends BasicBeautifyFactory {
           init instanceof ASTBinaryExpression &&
           (init.left instanceof ASTIdentifier ||
             init.left instanceof ASTMemberExpression) &&
-          SHORTHAND_OPERATORS.includes(init.operator) &&
+          BeautifyUtils.SHORTHAND_OPERATORS.includes(init.operator) &&
           createExpressionHash(variable) === createExpressionHash(init.left)
         ) {
           this.tokens.push({
