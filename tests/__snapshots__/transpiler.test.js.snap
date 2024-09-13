@@ -904,7 +904,7 @@ exports[`parse default scripts default-args.src uglify 1`] = `
 Array [
   "globals.H=globals
 H.O=\\"test\\"
-I=function(M=0,N=O)
+I=function(M=0,N=\\"test\\")
 print(M)
 print(N)
 end function
