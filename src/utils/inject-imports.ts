@@ -17,7 +17,7 @@ export type ProcessImportPathCallback = (path: string) => string;
 export function injectImport(
   context: Context,
   item: ASTImportCodeExpression
-): string {
+): string[] {
   const astRefDependencyMap = context.get<AstRefDependencyMap>(
     ContextDataProperty.ASTRefDependencyMap
   );
@@ -27,7 +27,7 @@ export function injectImport(
   );
 
   if (!astRefDependencyMap) {
-    return `import_code("${processImportPath(item.directory)}")`;
+    return [`import_code("${processImportPath(item.directory)}")`];
   }
 
   const astRefsVisited = context.getOrCreateData<Set<string>>(
@@ -40,7 +40,7 @@ export function injectImport(
     const entry = astRefDependencyMap.get(item);
 
     if (astRefsVisited.has(entry.main.target)) {
-      return lines.join('\n');
+      return lines;
     }
 
     for (const importEntry of entry.imports) {
@@ -55,8 +55,8 @@ export function injectImport(
     lines.push(`import_code("${processImportPath(entry.main.target)}")`);
     astRefsVisited.add(entry.main.target);
 
-    return lines.join('\n');
+    return lines;
   }
 
-  return '';
+  return [];
 }

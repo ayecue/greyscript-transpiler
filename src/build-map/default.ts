@@ -47,7 +47,7 @@ export class DefaultFactory extends BasicDefaultFactory {
           });
           return;
         }
-  
+
         this.process(item.left);
         this.tokens.push({
           type: TokenType.Text,
@@ -61,11 +61,20 @@ export class DefaultFactory extends BasicDefaultFactory {
         item: ASTImportCodeExpression,
         _data: TransformerDataObject
       ): void {
-        this.tokens.push({
-          type: TokenType.Text,
-          value: injectImport(this.transformer.context, item),
-          ref: item
-        });
+        const injections = injectImport(this.transformer.context, item);
+
+        for (let index = 0; index < injections.length; index++) {
+          this.tokens.push({
+            type: TokenType.Text,
+            value: injections[index],
+            ref: item
+          });
+          if (index !== injections.length - 1) this.tokens.push({
+            type: TokenType.EndOfLine,
+            value: '\n',
+            ref: item
+          });
+        }
       }
     }
   }

@@ -715,25 +715,19 @@ H.a=234
 H.b=true
 H.e=\\"test\\"
 H.f=\\"xd\\"
-
 I=d+2+3+g+c+6 and (2+3+g+c+6+(2+3+g+c+6+7))
-
 J(\\"dieFace[1] - dieFace[6]\\",[K[d],K[2],K[3],K[g],K[c],K[6],{X:V,W:Y}].join,V,V)
 J(d,2,3,g)
-
 I={}
 I={W:V}
 I={X:V,W:[Z,d,a],\\"xx\\":{X:V,\\"ooo\\":{X:V,W:Y},W:Y},\\"123\\":\\"3\\"}
-
 I=[]
 I=[W]
 I=[Z,d,[Z,d,a],[Z,[Z,d,a],d,a],a]
-
 I=I+c
 I=I+g+c
 I.abc=I.abc+c
 I.abc=I.abc+g+c
-
 if (b) then print(e)
 if (b) then print(e) else print(f)
 if (b) then I=[d,2,3,g,c]
@@ -753,29 +747,16 @@ end if
 I=function
 return [d,2,3,g,c]
 end function
-
 I=I+c
-
-
 I=[d,2,3,g]
-
 I=function
-
 return V
-
 end function
-
 for I in [V]
-
 print(e)
-
 end for
-
-
 I={W:V}
-
 I={W:V,X:13,\\"bar\\":45}
-
 while b
 if b then print(e) else print(f)
 end while
@@ -786,44 +767,30 @@ if false then M=function
 print(Z)
 end function
 print(Z>[42])
-
 I[25]
-
 I[25]
-
 I[V][25]
-
 I[25](11)
-
 I(11)[25]
-
 while b
-
 end while
 if N.remove(@O) then return \\"foo:\\"+@O+\\"!\\"
-
 P.bar=function(O=0,val=0,T=0,U=0)
 if b then return function
-
 print(e)
 end function
 end function
 I=function
 end function
 if I==null then
-
 print(X)
 else if I==null then
-
 print(\\"bar\\")
 else
-
 print(\\"nil\\")
 end if
 R=R+([floor(rnd(S)*256)])
-
-R=R+({W:floor(rnd(S))})
-",
+R=R+({W:floor(rnd(S))})",
 ]
 `;
 
@@ -898,11 +865,8 @@ test = 2 // comment3",
 
 exports[`parse default scripts comments.src uglify 1`] = `
 Array [
-  "
-I
-
-J=2
-",
+  "I
+J=2",
 ]
 `;
 
@@ -1652,9 +1616,7 @@ print \\"\\"3..\\"\\"
 print \\"\\"hello world\\"\\"\\"",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
-  "
-
-test = 123
+  "test = 123
 was = 123
 x = 123",
 ]
@@ -1850,9 +1812,7 @@ print \\"\\"3..\\"\\"
 print \\"\\"hello world\\"\\"\\")",
   "o=\\"\\"foo\\"\\"",
   "r=\\"hi\\"",
-  "
-
-p=AO
+  "p=AO
 q=AO
 h=AO",
 ]
@@ -2516,9 +2476,7 @@ print \\"sub-import.src\\"
 //debugger",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
-  "
-
-test = 123
+  "test = 123
 was = 123
 x = 123",
 ]
@@ -2708,9 +2666,7 @@ print(\\"sub-import.src\\")
 //debugger",
   "o=\\"\\"foo\\"\\"",
   "r=\\"hi\\"",
-  "
-
-p=AO
+  "p=AO
 q=AO
 h=AO",
 ]
@@ -3073,14 +3029,10 @@ end function
 print AsciiGen.gen(\\"Hallo\\")",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
-  "
-
-test = 123
+  "test = 123
 was = 123
 x = 123",
-  "
-
-print 123
+  "print 123
 
 
 print 6
@@ -3175,14 +3127,10 @@ end function
 print(I.gen(\\"Hallo\\"))",
   "n=\\"\\"foo\\"\\"",
   "q=\\"hi\\"",
-  "
-
-o=AD
+  "o=AD
 p=AD
 g=AD",
-  "
-
-print(AD)
+  "print(AD)
 print(6)
 print(\\"sub-import.src\\")",
 ]
@@ -3351,10 +3299,7 @@ print \\"test\\" //
 
 exports[`parse default scripts multiline-comment.src uglify 1`] = `
 Array [
-  "
-print(\\"test\\")
-
-",
+  "print(\\"test\\")",
 ]
 `;
 

@@ -25,9 +25,9 @@ export class BeautifyFactory extends BasicBeautifyFactory {
       ): void {
         const variable = item.variable;
         const init = item.init;
-  
+
         this.process(variable);
-  
+
         // might can create shorthand for expression
         if (
           this.context.options.isDevMode &&
@@ -47,13 +47,13 @@ export class BeautifyFactory extends BasicBeautifyFactory {
           this.process(unwrap(init.right));
           return;
         }
-  
+
         this.tokens.push({
           type: TokenType.Text,
           value: ' = ',
           ref: item
         });
-  
+
         this.process(init);
       },
       BinaryExpression: function (
@@ -87,7 +87,7 @@ export class BeautifyFactory extends BasicBeautifyFactory {
           });
           return;
         }
-  
+
         this.process(item.left);
         this.tokens.push({
           type: TokenType.Text,
@@ -101,11 +101,20 @@ export class BeautifyFactory extends BasicBeautifyFactory {
         item: ASTImportCodeExpression,
         _data: TransformerDataObject
       ): void {
-        this.tokens.push({
-          type: TokenType.Text,
-          value: injectImport(this.transformer.context, item),
-          ref: item
-        });
+        const injections = injectImport(this.transformer.context, item);
+
+        for (let index = 0; index < injections.length; index++) {
+          this.tokens.push({
+            type: TokenType.Text,
+            value: injections[index],
+            ref: item
+          });
+          if (index !== injections.length - 1) this.tokens.push({
+            type: TokenType.EndOfLine,
+            value: '\n',
+            ref: item
+          });
+        }
       }
     }
   }
