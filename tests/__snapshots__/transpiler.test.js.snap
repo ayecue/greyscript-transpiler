@@ -1110,9 +1110,7 @@ print \\"\\"3..\\"\\"
 print \\"\\"hello world\\"\\"\\")",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
-  "
-
-test=123
+  "test=123
 was=123
 x=123",
 ]
@@ -1978,9 +1976,7 @@ print(\\"sub-import.src\\")
 //debugger",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
-  "
-
-test=123
+  "test=123
 was=123
 x=123",
 ]
@@ -2779,14 +2775,10 @@ end function
 print(AsciiGen.gen(\\"Hallo\\"))",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
-  "
-
-test=123
+  "test=123
 was=123
 x=123",
-  "
-
-print(123)
+  "print(123)
 print(6)
 print(\\"sub-import.src\\")",
 ]
