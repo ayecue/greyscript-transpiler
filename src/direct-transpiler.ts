@@ -4,7 +4,8 @@ import {
   fetchNamespaces,
   generateCharsetMap,
   OutputProcessor,
-  Transformer
+  Transformer,
+  BuildType
 } from 'greybel-transpiler';
 import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 import { ASTLiteral } from 'miniscript-core';
@@ -27,17 +28,12 @@ export class DirectTranspiler extends GreybelDirectTranspiler {
       variablesExcluded: me.excludedNamespaces,
       modulesCharset: charsetMap.modules
     });
+    const uniqueNamespaces = new Set(namespaces);
+    uniqueNamespaces.forEach((namespace: string) =>
+      context.variables.createNamespace(namespace)
+    );
 
-    if (!me.disableNamespacesOptimization) {
-      const uniqueNamespaces = new Set(namespaces);
-      uniqueNamespaces.forEach((namespace: string) =>
-        context.variables.createNamespace(namespace)
-      );
-    }
-
-    if (!me.disableLiteralsOptimization) {
-      literals.forEach((literal: ASTLiteral) => context.literals.add(literal));
-    }
+    literals.forEach((literal: ASTLiteral) => context.literals.add(literal));
 
     const transformer = new Transformer({
       buildOptions: me.buildOptions,
@@ -50,7 +46,9 @@ export class DirectTranspiler extends GreybelDirectTranspiler {
       header: HEADER_BOILERPLATE
     });
 
-    if (!me.disableLiteralsOptimization) output.addLiteralsOptimization();
+    if (this.buildType === BuildType.UGLIFY && !me.buildOptions.disableLiteralsOptimization) {
+      output.addLiteralsOptimization();
+    }
 
     const result = transformer.transform(chunk);
 

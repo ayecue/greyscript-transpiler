@@ -3,7 +3,8 @@ import {
   Transformer,
   Transpiler as GreybelTranspiler,
   TranspilerOptions as GreybelTranspilerOptions,
-  TranspilerParseResult
+  TranspilerParseResult,
+  BuildType
 } from 'greybel-transpiler';
 
 import {
@@ -43,10 +44,7 @@ export class Transpiler extends GreybelTranspiler {
       resourceHandler: me.resourceHandler,
       context: me.context
     });
-    const targetParseResult: TargetParseResult = await target.parse({
-      disableLiteralsOptimization: me.disableLiteralsOptimization,
-      disableNamespacesOptimization: me.disableNamespacesOptimization
-    });
+    const targetParseResult: TargetParseResult = await target.parse();
 
     // create builder
     const transformer = new Transformer({
@@ -114,7 +112,7 @@ export class Transpiler extends GreybelTranspiler {
     return {
       [me.target]: build(
         mainModule.dependency,
-        !me.disableLiteralsOptimization,
+        this.buildType === BuildType.UGLIFY && !me.buildOptions.disableLiteralsOptimization,
         false
       ),
       ...Array.from(targetParseResult.nativeImports.values()).reduce(
@@ -123,7 +121,7 @@ export class Transpiler extends GreybelTranspiler {
             ...result,
             [value.dependency.target]: build(
               value.dependency,
-              !me.disableLiteralsOptimization,
+              this.buildType === BuildType.UGLIFY && !me.buildOptions.disableLiteralsOptimization,
               true
             )
           };
