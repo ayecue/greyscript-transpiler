@@ -58,7 +58,6 @@ export class Transpiler extends GreybelTranspiler {
     const moduleBoilerplate = transformer.transform(MODULE_BOILERPLATE);
     const build = (
       mainDependency: Dependency,
-      optimizeLiterals: boolean,
       isNativeImport: boolean
     ): string => {
       const mainNamespace = context.modules.get(mainDependency.getId());
@@ -94,7 +93,7 @@ export class Transpiler extends GreybelTranspiler {
       });
 
       if (!isNativeImport) {
-        if (optimizeLiterals) output.addLiteralsOptimization();
+        output.addOptimizations();
         if (moduleCount > 0) output.addHeader();
       }
 
@@ -112,7 +111,6 @@ export class Transpiler extends GreybelTranspiler {
     return {
       [me.target]: build(
         mainModule.dependency,
-        this.buildType === BuildType.UGLIFY && !me.buildOptions.disableLiteralsOptimization,
         false
       ),
       ...Array.from(targetParseResult.nativeImports.values()).reduce(
@@ -121,7 +119,6 @@ export class Transpiler extends GreybelTranspiler {
             ...result,
             [value.dependency.target]: build(
               value.dependency,
-              this.buildType === BuildType.UGLIFY && !me.buildOptions.disableLiteralsOptimization,
               true
             )
           };

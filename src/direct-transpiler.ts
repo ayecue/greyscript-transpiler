@@ -46,9 +46,7 @@ export class DirectTranspiler extends GreybelDirectTranspiler {
       header: HEADER_BOILERPLATE
     });
 
-    if (this.buildType === BuildType.UGLIFY && !me.buildOptions.disableLiteralsOptimization) {
-      output.addLiteralsOptimization();
-    }
+    output.addOptimizations();
 
     const result = transformer.transform(chunk);
 
