@@ -7,7 +7,8 @@ import {
   ContextDataProperty as GreybelContextDataProperty,
   DependencyLike,
   fetchNamespaces,
-  ResourceHandler
+  ResourceHandler,
+  merge
 } from 'greybel-transpiler';
 import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 import { ASTBase } from 'miniscript-core';
@@ -98,7 +99,8 @@ export class Dependency extends EventEmitter implements DependencyLike {
 
     for (const item of me.dependencies) {
       if (item.type === DependencyType.NativeImport) {
-        result.push(...(item as Dependency).fetchNativeImports(), item);
+        merge(result, [...(item as Dependency).fetchNativeImports()]);
+        result.push(item);
       }
     }
 
@@ -220,8 +222,8 @@ export class Dependency extends EventEmitter implements DependencyLike {
 
       const relatedDependencies = await dependency.findDependencies();
 
-      namespaces.push(...relatedDependencies.namespaces);
-      literals.push(...relatedDependencies.literals);
+      merge(namespaces, relatedDependencies.namespaces);
+      merge(literals, relatedDependencies.literals);
       result.push(dependency);
     }
 
@@ -249,9 +251,9 @@ export class Dependency extends EventEmitter implements DependencyLike {
 
       const relatedDependencies = await dependency.findDependencies();
 
-      result.push(...dependency.fetchNativeImports());
-      namespaces.push(...relatedDependencies.namespaces);
-      literals.push(...relatedDependencies.literals);
+      merge(result, [...dependency.fetchNativeImports()]);
+      merge(namespaces, relatedDependencies.namespaces);
+      merge(literals, relatedDependencies.literals);
       result.push(dependency);
     }
 
