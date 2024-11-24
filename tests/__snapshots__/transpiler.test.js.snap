@@ -3387,6 +3387,78 @@ print(J)",
 ]
 `;
 
+exports[`parse default scripts negative-numeric.src 1`] = `
+Array [
+  "test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"",
+]
+`;
+
+exports[`parse default scripts negative-numeric.src beautify 1`] = `
+Array [
+  "test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"",
+]
+`;
+
+exports[`parse default scripts negative-numeric.src uglify 1`] = `
+Array [
+  "globals.H=globals
+H.K=-1
+H.J=\\"foo\\"
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J",
+]
+`;
+
 exports[`parse default scripts obj-init.src 1`] = `
 Array [
   "valueOfIdentifier=\\"foo\\"

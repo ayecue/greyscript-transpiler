@@ -1856,6 +1856,93 @@ print(I)
 print(J)"
 `;
 
+exports[`parse default scripts negative-numeric.src 1`] = `
+"test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\"
+test[:-1]=\\"foo\\""
+`;
+
+exports[`parse default scripts negative-numeric.src beautify 1`] = `
+"test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\""
+`;
+
+exports[`parse default scripts negative-numeric.src beautify with custom settings 1`] = `
+"test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\"
+test[ : -1] = \\"foo\\""
+`;
+
+exports[`parse default scripts negative-numeric.src uglify 1`] = `
+"globals.H=globals
+H.K=-1
+H.J=\\"foo\\"
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J
+I[:K]=J"
+`;
+
 exports[`parse default scripts obj-init.src 1`] = `
 "valueOfIdentifier=\\"foo\\"
 myObject={\\"test\\":{\\"another\\":\\"123\\"},\\"value\\":\\"123\\",\\"idtf\\":valueOfIdentifier}
