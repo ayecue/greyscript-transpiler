@@ -1,0 +1,18 @@
+myVariable = [
+	1,
+	2,
+	3,
+	4,
+]
+
+for longVariable in myVariable
+	print(__longVariable_idx)
+end for
+
+
+for longVariable in myVariable
+	for longVariable in myVariable
+		print(__longVariable_idx)
+	end for
+	print(__longVariable_idx)
+end for

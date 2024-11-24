@@ -947,6 +947,60 @@ print(\\"0.2\\")",
 ]
 `;
 
+exports[`parse default scripts for-iteration.src 1`] = `
+Array [
+  "myVariable=[1,2,3,4]
+for longVariable in myVariable
+print(__longVariable_idx)
+end for
+for longVariable in myVariable
+for longVariable in myVariable
+print(__longVariable_idx)
+end for
+print(__longVariable_idx)
+end for",
+]
+`;
+
+exports[`parse default scripts for-iteration.src beautify 1`] = `
+Array [
+  "myVariable = [
+	1,
+	2,
+	3,
+	4,
+]
+
+for longVariable in myVariable
+	print __longVariable_idx
+end for
+
+
+for longVariable in myVariable
+	for longVariable in myVariable
+		print __longVariable_idx
+	end for
+	print __longVariable_idx
+end for",
+]
+`;
+
+exports[`parse default scripts for-iteration.src uglify 1`] = `
+Array [
+  "globals.H=globals
+I=[1,2,3,4]
+for J in I
+print(__J_idx)
+end for
+for J in I
+for J in I
+print(__J_idx)
+end for
+print(__J_idx)
+end for",
+]
+`;
+
 exports[`parse default scripts greybel-utils.src 1`] = `
 Array [
   "MODULES={}
