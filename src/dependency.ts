@@ -7,8 +7,8 @@ import {
   ContextDataProperty as GreybelContextDataProperty,
   DependencyLike,
   fetchNamespaces,
-  ResourceHandler,
-  merge
+  merge,
+  ResourceHandler
 } from 'greybel-transpiler';
 import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 import { ASTBase } from 'miniscript-core';

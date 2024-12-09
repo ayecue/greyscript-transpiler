@@ -4,8 +4,7 @@ import {
   fetchNamespaces,
   generateCharsetMap,
   OutputProcessor,
-  Transformer,
-  BuildType
+  Transformer
 } from 'greybel-transpiler';
 import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 import { ASTLiteral } from 'miniscript-core';

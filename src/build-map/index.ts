@@ -1,8 +1,9 @@
 import { FactoryConstructor } from 'greybel-transpiler';
+import { DefaultFactoryOptions } from 'greybel-transpiler/dist/build-map/factory';
+
 import { BeautifyFactory } from './beautify';
 import { DefaultFactory } from './default';
 import { UglifyFactory } from './uglify';
-import { DefaultFactoryOptions } from 'greybel-transpiler/dist/build-map/factory';
 
 export enum BuildType {
   DEFAULT,

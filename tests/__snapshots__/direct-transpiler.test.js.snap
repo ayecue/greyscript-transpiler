@@ -1722,6 +1722,17 @@ print({} isa map)
 print({} isa funcRef)"
 `;
 
+exports[`parse default scripts literal-special-chars.src 1`] = `"test=\\"$$1 $$$$'2   $\`$\`$\` $23\\""`;
+
+exports[`parse default scripts literal-special-chars.src beautify 1`] = `"test = \\"$$1 $$$$'2   $\`$\`$\` $23\\""`;
+
+exports[`parse default scripts literal-special-chars.src beautify with custom settings 1`] = `"test = \\"$$1 $$$$'2   $\`$\`$\` $23\\""`;
+
+exports[`parse default scripts literal-special-chars.src uglify 1`] = `
+"globals.H=globals
+I=\\"$$1 $$$$'2   $\`$\`$\` $23\\""
+`;
+
 exports[`parse default scripts map.src 1`] = `
 "test={{\\"myTest\\":0,1:2}:true}
 test2={[12,14]:true}

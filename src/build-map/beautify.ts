@@ -1,12 +1,21 @@
 import {
+  BeautifyFactory as BasicBeautifyFactory,
+  BeautifyOptions,
+  BeautifyUtils,
+  createExpressionHash,
+  TokenType,
+  TransformerDataObject,
+  TransformerLike,
+  unwrap
+} from 'greybel-transpiler';
+import { ASTImportCodeExpression } from 'greyscript-core';
+import {
   ASTAssignmentStatement,
-  ASTMemberExpression,
+  ASTBinaryExpression,
   ASTIdentifier,
-  ASTBinaryExpression
+  ASTMemberExpression
 } from 'miniscript-core';
 
-import { BeautifyFactory as BasicBeautifyFactory, BeautifyOptions, BeautifyUtils, createExpressionHash, TokenType, TransformerDataObject, TransformerLike, unwrap } from 'greybel-transpiler';
-import { ASTImportCodeExpression } from 'greyscript-core';
 import { injectImport } from '../utils/inject-imports';
 
 export class BeautifyFactory extends BasicBeautifyFactory {
@@ -109,13 +118,14 @@ export class BeautifyFactory extends BasicBeautifyFactory {
             value: injections[index],
             ref: item
           });
-          if (index !== injections.length - 1) this.tokens.push({
-            type: TokenType.EndOfLine,
-            value: '\n',
-            ref: item
-          });
+          if (index !== injections.length - 1)
+            this.tokens.push({
+              type: TokenType.EndOfLine,
+              value: '\n',
+              ref: item
+            });
         }
       }
-    }
+    };
   }
 }

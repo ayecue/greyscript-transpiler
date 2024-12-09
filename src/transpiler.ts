@@ -3,8 +3,7 @@ import {
   Transformer,
   Transpiler as GreybelTranspiler,
   TranspilerOptions as GreybelTranspilerOptions,
-  TranspilerParseResult,
-  BuildType
+  TranspilerParseResult
 } from 'greybel-transpiler';
 
 import {
@@ -73,8 +72,8 @@ export class Transpiler extends GreybelTranspiler {
         ) {
           const code = transformer.transform(item.chunk, item);
           modules[moduleName] = moduleBoilerplate
-            .replace('"$0"', '"' + moduleName + '"')
-            .replace('"$1"', code);
+            .replace('"$0"', () => '"' + moduleName + '"')
+            .replace('"$1"', () => code);
           moduleCount++;
         }
 
@@ -109,18 +108,12 @@ export class Transpiler extends GreybelTranspiler {
     };
 
     return {
-      [me.target]: build(
-        mainModule.dependency,
-        false
-      ),
+      [me.target]: build(mainModule.dependency, false),
       ...Array.from(targetParseResult.nativeImports.values()).reduce(
         (result: TranspilerParseResult, value: TargetParseResultItem) => {
           return {
             ...result,
-            [value.dependency.target]: build(
-              value.dependency,
-              true
-            )
+            [value.dependency.target]: build(value.dependency, true)
           };
         },
         {}

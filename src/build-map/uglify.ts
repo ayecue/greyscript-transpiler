@@ -1,9 +1,13 @@
 import {
-  ASTBinaryExpression
-} from 'miniscript-core';
-
-import { UglifyFactory as BasicUglifyFactory, DefaultFactoryOptions, DependencyLike, TokenType, TransformerDataObject, TransformerLike } from 'greybel-transpiler';
+  DefaultFactoryOptions,
+  TokenType,
+  TransformerDataObject,
+  TransformerLike,
+  UglifyFactory as BasicUglifyFactory
+} from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
+import { ASTBinaryExpression } from 'miniscript-core';
+
 import { injectImport } from '../utils/inject-imports';
 
 export class UglifyFactory extends BasicUglifyFactory {
@@ -68,13 +72,14 @@ export class UglifyFactory extends BasicUglifyFactory {
             value: injections[index],
             ref: item
           });
-          if (index !== injections.length - 1) this.tokens.push({
-            type: TokenType.EndOfLine,
-            value: '\n',
-            ref: item
-          });
+          if (index !== injections.length - 1)
+            this.tokens.push({
+              type: TokenType.EndOfLine,
+              value: '\n',
+              ref: item
+            });
         }
       }
-    }
+    };
   }
 }

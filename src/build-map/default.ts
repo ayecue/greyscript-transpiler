@@ -1,10 +1,13 @@
 import {
-  ASTBinaryExpression,
-  ASTBase
-} from 'miniscript-core';
-
-import { DefaultFactory as BasicDefaultFactory, DefaultFactoryOptions, TokenType, TransformerDataObject, TransformerLike } from 'greybel-transpiler';
+  DefaultFactory as BasicDefaultFactory,
+  DefaultFactoryOptions,
+  TokenType,
+  TransformerDataObject,
+  TransformerLike
+} from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
+import { ASTBinaryExpression } from 'miniscript-core';
+
 import { injectImport } from '../utils/inject-imports';
 
 export class DefaultFactory extends BasicDefaultFactory {
@@ -69,13 +72,14 @@ export class DefaultFactory extends BasicDefaultFactory {
             value: injections[index],
             ref: item
           });
-          if (index !== injections.length - 1) this.tokens.push({
-            type: TokenType.EndOfLine,
-            value: '\n',
-            ref: item
-          });
+          if (index !== injections.length - 1)
+            this.tokens.push({
+              type: TokenType.EndOfLine,
+              value: '\n',
+              ref: item
+            });
         }
       }
-    }
+    };
   }
 }
