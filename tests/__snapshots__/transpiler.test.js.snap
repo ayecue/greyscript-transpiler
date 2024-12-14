@@ -383,25 +383,19 @@ print(I.gen(\\"Hallo\\"))",
 
 exports[`parse default scripts beautify-cases.src 1`] = `
 Array [
-  "// binary + logical
-test=1+2+3+4+5+6 and (2+3+4+5+6+(2+3+4+5+6+7))
-//call expression
+  "test=1+2+3+4+5+6 and (2+3+4+5+6+(2+3+4+5+6+7))
 printAlign(\\"dieFace[1] - dieFace[6]\\",[dieFace[1],dieFace[2],dieFace[3],dieFace[4],dieFace[5],dieFace[6],{\\"foo\\":123,\\"was\\":\\"wo\\"}].join,123,123)
 printAlign(1,2,3,4)
-//object
 test={}
 test={\\"was\\":123}
 test={\\"foo\\":123,\\"was\\":[\\"abc\\",1,234],\\"xx\\":{\\"foo\\":123,\\"ooo\\":{\\"foo\\":123,\\"was\\":\\"wo\\"},\\"was\\":\\"wo\\"},\\"123\\":\\"3\\"}
-//list
 test=[]
 test=[\\"was\\"]
 test=[\\"abc\\",1,[\\"abc\\",1,234],[\\"abc\\",[\\"abc\\",1,234],1,234],234]
-// shorthand binary
 test=test+5
 test=test+4+5
 test.abc=test.abc+5
 test.abc=test.abc+4+5
-// if
 if (true) then print(\\"test\\")
 if (true) then print(\\"test\\") else print(\\"xd\\")
 if (true) then test=[1,2,3,4,5]
@@ -421,29 +415,16 @@ end if
 test=function
 return [1,2,3,4,5]
 end function
-// comments
 test=test+5
-// test
-// :D
 test=[1,2,3,4]
-// its a list
 test=function
-// its a function
 return 123
-// it a return
 end function
-// its function end
 for test in [123]
-// my for loop
 print(\\"test\\")
-// some print
 end for
-// end for loop
-// was
 test={\\"was\\":123}
-// was
 test={\\"was\\":123,\\"foo\\":13,\\"bar\\":45}
-// while block with shorthand if else
 while true
 if true then print(\\"test\\") else print(\\"xd\\")
 end while
@@ -454,44 +435,30 @@ if false then stacktrace=function
 print(\\"abc\\")
 end function
 print(\\"abc\\">[42])
-//foo
 test[25]
-//foo
 test[25]
-//bar
 test[123][25]
-//foo
 test[25](11)
-//bar
 test(11)[25]
-//foo
 while true
-//bar
 end while
 if x.remove(@key) then return \\"foo:\\"+@key+\\"!\\"
-//foo
 foo.bar=function(key=0,val=0,nil=0,nul=0)
 if true then return function
-//bar
 print(\\"test\\")
 end function
 end function
 test=function
 end function
 if test==null then
-// foo
 print(\\"foo\\")
 else if test==null then
-// bar
 print(\\"bar\\")
 else
-// nil
 print(\\"nil\\")
 end if
 IV=IV+([floor(rnd(byte)*256)])
-// Warning: rnd is not cryptographically secure
-IV=IV+({\\"was\\":floor(rnd(byte))})
-// Warning: rnd is not cryptographically secure",
+IV=IV+({\\"was\\":floor(rnd(byte))})",
 ]
 `;
 
@@ -624,14 +591,12 @@ end function
 
 // comments
 test = test + 5 // test
-test = [
+test = [ // :D
 	1,
 	2,
-	3,
+	3, // its a list
 	4,
 ]
-// :D
-// its a list
 test = function // its a function
 	return 123 // it a return
 end function // its function end
@@ -639,18 +604,13 @@ for test in [ 123 ] // my for loop
 	print \\"test\\" // some print
 end for // end for loop
 
-test = { \\"was\\": 123 }
-// was
-
+test = { \\"was\\": 123 } // was
 test = {
-	\\"was\\": 123,
+
+	\\"was\\": 123, // was
 	\\"foo\\": 13,
 	\\"bar\\": 45,
 }
-// was
-
-
-
 
 // while block with shorthand if else
 while true
@@ -848,11 +808,8 @@ I or J",
 
 exports[`parse default scripts comments.src 1`] = `
 Array [
-  "//comment
-myVariable
-//comment2
-test=2
-//comment3",
+  "myVariable
+test=2",
 ]
 `;
 
@@ -941,7 +898,6 @@ exports[`parse default scripts envar.src uglify 1`] = `
 Array [
   "globals.H=globals
 J=\\"\\"foo\\"\\"
-
 I=\\"\\"foo\\"\\"
 print(\\"0.2\\")",
 ]
@@ -1167,7 +1123,9 @@ print \\"\\"3..\\"\\"
 print \\"\\"hello world\\"\\"\\")",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
-  "test=123
+  "
+
+test=123
 was=123
 x=123",
 ]
@@ -1671,7 +1629,9 @@ print \\"\\"3..\\"\\"
 print \\"\\"hello world\\"\\"\\"",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
-  "test = 123
+  "
+
+test = 123
 was = 123
 x = 123",
 ]
@@ -1849,14 +1809,12 @@ end if
 return [AB[Ak].join(An),AB[Al].join(An),AB[Am].join(An)].join(\\"\\\\n\\")
 end function
 print(J.gen(\\"Hallo\\"))
-
 import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(Ao)
 print(6)
 print(\\"sub-import.src\\")
-
 \\"true\\"
 //debugger
 print(7)
@@ -2033,7 +1991,9 @@ print(\\"sub-import.src\\")
 //debugger",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
-  "test=123
+  "
+
+test=123
 was=123
 x=123",
 ]
@@ -2529,7 +2489,9 @@ print \\"sub-import.src\\"
 //debugger",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
-  "test = 123
+  "
+
+test = 123
 was = 123
 x = 123",
 ]
@@ -2707,14 +2669,12 @@ end if
 return [AB[Ak].join(An),AB[Al].join(An),AB[Am].join(An)].join(\\"\\\\n\\")
 end function
 print(J.gen(\\"Hallo\\"))
-
 import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 print(Ao)
 print(6)
 print(\\"sub-import.src\\")
-
 \\"true\\"
 //debugger",
   "AO=\\"\\"foo\\"\\"",
@@ -2833,10 +2793,14 @@ end function
 print(AsciiGen.gen(\\"Hallo\\"))",
   "myvar2=\\"\\"foo\\"\\"",
   "lastimport=\\"hi\\"",
-  "test=123
+  "
+
+test=123
 was=123
 x=123",
-  "print(123)
+  "
+
+print(123)
 print(6)
 print(\\"sub-import.src\\")",
 ]
@@ -3079,10 +3043,14 @@ end function
 print AsciiGen.gen(\\"Hallo\\")",
   "myvar2 = \\"\\"foo\\"\\"",
   "lastimport = \\"hi\\"",
-  "test = 123
+  "
+
+test = 123
 was = 123
 x = 123",
-  "print 123
+  "
+
+print 123
 
 
 print 6
@@ -3247,6 +3215,7 @@ print {} isa list
 print {} isa map
 
 print {} isa funcRef
+
 ",
 ]
 `;
@@ -3334,35 +3303,22 @@ M={123:\\"bar\\"}",
 
 exports[`parse default scripts multiline-comment.src 1`] = `
 Array [
-  "//
-//
-//
-//my Test
-//
-//  **
-print(\\"test\\")
-//
-//
-//  another comment
-//
-//  
-// one line comment ",
+  "print(\\"test\\")",
 ]
 `;
 
 exports[`parse default scripts multiline-comment.src beautify 1`] = `
 Array [
-  "//
-//
-//
-//my Test
-//
-//  **
-print \\"test\\" //
-//
-//  another comment
-//
-// // one line comment",
+  "/* 
+
+
+my Test
+
+** */ print \\"test\\" /* 
+
+another comment
+
+ */// one line comment",
 ]
 `;
 
@@ -4301,7 +4257,8 @@ foo = test.encrypt(pwd)
 decrypted = test.decrypt(foo)
 
 print foo
-print decrypted",
+print decrypted
+",
 ]
 `;
 
@@ -4805,7 +4762,8 @@ print @(\\"was\\".split and (false or not false))
 print not \\"was\\".split and (false or not false)
 print not (\\"was\\".split and (false or not false))
 print -1 + 2
-print -(1 + 2)",
+print -(1 + 2)
+",
 ]
 `;
 

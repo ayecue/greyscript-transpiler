@@ -3,7 +3,6 @@ import {
   BeautifyOptions,
   BeautifyUtils,
   createExpressionHash,
-  TokenType,
   TransformerDataObject,
   TransformerLike,
   unwrap
@@ -48,20 +47,12 @@ export class BeautifyFactory extends BasicBeautifyFactory {
           BeautifyUtils.SHORTHAND_OPERATORS.includes(init.operator) &&
           createExpressionHash(variable) === createExpressionHash(init.left)
         ) {
-          this.tokens.push({
-            type: TokenType.Text,
-            value: ' ' + init.operator + '= ',
-            ref: item
-          });
+          this.pushSegment(' ' + init.operator + '= ');
           this.process(unwrap(init.right));
           return;
         }
 
-        this.tokens.push({
-          type: TokenType.Text,
-          value: ' = ',
-          ref: item
-        });
+        this.pushSegment(' = ');
 
         this.process(init);
       },
@@ -77,32 +68,16 @@ export class BeautifyFactory extends BasicBeautifyFactory {
           item.operator === '|' ||
           item.operator === '&'
         ) {
-          this.tokens.push({
-            type: TokenType.Text,
-            value: `bitwise("${item.operator}", `,
-            ref: item
-          });
+          this.pushSegment('bitwise("' + item.operator + '", ', item);
           this.process(item.left);
-          this.tokens.push({
-            type: TokenType.Text,
-            value: ', ',
-            ref: item
-          });
+          this.pushSegment(', ', item);
           this.process(item.right);
-          this.tokens.push({
-            type: TokenType.Text,
-            value: ')',
-            ref: item
-          });
+          this.pushSegment(')', item);
           return;
         }
 
         this.process(item.left);
-        this.tokens.push({
-          type: TokenType.Text,
-          value: ' ' + item.operator + ' ',
-          ref: item
-        });
+        this.pushSegment(' ' + item.operator + ' ', item);
         this.process(item.right);
       },
       ImportCodeExpression: function (
@@ -113,17 +88,8 @@ export class BeautifyFactory extends BasicBeautifyFactory {
         const injections = injectImport(this.transformer.context, item);
 
         for (let index = 0; index < injections.length; index++) {
-          this.tokens.push({
-            type: TokenType.Text,
-            value: injections[index],
-            ref: item
-          });
-          if (index !== injections.length - 1)
-            this.tokens.push({
-              type: TokenType.EndOfLine,
-              value: '\n',
-              ref: item
-            });
+          this.pushSegment(injections[index], item);
+          if (index < injections.length - 1) this.eol();
         }
       }
     };

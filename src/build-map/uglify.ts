@@ -1,6 +1,5 @@
 import {
   DefaultFactoryOptions,
-  TokenType,
   TransformerDataObject,
   TransformerLike,
   UglifyFactory as BasicUglifyFactory
@@ -31,32 +30,16 @@ export class UglifyFactory extends BasicUglifyFactory {
           item.operator === '|' ||
           item.operator === '&'
         ) {
-          this.tokens.push({
-            type: TokenType.Text,
-            value: `bitwise("${item.operator}",`,
-            ref: item
-          });
+          this.pushSegment('bitwise("' + item.operator + '",');
           this.process(item.left);
-          this.tokens.push({
-            type: TokenType.Text,
-            value: ',',
-            ref: item
-          });
+          this.pushSegment(',');
           this.process(item.right);
-          this.tokens.push({
-            type: TokenType.Text,
-            value: ')',
-            ref: item
-          });
+          this.pushSegment(')');
           return;
         }
 
         this.process(item.left);
-        this.tokens.push({
-          type: TokenType.Text,
-          value: item.operator,
-          ref: item
-        });
+        this.pushSegment(item.operator);
         this.process(item.right);
       },
       ImportCodeExpression: function (
@@ -67,17 +50,8 @@ export class UglifyFactory extends BasicUglifyFactory {
         const injections = injectImport(this.transformer.context, item);
 
         for (let index = 0; index < injections.length; index++) {
-          this.tokens.push({
-            type: TokenType.Text,
-            value: injections[index],
-            ref: item
-          });
-          if (index !== injections.length - 1)
-            this.tokens.push({
-              type: TokenType.EndOfLine,
-              value: '\n',
-              ref: item
-            });
+          this.pushSegment(injections[index], item);
+          if (index < injections.length - 1) this.eol();
         }
       }
     };

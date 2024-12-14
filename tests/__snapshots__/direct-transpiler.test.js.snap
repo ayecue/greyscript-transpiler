@@ -606,25 +606,19 @@ print(I.gen(\\"Hallo\\"))"
 `;
 
 exports[`parse default scripts beautify-cases.src 1`] = `
-"// binary + logical
-test=1+2+3+4+5+6 and (2+3+4+5+6+(2+3+4+5+6+7))
-//call expression
+"test=1+2+3+4+5+6 and (2+3+4+5+6+(2+3+4+5+6+7))
 printAlign(\\"dieFace[1] - dieFace[6]\\",[dieFace[1],dieFace[2],dieFace[3],dieFace[4],dieFace[5],dieFace[6],{\\"foo\\":123,\\"was\\":\\"wo\\"}].join,123,123)
 printAlign(1,2,3,4)
-//object
 test={}
 test={\\"was\\":123}
 test={\\"foo\\":123,\\"was\\":[\\"abc\\",1,234],\\"xx\\":{\\"foo\\":123,\\"ooo\\":{\\"foo\\":123,\\"was\\":\\"wo\\"},\\"was\\":\\"wo\\"},\\"123\\":\\"3\\"}
-//list
 test=[]
 test=[\\"was\\"]
 test=[\\"abc\\",1,[\\"abc\\",1,234],[\\"abc\\",[\\"abc\\",1,234],1,234],234]
-// shorthand binary
 test=test+5
 test=test+4+5
 test.abc=test.abc+5
 test.abc=test.abc+4+5
-// if
 if (true) then print(\\"test\\")
 if (true) then print(\\"test\\") else print(\\"xd\\")
 if (true) then test=[1,2,3,4,5]
@@ -644,29 +638,16 @@ end if
 test=function
 return [1,2,3,4,5]
 end function
-// comments
 test=test+5
-// test
-// :D
 test=[1,2,3,4]
-// its a list
 test=function
-// its a function
 return 123
-// it a return
 end function
-// its function end
 for test in [123]
-// my for loop
 print(\\"test\\")
-// some print
 end for
-// end for loop
-// was
 test={\\"was\\":123}
-// was
 test={\\"was\\":123,\\"foo\\":13,\\"bar\\":45}
-// while block with shorthand if else
 while true
 if true then print(\\"test\\") else print(\\"xd\\")
 end while
@@ -677,44 +658,30 @@ if false then stacktrace=function
 print(\\"abc\\")
 end function
 print(\\"abc\\">[42])
-//foo
 test[25]
-//foo
 test[25]
-//bar
 test[123][25]
-//foo
 test[25](11)
-//bar
 test(11)[25]
-//foo
 while true
-//bar
 end while
 if x.remove(@key) then return \\"foo:\\"+@key+\\"!\\"
-//foo
 foo.bar=function(key=0,val=0,nil=0,nul=0)
 if true then return function
-//bar
 print(\\"test\\")
 end function
 end function
 test=function
 end function
 if test==null then
-// foo
 print(\\"foo\\")
 else if test==null then
-// bar
 print(\\"bar\\")
 else
-// nil
 print(\\"nil\\")
 end if
 IV=IV+([floor(rnd(byte)*256)])
-// Warning: rnd is not cryptographically secure
-IV=IV+({\\"was\\":floor(rnd(byte))})
-// Warning: rnd is not cryptographically secure"
+IV=IV+({\\"was\\":floor(rnd(byte))})"
 `;
 
 exports[`parse default scripts beautify-cases.src beautify 1`] = `
@@ -845,14 +812,12 @@ end function
 
 // comments
 test = test + 5 // test
-test = [
+test = [ // :D
 	1,
 	2,
-	3,
+	3, // its a list
 	4,
 ]
-// :D
-// its a list
 test = function // its a function
 	return 123 // it a return
 end function // its function end
@@ -860,18 +825,13 @@ for test in [ 123 ] // my for loop
 	print \\"test\\" // some print
 end for // end for loop
 
-test = { \\"was\\": 123 }
-// was
-
+test = { \\"was\\": 123 } // was
 test = {
-	\\"was\\": 123,
+
+	\\"was\\": 123, // was
 	\\"foo\\": 13,
 	\\"bar\\": 45,
 }
-// was
-
-
-
 
 // while block with shorthand if else
 while true
@@ -1048,14 +1008,12 @@ end function
 
 // comments
 test += 5 // test
-test = [
+test = [ // :D
           1,
           2,
-          3,
+          3, // its a list
           4,
 ]
-// :D
-// its a list
 test = function // its a function
           return 123 // it a return
 end function // its function end
@@ -1063,18 +1021,13 @@ for test in [ 123 ] // my for loop
           print(\\"test\\") // some print
 end for // end for loop
 
-test = { \\"was\\": 123 }
-// was
-
+test = { \\"was\\": 123 } // was
 test = {
-          \\"was\\": 123,
+
+          \\"was\\": 123, // was
           \\"foo\\": 13,
           \\"bar\\": 45,
 }
-// was
-
-
-
 
 // while block with shorthand if else
 while true
@@ -1277,11 +1230,8 @@ I or J"
 `;
 
 exports[`parse default scripts comments.src 1`] = `
-"//comment
-myVariable
-//comment2
-test=2
-//comment3"
+"myVariable
+test=2"
 `;
 
 exports[`parse default scripts comments.src beautify 1`] = `
@@ -1656,6 +1606,7 @@ print {} isa list
 print {} isa map
 
 print {} isa funcRef
+
 "
 `;
 
@@ -1697,6 +1648,7 @@ print({} isa list)
 print({} isa map)
 
 print({} isa funcRef)
+
 "
 `;
 
@@ -1779,48 +1731,32 @@ L={N:\\"foo\\"}
 M={123:\\"bar\\"}"
 `;
 
-exports[`parse default scripts multiline-comment.src 1`] = `
-"//
-//
-//
-//my Test
-//
-//  **
-print(\\"test\\")
-//
-//
-//  another comment
-//
-//  
-// one line comment "
-`;
+exports[`parse default scripts multiline-comment.src 1`] = `"print(\\"test\\")"`;
 
 exports[`parse default scripts multiline-comment.src beautify 1`] = `
-"//
-//
-//
-//my Test
-//
-//  **
-print \\"test\\" //
-//
-//  another comment
-//
-// // one line comment"
-`;
-
-exports[`parse default scripts multiline-comment.src beautify with custom settings 1`] = `
-"/*
+"/* 
 
 
 my Test
 
-  ***/
-print(\\"test\\") /*
+** */ print \\"test\\" /* 
 
-  another comment
+another comment
 
-  */ // one line comment"
+ */// one line comment"
+`;
+
+exports[`parse default scripts multiline-comment.src beautify with custom settings 1`] = `
+"/* 
+
+
+my Test
+
+** */ print(\\"test\\") /* 
+
+another comment
+
+ */// one line comment"
 `;
 
 exports[`parse default scripts multiline-comment.src uglify 1`] = `
@@ -2906,7 +2842,8 @@ foo = test.encrypt(pwd)
 decrypted = test.decrypt(foo)
 
 print foo
-print decrypted"
+print decrypted
+"
 `;
 
 exports[`parse default scripts pseudo-crypto.src beautify with custom settings 1`] = `
@@ -3121,7 +3058,8 @@ foo = test.encrypt(pwd)
 decrypted = test.decrypt(foo)
 
 print(foo)
-print(decrypted)"
+print(decrypted)
+"
 `;
 
 exports[`parse default scripts pseudo-crypto.src uglify 1`] = `
@@ -3705,7 +3643,8 @@ print @(\\"was\\".split and (false or not false))
 print not \\"was\\".split and (false or not false)
 print not (\\"was\\".split and (false or not false))
 print -1 + 2
-print -(1 + 2)"
+print -(1 + 2)
+"
 `;
 
 exports[`parse default scripts unary.src beautify with custom settings 1`] = `
@@ -3718,7 +3657,8 @@ print(@(\\"was\\".split and (false or not false)))
 print(not \\"was\\".split and (false or not false))
 print(not (\\"was\\".split and (false or not false)))
 print(-1 + 2)
-print(-(1 + 2))"
+print(-(1 + 2))
+"
 `;
 
 exports[`parse default scripts unary.src uglify 1`] = `
