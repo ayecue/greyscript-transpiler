@@ -21,7 +21,7 @@ describe('parse', function () {
           target: filepath,
           environmentVariables,
           obfuscation: false,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
 
         expect(Object.values(result)).toMatchSnapshot();
@@ -34,7 +34,7 @@ describe('parse', function () {
           buildType: BuildType.UGLIFY,
           environmentVariables,
           obfuscation: false,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
 
         expect(Object.values(result)).toMatchSnapshot();
@@ -46,7 +46,7 @@ describe('parse', function () {
           target: filepath,
           buildType: BuildType.BEAUTIFY,
           environmentVariables,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
 
         expect(Object.values(result)).toMatchSnapshot();
@@ -64,7 +64,7 @@ describe('parse', function () {
           target: testFile,
           environmentVariables,
           obfuscation: false,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
       }).rejects.toThrowError(/^Circular dependency/);
     });
@@ -78,7 +78,7 @@ describe('parse', function () {
           target: testFile,
           environmentVariables,
           obfuscation: false,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
       }).rejects.toThrowError(/^Circular dependency/);
     });

@@ -19,7 +19,7 @@ describe('parse', function () {
         const result = new DirectTranspiler({
           code: fs.readFileSync(filepath, 'utf-8'),
           environmentVariables,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
 
         expect(result).toMatchSnapshot();
@@ -30,7 +30,7 @@ describe('parse', function () {
           code: fs.readFileSync(filepath, 'utf-8'),
           buildType: BuildType.UGLIFY,
           environmentVariables,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
 
         expect(result).toMatchSnapshot();
@@ -41,7 +41,7 @@ describe('parse', function () {
           code: fs.readFileSync(filepath, 'utf-8'),
           buildType: BuildType.BEAUTIFY,
           environmentVariables,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
 
         expect(result).toMatchSnapshot();
@@ -58,7 +58,7 @@ describe('parse', function () {
             indentationSpaces: 10
           },
           environmentVariables,
-          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getSignaturesByType('general')))
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
         }).parse();
 
         expect(result).toMatchSnapshot();

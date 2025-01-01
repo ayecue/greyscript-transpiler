@@ -4265,35 +4265,35 @@ print decrypted
 exports[`parse default scripts pseudo-crypto.src uglify 1`] = `
 Array [
   "globals.H=globals
-H.AW=1
-H.AU=null
-H.AV=63
+H.AU=1
+H.AS=null
+H.AT=63
 I={}
 I.constructor=function(str)
 self.str=str
 return self
 end function
 I.parse=function(values)
-d=self.str
-e=0
-f=values.len
-while e<f
-d=d.replace(\\"$\\"+e,values[e])
-e=e+AW
+AH=self.str
+d=0
+e=values.len
+while d<e
+AH=AH.replace(\\"$\\"+d,values[d])
+d=d+AU
 end while
-return (new self).constructor(d)
+return (new self).constructor(AH)
 end function
 I.startsWith=function(str)
 return self.str.indexOf(str)==0
 end function
-I.substr=function(g,h)
-return (new self).constructor(slice(self.str,g,h))
+I.substr=function(f,g)
+return (new self).constructor(slice(self.str,f,g))
 end function
 I.indexOf=function(str)
 return self.str.indexOf(str)
 end function
-I.replace=function(str,i)
-return (new self).constructor(self.str.replace(str,i))
+I.replace=function(str,h)
+return (new self).constructor(self.str.replace(str,h))
 end function
 I.remove=function(str)
 return (new self).constructor(self.str.remove(str))
@@ -4304,155 +4304,155 @@ end function
 I.length=function
 return self.str.len
 end function
-I.split=function(j)
-return self.str.split(j)
+I.split=function(i)
+return self.str.split(i)
 end function
-I.trim=function(j)
+I.trim=function(i)
 return (new self).constructor(self.str.trim)
 end function
-Q={}
-Q.String=I
-Q.constructor=function(k,values)
-l=self
-l.message=k
-if (values!=AU) then
-l.message=(new l.String).constructor(k).parse(values).toString
+P={}
+P.String=I
+P.constructor=function(j,values)
+k=self
+k.message=j
+if (values!=AS) then
+k.message=(new k.String).constructor(j).parse(values).toString
 end if
-return l
+return k
 end function
-Q.throw=function
+P.throw=function
 exit(\\"<color=#ff0000>\\"+self.message+\\"</color>\\")
 end function
-S={}
-S.defaultCharset=\\"QWERTZUIOPASDFGHJKLYXCVBNMqwertzuiopasdfghjklyxcvbnm1234567890+-\\"
-S.defaultSecret=\\"test123\\"
-S.maxCharCode=55295
-S.Error=Q
-S.constructor=function(U,n,o)
-p=self
-p.defaultSecret=U
-p.table=o
-p.hashFn=@n
-if (@n==AU) then p.hashFn=@md5
-if o==AU then p.table=p.defaultCharset
-if p.table.len!=64 then (new p.Error).constructor(\\"Invalid charset $0...\\",[p.table]).throw
-return p
+R={}
+R.defaultCharset=\\"QWERTZUIOPASDFGHJKLYXCVBNMqwertzuiopasdfghjklyxcvbnm1234567890+-\\"
+R.defaultSecret=\\"test123\\"
+R.maxCharCode=55295
+R.Error=P
+R.constructor=function(T,l,n)
+o=self
+o.defaultSecret=T
+o.table=n
+o.hashFn=@l
+if (@l==AS) then o.hashFn=@md5
+if n==AS then o.table=o.defaultCharset
+if o.table.len!=64 then (new o.Error).constructor(\\"Invalid charset $0...\\",[o.table]).throw
+return o
 end function
-S.getHash=function(r)
-p=self
+R.getHash=function(q)
+o=self
 hash=[]
-s=p.hashFn(r)
-for char in s
+r=o.hashFn(q)
+for char in r
 hash.push(char.code)
 end for
 hash.reverse
 return hash
 end function
-S.encrypt=function(str,r)
-p=self
-if (r==AU) then r=p.defaultSecret
-hash=p.getHash(r)
+R.encrypt=function(str,q)
+o=self
+if (q==AS) then q=o.defaultSecret
+hash=o.getHash(q)
+s=0
+t=[]
 u=0
-AM=[]
-w=0
-y=str.len%3
-z=str.len-y
-_A=function(AL)
-if (not p.table.hasIndex(AL)) then
-(new p.Error).constructor(\\"Invalid index $0...\\",[AL]).throw
+AK=str.len%3
+w=str.len-AK
+y=function(AJ)
+if (not o.table.hasIndex(AJ)) then
+(new o.Error).constructor(\\"Invalid index $0...\\",[AJ]).throw
 end if
-return p.table[AL]
+return o.table[AJ]
 end function
-AB=function(AE,AG)
-return bitwise(\\"&\\",AE,AG)
+z=function(AC,AE)
+return bitwise(\\"&\\",AC,AE)
 end function
-AC=function(AE,AG)
-return bitwise(\\"<<\\",AE,AG)
+_A=function(AC,AE)
+return bitwise(\\"<<\\",AC,AE)
 end function
-AD=function(AE,AG)
-return bitwise(\\">>\\",AE,AG)
+AB=function(AC,AE)
+return bitwise(\\">>\\",AC,AE)
 end function
-while w<z
-l=hash[w%hash.len-AW]
-AE=AC(str[w].code+l,16)
-AG=AC(str[w+AW].code+l,8)
-AI=str[w+2].code+l
-AK=AE+AG+AI
-AM.push(_A(AB(AD(AK,18),AV)))
-AM.push(_A(AB(AD(AK,12),AV)))
-AM.push(_A(AB(AD(AK,6),AV)))
-AM.push(_A(AB(AK,AV)))
-w=w+3
+while u<w
+k=hash[u%hash.len-AU]
+AC=_A(str[u].code+k,16)
+AE=_A(str[u+AU].code+k,8)
+AG=str[u+2].code+k
+AI=AC+AE+AG
+t.push(y(z(AB(AI,18),AT)))
+t.push(y(z(AB(AI,12),AT)))
+t.push(y(z(AB(AI,6),AT)))
+t.push(y(z(AI,AT)))
+u=u+3
 end while
-if (y==2) then
-l=hash[w%hash.len-AW]
-AE=AC(str[w].code+l,8)
-AG=str[w+AW].code+l
-AK=AE+AG
-AM.push(_A(AD(AK,10)))
-AM.push(_A(AB(AD(AK,4),AV)))
-AM.push(_A(AB(AC(AK,2),AV)))
-AM.push(\\"=\\")
-else if (y==AW) then
-l=hash[w%hash.len-AW]
-AK=str[w].code+l
-AM.push(_A(AD(AK,2)))
-AM.push(_A(AB(AC(AK,4),AV)))
-AM.push(\\"==\\")
+if (AK==2) then
+k=hash[u%hash.len-AU]
+AC=_A(str[u].code+k,8)
+AE=str[u+AU].code+k
+AI=AC+AE
+t.push(y(AB(AI,10)))
+t.push(y(z(AB(AI,4),AT)))
+t.push(y(z(_A(AI,2),AT)))
+t.push(\\"=\\")
+else if (AK==AU) then
+k=hash[u%hash.len-AU]
+AI=str[u].code+k
+t.push(y(AB(AI,2)))
+t.push(y(z(_A(AI,4),AT)))
+t.push(\\"==\\")
 end if
-return AM.join(\\"\\")
+return t.join(\\"\\")
 end function
-S.decrypt=function(str,r)
-p=self
-if (r==AU) then r=p.defaultSecret
-hash=p.getHash(r)
+R.decrypt=function(str,q)
+o=self
+if (q==AS) then q=o.defaultSecret
+hash=o.getHash(q)
+s=0
+AL=hash.len
+t=[]
+AM=0
+AN=0
 u=0
-AN=hash.len
-AM=[]
-AO=0
-AP=0
-w=0
-u=0
-z=str.len
-AB=function(AE,AG)
-return bitwise(\\"&\\",AE,AG)
+s=0
+w=str.len
+z=function(AC,AE)
+return bitwise(\\"&\\",AC,AE)
 end function
-AD=function(AE,AG)
-return bitwise(\\">>\\",AE,AG)
+AB=function(AC,AE)
+return bitwise(\\">>\\",AC,AE)
 end function
-while w<z
-AK=p.table.indexOf(str[w])
-AQ=AO
-AO=AO+AW
-if (AQ%4) then
-AP=AP*64+AK
+while u<w
+AI=o.table.indexOf(str[u])
+AO=AM
+AM=AM+AU
+if (AO%4) then
+AN=AN*64+AI
 else
-AP=AK
+AN=AI
 end if
-if (AQ%4) then
-AR=(floor(u/3)*3)%AN-AW
-if (not hash.hasIndex(AR)) then break
-l=hash[AR]
-AS=AB(-2*AO,6)
-AS=AD(AP,AS)
-AS=AB(255,AS)
-if (AS!=0) then
-AT=AS-l
-if (AT>p.maxCharCode) then break
-AM.push(char(AT))
+if (AO%4) then
+AP=(floor(s/3)*3)%AL-AU
+if (not hash.hasIndex(AP)) then break
+k=hash[AP]
+AQ=z(-2*AM,6)
+AQ=AB(AN,AQ)
+AQ=z(255,AQ)
+if (AQ!=0) then
+AR=AQ-k
+if (AR>o.maxCharCode) then break
+t.push(char(AR))
 end if
-u=u+AW
+s=s+AU
 end if
-w=w+AW
+u=u+AU
 end while
-return AM.join(\\"\\")
+return t.join(\\"\\")
 end function
-Z=(new S).constructor(\\"test\\")
-AF=\\"abcde\\"
-AH=Z.encrypt(AF)
-AJ=Z.decrypt(AH)
-print(AH)
-print(AJ)",
+Y=(new R).constructor(\\"test\\")
+Z=\\"abcde\\"
+AD=Y.encrypt(Z)
+AF=Y.decrypt(AD)
+print(AD)
+print(AF)",
 ]
 `;
 
