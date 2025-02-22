@@ -2727,6 +2727,9 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-import.src\\")
+import_code(\\"/scripts/isa.src\\")
+
+import_code(\\"./file-does-not-exit\\")
 print(123)",
   "AsciiGen={}
 map={}
@@ -2803,6 +2806,23 @@ x=123",
 print(123)
 print(6)
 print(\\"sub-import.src\\")",
+  "print(2 isa number)
+print(2 isa string)
+print(2 isa list)
+print(2 isa map)
+print(\\"abc\\" isa number)
+print(\\"abc\\" isa string)
+print(\\"abc\\" isa list)
+print(\\"abc\\" isa map)
+print([1,2,3] isa number)
+print([1,2,3] isa string)
+print([1,2,3] isa list)
+print([1,2,3] isa map)
+print({} isa number)
+print({} isa string)
+print({} isa list)
+print({} isa map)
+print({} isa funcRef)",
 ]
 `;
 
@@ -2813,6 +2833,10 @@ import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-import.src\\")
+import_code(\\"/scripts/isa.src\\") // override=./isa.src;
+
+import_code(\\"./file-does-not-exit\\") // no-eval;
+
 print 123",
   "AsciiGen = {}
 
@@ -3055,6 +3079,45 @@ print 123
 
 print 6
 print \\"sub-import.src\\"",
+  "print 2 isa number
+print 2 isa string
+print 2 isa list
+print 2 isa map
+
+print \\"abc\\" isa number
+print \\"abc\\" isa string
+print \\"abc\\" isa list
+print \\"abc\\" isa map
+
+print [
+	1,
+	2,
+	3,
+] isa number
+print [
+	1,
+	2,
+	3,
+] isa string
+print [
+	1,
+	2,
+	3,
+] isa list
+print [
+	1,
+	2,
+	3,
+] isa map
+
+print {} isa number
+print {} isa string
+print {} isa list
+print {} isa map
+
+print {} isa funcRef
+
+",
 ]
 `;
 
@@ -3071,14 +3134,19 @@ H.AS=\\"||_ \\"
 H.AY=\\"||¯\\\\\\\\ \\"
 H.AU=\\"|| \\"
 H.AZ=\\"  \\"
+H.Ag=1
+H.Ae=2
 H.Aa=\\"<color=#\\"
 H.Ac=\\">\\"
 H.Ab=\\"</color>\\"
+H.Af=\\"abc\\"
 import_code(\\"/scripts/ascii.src\\")
 import_code(\\"/fixtures/envar-include.src\\")
 import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-import.src\\")
+import_code(\\"/scripts/isa.src\\")
+import_code(\\"./file-does-not-exit\\")
 print(Ad)",
   "I={}
 map={}
@@ -3127,20 +3195,20 @@ for char in str
 char=char.lower
 if (AM.hasIndex(char)) then
 AG[0].push(AM[char][0])
-AG[1].push(AM[char][1])
-AG[2].push(AM[char][2])
+AG[Ag].push(AM[char][Ag])
+AG[Ae].push(AM[char][Ae])
 end if
 end for
 if (typeof(AL)==\\"string\\") then
 AG[0]=[Aa+AL+Ac]+AG[0]+[Ab]
-AG[1]=[Aa+AL+Ac]+AG[1]+[Ab]
-AG[2]=[Aa+AL+Ac]+AG[2]+[Ab]
+AG[Ag]=[Aa+AL+Ac]+AG[Ag]+[Ab]
+AG[Ae]=[Aa+AL+Ac]+AG[Ae]+[Ab]
 else if (typeof(AL)==\\"list\\") then
 AG[0]=[Aa+AL[0]+Ac]+AG[0]+[Ab]
-AG[1]=[Aa+AL[1]+Ac]+AG[1]+[Ab]
-AG[2]=[Aa+AL[2]+Ac]+AG[2]+[Ab]
+AG[Ag]=[Aa+AL[Ag]+Ac]+AG[Ag]+[Ab]
+AG[Ae]=[Aa+AL[Ae]+Ac]+AG[Ae]+[Ab]
 end if
-return [AG[0].join(\\"\\"),AG[1].join(\\"\\"),AG[2].join(\\"\\")].join(\\"\\\\n\\")
+return [AG[0].join(\\"\\"),AG[Ag].join(\\"\\"),AG[Ae].join(\\"\\")].join(\\"\\\\n\\")
 end function
 print(I.gen(\\"Hallo\\"))",
   "AN=\\"\\"foo\\"\\"",
@@ -3151,6 +3219,23 @@ AD=Ad",
   "print(Ad)
 print(6)
 print(\\"sub-import.src\\")",
+  "print(Ae isa number)
+print(Ae isa string)
+print(Ae isa list)
+print(Ae isa map)
+print(Af isa number)
+print(Af isa string)
+print(Af isa list)
+print(Af isa map)
+print([Ag,Ae,3] isa number)
+print([Ag,Ae,3] isa string)
+print([Ag,Ae,3] isa list)
+print([Ag,Ae,3] isa map)
+print({} isa number)
+print({} isa string)
+print({} isa list)
+print({} isa map)
+print({} isa funcRef)",
 ]
 `;
 

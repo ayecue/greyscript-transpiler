@@ -207,6 +207,10 @@ export class Dependency extends EventEmitter implements DependencyLike {
 
     // handle native imports
     for (const nativeImport of nativeImports) {
+      if (!nativeImport.eval || !nativeImport.emit) {
+        continue;
+      }
+
       const dependency = await me.resolve(
         nativeImport.directory,
         DependencyType.NativeImport,

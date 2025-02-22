@@ -1,3 +1,7 @@
 import_code("./ascii")
 import_code("../fixtures/sub-import")
+import_code("./file-does-not-exit") // override=./isa.src;
+import_code("./file-does-not-exit") // no-emit;
+import_code("./file-does-not-exit") // no-eval;
+
 print(123)

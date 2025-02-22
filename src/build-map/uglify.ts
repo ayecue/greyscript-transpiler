@@ -47,6 +47,14 @@ export class UglifyFactory extends BasicUglifyFactory {
         item: ASTImportCodeExpression,
         _data: TransformerDataObject
       ): void {
+        if (!item.emit) {
+          return;
+        }
+        if (!item.eval) {
+          this.pushSegment(`import_code("${item.directory}")`, item);
+          return;
+        }
+
         const injections = injectImport(this.transformer.context, item);
 
         for (let index = 0; index < injections.length; index++) {

@@ -85,6 +85,18 @@ export class BeautifyFactory extends BasicBeautifyFactory {
         item: ASTImportCodeExpression,
         _data: TransformerDataObject
       ): void {
+        if (this.transformer.buildOptions.isDevMode) {
+          this.pushSegment(`import_code("${item.originalDirectory}")`, item);
+          return;
+        }
+        if (!item.emit) {
+          return;
+        }
+        if (!item.eval) {
+          this.pushSegment(`import_code("${item.directory}")`, item);
+          return;
+        }
+
         const injections = injectImport(this.transformer.context, item);
 
         for (let index = 0; index < injections.length; index++) {

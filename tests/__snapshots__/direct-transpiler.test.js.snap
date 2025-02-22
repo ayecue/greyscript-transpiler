@@ -1526,18 +1526,29 @@ print(locals.hasIndex(\\"doesNotExist\\"))"
 exports[`parse default scripts import-code.src 1`] = `
 "import_code(\\"./ascii\\")
 import_code(\\"../fixtures/sub-import\\")
+import_code(\\"./isa.src\\")
+
+import_code(\\"./file-does-not-exit\\")
 print(123)"
 `;
 
 exports[`parse default scripts import-code.src beautify 1`] = `
 "import_code(\\"./ascii\\")
 import_code(\\"../fixtures/sub-import\\")
+import_code(\\"./isa.src\\") // override=./isa.src;
+
+import_code(\\"./file-does-not-exit\\") // no-eval;
+
 print 123"
 `;
 
 exports[`parse default scripts import-code.src beautify with custom settings 1`] = `
 "import_code(\\"./ascii\\")
 import_code(\\"../fixtures/sub-import\\")
+import_code(\\"./file-does-not-exit\\") // override=./isa.src;
+import_code(\\"./file-does-not-exit\\") // no-emit;
+import_code(\\"./file-does-not-exit\\") // no-eval;
+
 print(123)"
 `;
 
@@ -1545,6 +1556,8 @@ exports[`parse default scripts import-code.src uglify 1`] = `
 "globals.H=globals
 import_code(\\"./ascii\\")
 import_code(\\"../fixtures/sub-import\\")
+import_code(\\"./isa.src\\")
+import_code(\\"./file-does-not-exit\\")
 print(123)"
 `;
 
