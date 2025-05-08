@@ -1,0 +1,3 @@
+#import myNamespace from "other-import2.src"
+
+print myNamespace

@@ -76,7 +76,7 @@ export class Dependency extends EventEmitter implements DependencyLike {
         () => new Map()
       );
 
-    resourceDependencyMap.set(namespace, me);
+    resourceDependencyMap.set(`${namespace}:${me.type}`, me);
 
     me.context.getOrCreateData<DependencyCallStack>(
       GreybelContextDataProperty.DependencyCallStack,
@@ -126,8 +126,8 @@ export class Dependency extends EventEmitter implements DependencyLike {
     const id = md5(subTarget);
     const namespace = modules.get(id);
 
-    if (resourceDependencyMap.has(namespace)) {
-      return resourceDependencyMap.get(namespace);
+    if (resourceDependencyMap.has(`${namespace}:${type}`)) {
+      return resourceDependencyMap.get(`${namespace}:${type}`);
     }
 
     if (!(await resourceHandler.has(subTarget))) {
