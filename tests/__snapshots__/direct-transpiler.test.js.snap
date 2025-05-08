@@ -1561,6 +1561,17 @@ import_code(\\"./file-does-not-exit\\")
 print(123)"
 `;
 
+exports[`parse default scripts import-code-with-import.src 1`] = `"import_code(\\"../fixtures/other-import\\")"`;
+
+exports[`parse default scripts import-code-with-import.src beautify 1`] = `"import_code(\\"../fixtures/other-import\\")"`;
+
+exports[`parse default scripts import-code-with-import.src beautify with custom settings 1`] = `"import_code(\\"../fixtures/other-import\\")"`;
+
+exports[`parse default scripts import-code-with-import.src uglify 1`] = `
+"globals.H=globals
+import_code(\\"../fixtures/other-import\\")"
+`;
+
 exports[`parse default scripts isa.src 1`] = `
 "print(2 isa number)
 print(2 isa string)
