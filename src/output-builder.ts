@@ -17,6 +17,7 @@ export class OutputBuilder {
   private context: Context;
   private modulesCount: number;
   private modulesRegistry: Map<string, Record<string, string>>;
+  private modulesNamespacesUsed: Set<string>;
 
   constructor(options: OutputBuilderOptions) {
     this.transformer = options.transformer;
@@ -25,6 +26,7 @@ export class OutputBuilder {
     this.context = options.context;
     this.modulesCount = 0;
     this.modulesRegistry = new Map<string, Record<string, string>>();
+    this.modulesNamespacesUsed = new Set<string>();
   }
 
   private aggregateModules(mainDependency: Dependency) {
@@ -36,13 +38,15 @@ export class OutputBuilder {
       if (moduleName in modules) return;
       if (
         moduleName !== mainNamespace &&
-        item.type === DependencyType.Import
+        item.type === DependencyType.Import &&
+        !this.modulesNamespacesUsed.has(moduleName)
       ) {
         const code = this.transformer.transform(item.chunk, item);
         modules[moduleName] = this.moduleBoilerplate
           .replace('"$0"', () => '"' + moduleName + '"')
           .replace('"$1"', () => code);
         this.modulesCount++;
+        this.modulesNamespacesUsed.add(moduleName);
       }
 
       for (const subItem of item.dependencies) {
