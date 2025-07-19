@@ -98,8 +98,6 @@ export class Target extends EventEmitter {
       }
       const uniqueNamespaces = new Set(namespaces);
 
-      console.log(astRefDependencyMap);
-
       for (const namespace of uniqueNamespaces) {
         context.variables.createNamespace(namespace);
       }
