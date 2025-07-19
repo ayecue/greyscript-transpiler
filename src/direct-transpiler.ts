@@ -6,19 +6,20 @@ import {
   OutputProcessor,
   Transformer
 } from 'greybel-transpiler';
-import { ASTChunkGreyScript, Parser } from 'greyscript-core';
+import { ASTChunkGreyScript } from 'greyscript-core';
 import { ASTLiteral } from 'miniscript-core';
 
 import { HEADER_BOILERPLATE, MAIN_BOILERPLATE } from './boilerplates';
 import { getFactory } from './build-map';
+import { ChunkProvider } from './utils/chunk-provider';
 
 export class DirectTranspiler extends GreybelDirectTranspiler {
   parse(): string {
     const me = this;
 
     const factoryConstructor = getFactory(me.buildType);
-    const parser = new Parser(me.code);
-    const chunk = parser.parseChunk() as ASTChunkGreyScript;
+    const chunkProvider = new ChunkProvider();
+    const chunk = chunkProvider.parse('unknown', me.code) as ASTChunkGreyScript;
     const namespaces = fetchNamespaces(chunk);
     const literals = [].concat(chunk.literals);
     const charsetMap = generateCharsetMap(me.obfuscation);

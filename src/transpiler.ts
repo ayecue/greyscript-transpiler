@@ -1,18 +1,17 @@
 import {
+  BuildType,
   Transformer,
   Transpiler as GreybelTranspiler,
   TranspilerOptions as GreybelTranspilerOptions,
   TranspilerParseResult
 } from 'greybel-transpiler';
 
-import {
-  MODULE_BOILERPLATE
-} from './boilerplates';
+import { MODULE_BOILERPLATE } from './boilerplates';
 import { getFactory } from './build-map';
 import { ContextDataProperty } from './context';
+import { OutputBuilder } from './output-builder';
 import { Target, TargetParseResult } from './target';
 import { ProcessImportPathCallback } from './utils/inject-imports';
-import { OutputBuilder } from './output-builder';
 
 export interface TranspilerOptions extends GreybelTranspilerOptions {
   processImportPathCallback?: ProcessImportPathCallback;
@@ -40,7 +39,9 @@ export class Transpiler extends GreybelTranspiler {
       resourceHandler: me.resourceHandler,
       context: me.context
     });
-    const targetParseResult: TargetParseResult = await target.parse();
+    const targetParseResult: TargetParseResult = await target.parse(
+      me.buildType === BuildType.UGLIFY
+    );
 
     // create builder
     const transformer = new Transformer({

@@ -1,7 +1,8 @@
-import { Context, OutputProcessor, Transformer } from "greybel-transpiler";
-import { TargetParseResult, TargetParseResultItem } from "./target";
-import { Dependency, DependencyType } from "./dependency";
-import { HEADER_BOILERPLATE, MAIN_BOILERPLATE } from "./boilerplates";
+import { Context, OutputProcessor, Transformer } from 'greybel-transpiler';
+
+import { HEADER_BOILERPLATE, MAIN_BOILERPLATE } from './boilerplates';
+import { Dependency, DependencyType } from './dependency';
+import { TargetParseResult, TargetParseResultItem } from './target';
 
 export interface OutputBuilderOptions {
   transformer: Transformer;
@@ -49,7 +50,7 @@ export class OutputBuilder {
         this.modulesNamespacesUsed.add(moduleName);
       }
 
-      for (const subItem of item.dependencies) {
+      for (const subItem of item.dependencies.values()) {
         if (subItem.type !== DependencyType.NativeImport) {
           iterator(subItem);
         }
@@ -61,7 +62,10 @@ export class OutputBuilder {
     this.modulesRegistry.set(mainDependency.target, modules);
   }
 
-  private generateOutputCode(mainDependency: Dependency, isNativeImport: boolean): string {
+  private generateOutputCode(
+    mainDependency: Dependency,
+    isNativeImport: boolean
+  ): string {
     const modules = this.modulesRegistry.get(mainDependency.target) || {};
     const output = new OutputProcessor(this.context, this.transformer, {
       main: MAIN_BOILERPLATE,
@@ -77,7 +81,10 @@ export class OutputBuilder {
       output.addCode(modules[moduleKey])
     );
 
-    const code = this.transformer.transform(mainDependency.chunk, mainDependency);
+    const code = this.transformer.transform(
+      mainDependency.chunk,
+      mainDependency
+    );
 
     output.addCode(code, !isNativeImport);
 
@@ -98,7 +105,10 @@ export class OutputBuilder {
         (result: Record<string, string>, value: TargetParseResultItem) => {
           return {
             ...result,
-            [value.dependency.target]: this.generateOutputCode(value.dependency, true)
+            [value.dependency.target]: this.generateOutputCode(
+              value.dependency,
+              true
+            )
           };
         },
         {}
