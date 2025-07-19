@@ -5,13 +5,16 @@ import {
   ResourceHandler,
   TargetOptions
 } from 'greybel-transpiler';
-import { ASTChunkGreyScript, Parser } from 'greyscript-core';
+import { ASTChunkGreyScript } from 'greyscript-core';
 import { ASTLiteral } from 'miniscript-core';
 
 import { ContextDataProperty } from './context';
 import { Dependency, DependencyType } from './dependency';
-import { generateDependencyMappingKey, KeyRefDependencyMap } from './utils/inject-imports';
 import { ChunkProvider } from './utils/chunk-provider';
+import {
+  generateDependencyMappingKey,
+  KeyRefDependencyMap
+} from './utils/inject-imports';
 import { ResourceManager } from './utils/resource-manager';
 
 export interface TargetParseResultItem {
@@ -39,7 +42,7 @@ export class Target extends EventEmitter {
     me.context = options.context;
   }
 
-  async parse(): Promise<TargetParseResult> {
+  async parse(withMetadata: boolean): Promise<TargetParseResult> {
     const me = this;
     const resourceHandler = me.resourceHandler;
     const target = await resourceHandler.resolve(me.target);
@@ -61,11 +64,26 @@ export class Target extends EventEmitter {
       const dependency = new Dependency({
         target,
         resourceManager,
-        chunk: resourceManager.getEntryPointResource().chunk as ASTChunkGreyScript,
+        chunk: resourceManager.getEntryPointResource()
+          .chunk as ASTChunkGreyScript,
         context
       });
 
-      const { namespaces, literals } = dependency.findDependencies();
+      if (withMetadata) {
+        const { namespaces, literals } =
+          dependency.findDependenciesWithMetadata();
+        const uniqueNamespaces = new Set(namespaces);
+
+        for (const namespace of uniqueNamespaces) {
+          context.variables.createNamespace(namespace);
+        }
+
+        for (const literal of literals) {
+          context.literals.add(literal as ASTLiteral);
+        }
+      } else {
+        dependency.findDependencies();
+      }
 
       const parsedImports: Map<string, TargetParseResultItem> = new Map();
       const astRefDependencyMap =
@@ -90,20 +108,14 @@ export class Target extends EventEmitter {
             dependency: item
           });
 
-          astRefDependencyMap.set(generateDependencyMappingKey(dependency, item.target), {
-            main: item,
-            imports: relatedImports
-          });
+          astRefDependencyMap.set(
+            generateDependencyMappingKey(dependency, item.target),
+            {
+              main: item,
+              imports: relatedImports
+            }
+          );
         }
-      }
-      const uniqueNamespaces = new Set(namespaces);
-
-      for (const namespace of uniqueNamespaces) {
-        context.variables.createNamespace(namespace);
-      }
-
-      for (const literal of literals) {
-        context.literals.add(literal as ASTLiteral);
       }
 
       return {

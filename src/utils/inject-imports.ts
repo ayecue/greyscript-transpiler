@@ -15,7 +15,7 @@ export type ProcessImportPathCallback = (path: string) => string;
 
 export function generateDependencyMappingKey(
   dependency: DependencyLike,
-  nativeImportPath: string,
+  nativeImportPath: string
 ): string {
   return `${dependency.target}:${nativeImportPath}`;
 }
@@ -43,9 +43,15 @@ export function injectImport(
     () => new Set()
   );
 
-  const dependencyKey = Dependency.generateDependencyMappingKey(item.directory, DependencyType.NativeImport);
+  const dependencyKey = Dependency.generateDependencyMappingKey(
+    item.directory,
+    DependencyType.NativeImport
+  );
   const associatedDependency = activeDependency.dependencies.get(dependencyKey);
-  const key = generateDependencyMappingKey(originDependency, associatedDependency.target);
+  const key = generateDependencyMappingKey(
+    originDependency,
+    associatedDependency.target
+  );
 
   if (astRefDependencyMap.has(key)) {
     const lines: string[] = [];

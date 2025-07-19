@@ -1,5 +1,5 @@
-import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 import { ChunkProviderLike } from 'greybel-transpiler';
+import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 
 export class ChunkProvider implements ChunkProviderLike {
   private cache: Map<string, ASTChunkGreyScript>;
@@ -8,7 +8,7 @@ export class ChunkProvider implements ChunkProviderLike {
     this.cache = new Map<string, ASTChunkGreyScript>();
   }
 
-  async parse(target: string, content: string): Promise<ASTChunkGreyScript> {
+  parse(target: string, content: string): ASTChunkGreyScript {
     const cachedChunk = this.cache.get(target);
 
     if (cachedChunk) {

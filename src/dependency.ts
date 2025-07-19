@@ -1,5 +1,4 @@
 import md5 from 'blueimp-md5';
-import EventEmitter from 'events';
 import { ASTFeatureIncludeExpression } from 'greybel-core';
 import {
   BuildError,
@@ -8,10 +7,9 @@ import {
   DependencyLike,
   fetchNamespaces,
   merge,
-  ResourceHandler,
   ResourceManagerLike
 } from 'greybel-transpiler';
-import { ASTChunkGreyScript, Parser } from 'greyscript-core';
+import { ASTChunkGreyScript } from 'greyscript-core';
 import { ASTBase } from 'miniscript-core';
 
 export enum DependencyType {
@@ -32,6 +30,9 @@ export interface DependencyOptions {
 export interface DependencyFindResult {
   /* eslint-disable no-use-before-define */
   dependencies: Map<string, Dependency>;
+}
+
+export interface DependencyFindResultWithMetadata extends DependencyFindResult {
   namespaces: string[];
   literals: ASTBase[];
 }
@@ -96,7 +97,10 @@ export class Dependency implements DependencyLike {
     return me.context.modules.get(me.id);
   }
 
-  fetchNativeImports(route: string, dependencies: Map<string, Dependency> = new Map()): Map<string, Dependency> {
+  fetchNativeImports(
+    route: string,
+    dependencies: Map<string, Dependency> = new Map()
+  ): Map<string, Dependency> {
     const me = this;
 
     for (const item of me.dependencies.values()) {
@@ -110,10 +114,7 @@ export class Dependency implements DependencyLike {
     return dependencies;
   }
 
-  private resolve(
-    path: string,
-    type: DependencyType
-  ): Dependency {
+  private resolve(path: string, type: DependencyType): Dependency {
     const me = this;
     const context = me.context;
     const { modules } = context;
@@ -176,6 +177,85 @@ export class Dependency implements DependencyLike {
     const dependencyCallStack = me.context.get<DependencyCallStack>(
       GreybelContextDataProperty.DependencyCallStack
     );
+    const dependencies = new Map<string, Dependency>();
+
+    dependencyCallStack.push(sourceNamespace);
+
+    // handle native imports
+    for (const nativeImport of nativeImports) {
+      if (!nativeImport.eval || !nativeImport.emit) {
+        continue;
+      }
+
+      const dependency = me.resolve(
+        nativeImport.directory,
+        DependencyType.NativeImport
+      );
+      const namespace = dependency.getNamespace();
+
+      if (dependencyCallStack.includes(namespace)) {
+        throw new Error(
+          `Circular dependency from ${me.target} to ${dependency.target} detected.`
+        );
+      }
+
+      dependency.findDependencies();
+      dependencies.set(
+        Dependency.generateDependencyMappingKey(
+          nativeImport.directory,
+          DependencyType.NativeImport
+        ),
+        dependency
+      );
+    }
+
+    // handle internal includes/imports
+    const items = [...imports, ...includes];
+
+    for (const item of items) {
+      const type =
+        item instanceof ASTFeatureIncludeExpression
+          ? DependencyType.Include
+          : DependencyType.Import;
+      const dependency = me.resolve(item.path, type);
+      const namespace = dependency.getNamespace();
+
+      if (dependencyCallStack.includes(namespace)) {
+        throw new Error(
+          `Circular dependency from ${me.target} to ${dependency.target} detected.`
+        );
+      }
+
+      dependency.findDependencies();
+      dependency.fetchNativeImports(
+        `${me.target}:${dependency.target}`,
+        dependencies
+      );
+
+      dependencies.set(
+        Dependency.generateDependencyMappingKey(item.path, type),
+        dependency
+      );
+    }
+
+    this.findInjections();
+
+    me.dependencies = dependencies;
+
+    dependencyCallStack.pop();
+
+    return {
+      dependencies
+    };
+  }
+
+  findDependenciesWithMetadata(): DependencyFindResultWithMetadata {
+    const me = this;
+    const { imports, includes, nativeImports } = me.chunk;
+    const sourceNamespace = me.getNamespace();
+    const dependencyCallStack = me.context.get<DependencyCallStack>(
+      GreybelContextDataProperty.DependencyCallStack
+    );
     const namespaces: string[] = [...fetchNamespaces(me.chunk)];
     const literals: ASTBase[] = [...me.chunk.literals];
     const dependencies = new Map<string, Dependency>();
@@ -200,11 +280,17 @@ export class Dependency implements DependencyLike {
         );
       }
 
-      const relatedDependencies = dependency.findDependencies();
+      const relatedDependencies = dependency.findDependenciesWithMetadata();
 
       merge(namespaces, relatedDependencies.namespaces);
       merge(literals, relatedDependencies.literals);
-      dependencies.set(Dependency.generateDependencyMappingKey(nativeImport.directory, DependencyType.NativeImport), dependency);
+      dependencies.set(
+        Dependency.generateDependencyMappingKey(
+          nativeImport.directory,
+          DependencyType.NativeImport
+        ),
+        dependency
+      );
     }
 
     // handle internal includes/imports
@@ -224,9 +310,12 @@ export class Dependency implements DependencyLike {
         );
       }
 
-      const relatedDependencies = dependency.findDependencies();
+      const relatedDependencies = dependency.findDependenciesWithMetadata();
 
-      dependency.fetchNativeImports(`${me.target}:${dependency.target}`, dependencies);
+      dependency.fetchNativeImports(
+        `${me.target}:${dependency.target}`,
+        dependencies
+      );
 
       merge(namespaces, relatedDependencies.namespaces);
       merge(literals, relatedDependencies.literals);
