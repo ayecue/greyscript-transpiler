@@ -1,6 +1,6 @@
 {
   "name": "greyscript-transpiler",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Transpiler",
   "main": "dist/index",
   "typings": "dist/index",
