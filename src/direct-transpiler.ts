@@ -1,5 +1,4 @@
 import {
-  ChunkProvider,
   Context,
   DirectTranspiler as GreybelDirectTranspiler,
   fetchNamespaces,
@@ -12,6 +11,7 @@ import { ASTLiteral } from 'miniscript-core';
 
 import { HEADER_BOILERPLATE, MAIN_BOILERPLATE } from './boilerplates';
 import { getFactory } from './build-map';
+import { ChunkProvider } from './utils/chunk-provider';
 
 export class DirectTranspiler extends GreybelDirectTranspiler {
   parse(): string {
