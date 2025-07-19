@@ -55,7 +55,7 @@ export class DefaultFactory extends BasicDefaultFactory {
           return;
         }
 
-        const injections = injectImport(this.transformer.context, item);
+        const injections = injectImport(this.transformer.context, this.originDependency, this.activeDependency, item);
 
         for (let index = 0; index < injections.length; index++) {
           this.pushSegment(injections[index], item);

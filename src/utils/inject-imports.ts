@@ -1,24 +1,32 @@
-import { Context } from 'greybel-transpiler';
+import { Context, DependencyLike } from 'greybel-transpiler';
 import { ASTImportCodeExpression } from 'greyscript-core';
-import { ASTBase } from 'miniscript-core';
 
 import { ContextDataProperty } from '../context';
-import { Dependency } from '../dependency';
+import { Dependency, DependencyType } from '../dependency';
 
-export type AstRefDependencyMap = Map<
-  ASTBase,
+export type KeyRefDependencyMap = Map<
+  string,
   {
     main: Dependency;
-    imports: Set<Dependency>;
+    imports: Map<string, Dependency>;
   }
 >;
 export type ProcessImportPathCallback = (path: string) => string;
 
+export function generateDependencyMappingKey(
+  dependency: DependencyLike,
+  nativeImportPath: string,
+): string {
+  return `${dependency.target}:${nativeImportPath}`;
+}
+
 export function injectImport(
   context: Context,
+  originDependency: DependencyLike,
+  activeDependency: DependencyLike,
   item: ASTImportCodeExpression
 ): string[] {
-  const astRefDependencyMap = context.get<AstRefDependencyMap>(
+  const astRefDependencyMap = context.get<KeyRefDependencyMap>(
     ContextDataProperty.ASTRefDependencyMap
   );
   const processImportPath = context.getOrCreateData<ProcessImportPathCallback>(
@@ -35,19 +43,21 @@ export function injectImport(
     () => new Set()
   );
 
-  if (astRefDependencyMap.has(item)) {
+  const dependencyKey = Dependency.generateDependencyMappingKey(item.directory, DependencyType.NativeImport);
+  const associatedDependency = activeDependency.dependencies.get(dependencyKey);
+  const key = generateDependencyMappingKey(originDependency, associatedDependency.target);
+
+  if (astRefDependencyMap.has(key)) {
     const lines: string[] = [];
-    const entry = astRefDependencyMap.get(item);
+    const entry = astRefDependencyMap.get(key);
 
     if (astRefsVisited.has(entry.main.target)) {
       return lines;
     }
 
-    for (const importEntry of entry.imports) {
+    for (const importEntry of entry.imports.values()) {
       if (astRefsVisited.has(importEntry.target)) continue;
-      if (importEntry.ref instanceof ASTImportCodeExpression) {
-        lines.push(`import_code("${processImportPath(importEntry.target)}")`);
-      }
+      lines.push(`import_code("${processImportPath(importEntry.target)}")`);
 
       astRefsVisited.add(importEntry.target);
     }

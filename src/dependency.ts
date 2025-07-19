@@ -8,7 +8,8 @@ import {
   DependencyLike,
   fetchNamespaces,
   merge,
-  ResourceHandler
+  ResourceHandler,
+  ResourceManagerLike
 } from 'greybel-transpiler';
 import { ASTChunkGreyScript, Parser } from 'greyscript-core';
 import { ASTBase } from 'miniscript-core';
@@ -22,17 +23,15 @@ export enum DependencyType {
 
 export interface DependencyOptions {
   target: string;
-  resourceHandler: ResourceHandler;
+  resourceManager: ResourceManagerLike;
   chunk: ASTChunkGreyScript;
   context: Context;
-
   type?: DependencyType | number;
-  ref?: ASTBase;
 }
 
 export interface DependencyFindResult {
   /* eslint-disable no-use-before-define */
-  dependencies: Set<Dependency>;
+  dependencies: Map<string, Dependency>;
   namespaces: string[];
   literals: ASTBase[];
 }
@@ -42,32 +41,36 @@ export type ResourceDependencyMap = Map<string, Dependency>;
 
 export type DependencyCallStack = string[];
 
-export class Dependency extends EventEmitter implements DependencyLike {
+export class Dependency implements DependencyLike {
   target: string;
   id: string;
-  resourceHandler: ResourceHandler;
+  resourceManager: ResourceManagerLike;
   chunk: ASTChunkGreyScript;
   /* eslint-disable no-use-before-define */
-  dependencies: Set<Dependency>;
+  dependencies: Map<string, Dependency>;
   context: Context;
   injections: Map<string, string>;
 
   type: DependencyType | number;
-  ref?: ASTBase;
+
+  static generateDependencyMappingKey(
+    relativePath: string,
+    type: DependencyType
+  ): string {
+    return `${type}:${relativePath}`;
+  }
 
   constructor(options: DependencyOptions) {
-    super();
-
     const me = this;
 
     me.target = options.target;
     me.id = md5(options.target);
-    me.resourceHandler = options.resourceHandler;
+    me.resourceManager = options.resourceManager;
     me.chunk = options.chunk;
-    me.dependencies = new Set<Dependency>();
+    me.dependencies = new Map();
+    me.injections = new Map();
     me.type = options.type || DependencyType.Main;
     me.context = options.context;
-    me.ref = options.ref;
 
     const namespace = me.context.createModuleNamespace(me.id);
     const resourceDependencyMap =
@@ -93,73 +96,52 @@ export class Dependency extends EventEmitter implements DependencyLike {
     return me.context.modules.get(me.id);
   }
 
-  fetchNativeImports(): Set<Dependency> {
+  fetchNativeImports(route: string, dependencies: Map<string, Dependency> = new Map()): Map<string, Dependency> {
     const me = this;
-    const result = [];
 
-    for (const item of me.dependencies) {
+    for (const item of me.dependencies.values()) {
       if (item.type === DependencyType.NativeImport) {
-        merge(result, [...(item as Dependency).fetchNativeImports()]);
-        result.push(item);
+        const currentRoute = `${route}:${item.target}`;
+        item.fetchNativeImports(currentRoute, dependencies);
+        dependencies.set(currentRoute, item);
       }
     }
 
-    return new Set<Dependency>(result);
+    return dependencies;
   }
 
-  private async resolve(
+  private resolve(
     path: string,
-    type: DependencyType,
-    ref?: ASTBase
-  ): Promise<Dependency> {
+    type: DependencyType
+  ): Dependency {
     const me = this;
     const context = me.context;
     const { modules } = context;
     const resourceDependencyMap = context.get<ResourceDependencyMap>(
       GreybelContextDataProperty.ResourceDependencyMap
     );
-    const resourceHandler = me.resourceHandler;
-    const subTarget = await resourceHandler.getTargetRelativeTo(
-      me.target,
-      path
-    );
+    const resourceManager = me.resourceManager;
+    const subTarget = resourceManager.getRelativePathMapping(me.target, path);
     const id = md5(subTarget);
     const namespace = modules.get(id);
 
-    if (resourceDependencyMap.has(`${namespace}:${type}`)) {
-      return resourceDependencyMap.get(`${namespace}:${type}`);
+    if (resourceDependencyMap.has(namespace)) {
+      return resourceDependencyMap.get(namespace);
     }
-
-    if (!(await resourceHandler.has(subTarget))) {
-      throw new Error('Dependency ' + subTarget + ' does not exist...');
-    }
-
-    const content = await resourceHandler.get(subTarget);
-
-    me.emit('parse-before', subTarget);
 
     try {
-      const parser = new Parser(content, {
-        filename: subTarget
-      });
-      const chunk = parser.parseChunk() as ASTChunkGreyScript;
+      const chunk = this.resourceManager.getResource(subTarget)
+        .chunk as ASTChunkGreyScript;
       const dependency = new Dependency({
         target: subTarget,
-        resourceHandler,
+        resourceManager,
         chunk,
         type,
-        context,
-        ref
+        context
       });
-
-      me.emit('parse-after', dependency);
 
       return dependency;
     } catch (err: any) {
-      if (err instanceof BuildError) {
-        throw err;
-      }
-
       throw new BuildError(err.message, {
         target: subTarget,
         range: err.range
@@ -167,22 +149,17 @@ export class Dependency extends EventEmitter implements DependencyLike {
     }
   }
 
-  async findInjections(): Promise<Map<string, string>> {
+  findInjections(): Map<string, string> {
     const me = this;
     const { injects } = me.chunk;
     const injections: Map<string, string> = new Map();
 
     for (const item of injects) {
-      const injectionTarget = await me.resourceHandler.getTargetRelativeTo(
+      const injectionTarget = me.resourceManager.getRelativePathMapping(
         me.target,
         item.path
       );
-
-      if (!(await me.resourceHandler.has(injectionTarget))) {
-        throw new Error('Injection ' + injectionTarget + ' does not exist...');
-      }
-
-      const content = await me.resourceHandler.get(injectionTarget);
+      const content = me.resourceManager.getInjection(injectionTarget);
 
       injections.set(item.path, content);
     }
@@ -192,7 +169,7 @@ export class Dependency extends EventEmitter implements DependencyLike {
     return injections;
   }
 
-  async findDependencies(): Promise<DependencyFindResult> {
+  findDependencies(): DependencyFindResult {
     const me = this;
     const { imports, includes, nativeImports } = me.chunk;
     const sourceNamespace = me.getNamespace();
@@ -201,7 +178,7 @@ export class Dependency extends EventEmitter implements DependencyLike {
     );
     const namespaces: string[] = [...fetchNamespaces(me.chunk)];
     const literals: ASTBase[] = [...me.chunk.literals];
-    const result: Dependency[] = [];
+    const dependencies = new Map<string, Dependency>();
 
     dependencyCallStack.push(sourceNamespace);
 
@@ -211,10 +188,9 @@ export class Dependency extends EventEmitter implements DependencyLike {
         continue;
       }
 
-      const dependency = await me.resolve(
+      const dependency = me.resolve(
         nativeImport.directory,
-        DependencyType.NativeImport,
-        nativeImport
+        DependencyType.NativeImport
       );
       const namespace = dependency.getNamespace();
 
@@ -224,11 +200,11 @@ export class Dependency extends EventEmitter implements DependencyLike {
         );
       }
 
-      const relatedDependencies = await dependency.findDependencies();
+      const relatedDependencies = dependency.findDependencies();
 
       merge(namespaces, relatedDependencies.namespaces);
       merge(literals, relatedDependencies.literals);
-      result.push(dependency);
+      dependencies.set(Dependency.generateDependencyMappingKey(nativeImport.directory, DependencyType.NativeImport), dependency);
     }
 
     // handle internal includes/imports
@@ -239,7 +215,7 @@ export class Dependency extends EventEmitter implements DependencyLike {
         item instanceof ASTFeatureIncludeExpression
           ? DependencyType.Include
           : DependencyType.Import;
-      const dependency = await me.resolve(item.path, type, item);
+      const dependency = me.resolve(item.path, type);
       const namespace = dependency.getNamespace();
 
       if (dependencyCallStack.includes(namespace)) {
@@ -248,22 +224,20 @@ export class Dependency extends EventEmitter implements DependencyLike {
         );
       }
 
-      const chunk = dependency.chunk;
+      const relatedDependencies = dependency.findDependencies();
 
-      item.chunk = chunk;
-      item.namespace = namespace;
+      dependency.fetchNativeImports(`${me.target}:${dependency.target}`, dependencies);
 
-      const relatedDependencies = await dependency.findDependencies();
-
-      merge(result, [...dependency.fetchNativeImports()]);
       merge(namespaces, relatedDependencies.namespaces);
       merge(literals, relatedDependencies.literals);
-      result.push(dependency);
+
+      dependencies.set(
+        Dependency.generateDependencyMappingKey(item.path, type),
+        dependency
+      );
     }
 
-    await this.findInjections();
-
-    const dependencies = new Set<Dependency>(result);
+    this.findInjections();
 
     me.dependencies = dependencies;
 

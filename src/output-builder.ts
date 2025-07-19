@@ -49,7 +49,7 @@ export class OutputBuilder {
         this.modulesNamespacesUsed.add(moduleName);
       }
 
-      for (const subItem of item.dependencies) {
+      for (const subItem of item.dependencies.values()) {
         if (subItem.type !== DependencyType.NativeImport) {
           iterator(subItem);
         }
