@@ -619,18 +619,18 @@ test=test+5
 test=test+4+5
 test.abc=test.abc+5
 test.abc=test.abc+4+5
-if (true) then print(\\"test\\")
-if (true) then print(\\"test\\") else print(\\"xd\\")
-if (true) then test=[1,2,3,4,5]
-if (true) then test=[1,2,3,4,5] else test=[5,4,3,2,1]
-if (true) then
+if (1) then print(\\"test\\")
+if (1) then print(\\"test\\") else print(\\"xd\\")
+if (1) then test=[1,2,3,4,5]
+if (1) then test=[1,2,3,4,5] else test=[5,4,3,2,1]
+if (1) then
 print(\\"test\\")
 else
 print(\\"xd\\")
 end if
-if (true) then
+if (1) then
 print(\\"test\\")
-else if (false) then
+else if (0) then
 print(\\"xa\\")
 else
 print(\\"xd\\")
@@ -648,13 +648,13 @@ print(\\"test\\")
 end for
 test={\\"was\\":123}
 test={\\"was\\":123,\\"foo\\":13,\\"bar\\":45}
-while true
-if true then print(\\"test\\") else print(\\"xd\\")
+while 1
+if 1 then print(\\"test\\") else print(\\"xd\\")
 end while
-if true then stacktrace=function
+if 1 then stacktrace=function
 print(\\"test\\")
 end function
-if false then stacktrace=function
+if 0 then stacktrace=function
 print(\\"abc\\")
 end function
 print(\\"abc\\">[42])
@@ -663,11 +663,11 @@ test[25]
 test[123][25]
 test[25](11)
 test(11)[25]
-while true
+while 1
 end while
 if x.remove(@key) then return \\"foo:\\"+@key+\\"!\\"
 foo.bar=function(key=0,val=0,nil=0,nul=0)
-if true then return function
+if 1 then return function
 print(\\"test\\")
 end function
 end function
@@ -1078,67 +1078,63 @@ IV += { \\"was\\": floor(rnd(byte)) } // Warning: rnd is not cryptographically s
 
 exports[`parse default scripts beautify-cases.src uglify 1`] = `
 "globals.H=globals
-H.d=1
-H.g=4
-H.c=5
 H.X=\\"foo\\"
 H.V=123
 H.W=\\"was\\"
 H.Y=\\"wo\\"
 H.Z=\\"abc\\"
 H.a=234
-H.b=true
-H.e=\\"test\\"
-H.f=\\"xd\\"
-I=d+2+3+g+c+6 and (2+3+g+c+6+(2+3+g+c+6+7))
-J(\\"dieFace[1] - dieFace[6]\\",[K[d],K[2],K[3],K[g],K[c],K[6],{X:V,W:Y}].join,V,V)
-J(d,2,3,g)
+H.b=\\"test\\"
+H.c=\\"xd\\"
+I=1+2+3+4+5+6 and (2+3+4+5+6+(2+3+4+5+6+7))
+J(\\"dieFace[1] - dieFace[6]\\",[K[1],K[2],K[3],K[4],K[5],K[6],{X:V,W:Y}].join,V,V)
+J(1,2,3,4)
 I={}
 I={W:V}
-I={X:V,W:[Z,d,a],\\"xx\\":{X:V,\\"ooo\\":{X:V,W:Y},W:Y},\\"123\\":\\"3\\"}
+I={X:V,W:[Z,1,a],\\"xx\\":{X:V,\\"ooo\\":{X:V,W:Y},W:Y},\\"123\\":\\"3\\"}
 I=[]
 I=[W]
-I=[Z,d,[Z,d,a],[Z,[Z,d,a],d,a],a]
-I=I+c
-I=I+g+c
-I.abc=I.abc+c
-I.abc=I.abc+g+c
-if (b) then print(e)
-if (b) then print(e) else print(f)
-if (b) then I=[d,2,3,g,c]
-if (b) then I=[d,2,3,g,c] else I=[c,g,3,2,d]
-if (b) then
-print(e)
+I=[Z,1,[Z,1,a],[Z,[Z,1,a],1,a],a]
+I=I+5
+I=I+4+5
+I.abc=I.abc+5
+I.abc=I.abc+4+5
+if (1) then print(b)
+if (1) then print(b) else print(c)
+if (1) then I=[1,2,3,4,5]
+if (1) then I=[1,2,3,4,5] else I=[5,4,3,2,1]
+if (1) then
+print(b)
 else
-print(f)
+print(c)
 end if
-if (b) then
-print(e)
-else if (false) then
+if (1) then
+print(b)
+else if (0) then
 print(\\"xa\\")
 else
-print(f)
+print(c)
 end if
 I=function
-return [d,2,3,g,c]
+return [1,2,3,4,5]
 end function
-I=I+c
-I=[d,2,3,g]
+I=I+5
+I=[1,2,3,4]
 I=function
 return V
 end function
 for I in [V]
-print(e)
+print(b)
 end for
 I={W:V}
 I={W:V,X:13,\\"bar\\":45}
-while b
-if b then print(e) else print(f)
+while 1
+if 1 then print(b) else print(c)
 end while
-if b then M=function
-print(e)
+if 1 then M=function
+print(b)
 end function
-if false then M=function
+if 0 then M=function
 print(Z)
 end function
 print(Z>[42])
@@ -1147,12 +1143,12 @@ I[25]
 I[V][25]
 I[25](11)
 I(11)[25]
-while b
+while 1
 end while
 if N.remove(@O) then return \\"foo:\\"+@O+\\"!\\"
 P.bar=function(O=0,val=0,T=0,U=0)
-if b then return function
-print(e)
+if 1 then return function
+print(b)
 end function
 end function
 I=function
@@ -1258,7 +1254,7 @@ print(arg1)
 print(arg2)
 end function
 test
-test(\\"foo\\",false)
+test(\\"foo\\",0)
 var1=\\"test\\"
 var2=\\"test\\"
 var3=\\"test\\""
@@ -1300,7 +1296,7 @@ print(M)
 print(N)
 end function
 I
-I(\\"foo\\",false)
+I(\\"foo\\",0)
 J=O
 K=O
 L=O"
@@ -1710,10 +1706,10 @@ I=\\"$$1 $$$$'2   $\`$\`$\` $23\\""
 `;
 
 exports[`parse default scripts map.src 1`] = `
-"test={{\\"myTest\\":0,1:2}:true}
-test2={[12,14]:true}
+"test={{\\"myTest\\":0,1:2}:1}
+test2={[12,14]:1}
 test3={test:234}
-test4={true:\\"foo\\"}
+test4={1:\\"foo\\"}
 test5={123:\\"bar\\"}"
 `;
 
@@ -1747,11 +1743,10 @@ test5 = { 123: \\"bar\\" }"
 
 exports[`parse default scripts map.src uglify 1`] = `
 "globals.H=globals
-H.N=true
-I={{\\"myTest\\":0,1:2}:N}
-J={[12,14]:N}
+I={{\\"myTest\\":0,1:2}:1}
+J={[12,14]:1}
 K={I:234}
-L={N:\\"foo\\"}
+L={1:\\"foo\\"}
 M={123:\\"bar\\"}"
 `;
 
@@ -2100,7 +2095,7 @@ if (outer.num>40) then text=\\"<mark=red><color=yellow>\\"+outer.num
 if (outer.num<-20) then text=\\"<mark=green><color=yellow>\\"+outer.num
 if (outer.num<-40) then text=\\"<mark=yellow><color=red>\\"+outer.num
 print(text)
-key=user_input(\\"test\\",false,true)
+key=user_input(\\"test\\",0,1)
 if (key==\\"UpArrow\\") then
 outer.num=outer.num+(1)
 else if (key==\\"DownArrow\\") then
@@ -2109,7 +2104,7 @@ else
 exit(\\"bye\\")
 end if
 end function
-while (true)
+while (1)
 iterate
 end while
 end function
@@ -2199,7 +2194,7 @@ if (outer.J>40) then L=\\"<mark=red><color=yellow>\\"+outer.J
 if (outer.J<-20) then L=\\"<mark=green><color=yellow>\\"+outer.J
 if (outer.J<-40) then L=\\"<mark=yellow><color=red>\\"+outer.J
 print(L)
-M=user_input(\\"test\\",false,true)
+M=user_input(\\"test\\",0,1)
 if (M==\\"UpArrow\\") then
 outer.J=outer.J+(1)
 else if (M==\\"DownArrow\\") then
@@ -2208,7 +2203,7 @@ else
 exit(\\"bye\\")
 end if
 end function
-while (true)
+while (1)
 K
 end while
 end function
@@ -3088,7 +3083,6 @@ print(decrypted)
 
 exports[`parse default scripts pseudo-crypto.src uglify 1`] = `
 "globals.H=globals
-H.ϻ=1
 H.Ϲ=null
 H.Ϻ=63
 I={}
@@ -3102,7 +3096,7 @@ d=0
 e=values.len
 while d<e
 Ϯ=Ϯ.replace(\\"$\\"+d,values[d])
-d=d+ϻ
+d=d+1
 end while
 return (new self).constructor(Ϯ)
 end function
@@ -3196,9 +3190,9 @@ end function
 return bitwise(\\">>\\",ϩ,ϫ)
 end function
 while u<w
-k=hash[u%hash.len-ϻ]
+k=hash[u%hash.len-1]
 ϩ=_(str[u].code+k,16)
-ϫ=_(str[u+ϻ].code+k,8)
+ϫ=_(str[u+1].code+k,8)
 ϭ=str[u+2].code+k
 ϯ=ϩ+ϫ+ϭ
 t.push(y(z(Ϩ(ϯ,18),Ϻ)))
@@ -3208,16 +3202,16 @@ t.push(y(z(ϯ,Ϻ)))
 u=u+3
 end while
 if (ϱ==2) then
-k=hash[u%hash.len-ϻ]
+k=hash[u%hash.len-1]
 ϩ=_(str[u].code+k,8)
-ϫ=str[u+ϻ].code+k
+ϫ=str[u+1].code+k
 ϯ=ϩ+ϫ
 t.push(y(Ϩ(ϯ,10)))
 t.push(y(z(Ϩ(ϯ,4),Ϻ)))
 t.push(y(z(_(ϯ,2),Ϻ)))
 t.push(\\"=\\")
-else if (ϱ==ϻ) then
-k=hash[u%hash.len-ϻ]
+else if (ϱ==1) then
+k=hash[u%hash.len-1]
 ϯ=str[u].code+k
 t.push(y(Ϩ(ϯ,2)))
 t.push(y(z(_(ϯ,4),Ϻ)))
@@ -3246,14 +3240,14 @@ end function
 while u<w
 ϯ=o.table.indexOf(str[u])
 ϵ=ϳ
-ϳ=ϳ+ϻ
+ϳ=ϳ+1
 if (ϵ%4) then
 ϴ=ϴ*64+ϯ
 else
 ϴ=ϯ
 end if
 if (ϵ%4) then
-϶=(floor(s/3)*3)%ϲ-ϻ
+϶=(floor(s/3)*3)%ϲ-1
 if (not hash.hasIndex(϶)) then break
 k=hash[϶]
 Ϸ=z(-2*ϳ,6)
@@ -3264,9 +3258,9 @@ if (Ϸ!=0) then
 if (ϸ>o.maxCharCode) then break
 t.push(char(ϸ))
 end if
-s=s+ϻ
+s=s+1
 end if
-u=u+ϻ
+u=u+1
 end while
 return t.join(\\"\\")
 end function
@@ -3297,7 +3291,7 @@ end function
 Random.gen=function(min,max,seed,inc)
 me=self
 pool=me.pool
-if (inc==null) then inc=true
+if (inc==null) then inc=1
 if (seed==null) then seed=me.defaultSeed
 if (pool.hasIndex(seed)) then
 ps=pool[seed]
@@ -3321,7 +3315,7 @@ temp=me.gen(min,max,seed)
 result.push(temp)
 index=index+1
 end while
-if (keepPool!=true) then me.pool.remove(seed)
+if (keepPool!=1) then me.pool.remove(seed)
 return result
 end function
 Random.get=function(min,max)
@@ -3497,7 +3491,7 @@ end function
 I.gen=function(T,U,Q,V)
 W=self
 J=W.pool
-if (V==null) then V=true
+if (V==null) then V=1
 if (Q==null) then Q=W.defaultSeed
 if (J.hasIndex(Q)) then
 X=J[Q]
@@ -3521,7 +3515,7 @@ e=W.gen(T,U,Q)
 d.push(e)
 c=c+1
 end while
-if (b!=true) then W.pool.remove(Q)
+if (b!=1) then W.pool.remove(Q)
 return d
 end function
 I.get=function(T,U)
@@ -3649,10 +3643,10 @@ exports[`parse default scripts unary.src 1`] = `
 "test=function
 return null
 end function
-print(@\\"was\\".split and (false or not false))
-print(@(\\"was\\".split and (false or not false)))
-print(not \\"was\\".split and (false or not false))
-print(not (\\"was\\".split and (false or not false)))
+print(@\\"was\\".split and (0 or not 0))
+print(@(\\"was\\".split and (0 or not 0)))
+print(not \\"was\\".split and (0 or not 0))
+print(not (\\"was\\".split and (0 or not 0)))
 print(-1+2)
 print(-(1+2))"
 `;
@@ -3687,15 +3681,14 @@ print(-(1 + 2))
 
 exports[`parse default scripts unary.src uglify 1`] = `
 "globals.H=globals
-H.K=\\"was\\"
-H.J=false
+H.J=\\"was\\"
 I=function
 return null
 end function
-print(@K.split and (J or not J))
-print(@(K.split and (J or not J)))
-print(not K.split and (J or not J))
-print(not (K.split and (J or not J)))
+print(@J.split and (0 or not 0))
+print(@(J.split and (0 or not 0)))
+print(not J.split and (0 or not 0))
+print(not (J.split and (0 or not 0)))
 print(-1+2)
 print(-(1+2))"
 `;
