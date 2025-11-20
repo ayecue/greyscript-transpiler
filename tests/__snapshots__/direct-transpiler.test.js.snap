@@ -1753,16 +1753,18 @@ N={123:\\"bar\\"}"
 exports[`parse default scripts multiline-comment.src 1`] = `"print(\\"test\\")"`;
 
 exports[`parse default scripts multiline-comment.src beautify 1`] = `
-"/* 
-
-
-my Test
-
-** */ print \\"test\\" /* 
-
-another comment
-
- */// one line comment"
+"//
+//
+//
+// my Test
+//
+// **
+print \\"test\\" //
+//
+// another comment
+//
+//
+// one line comment"
 `;
 
 exports[`parse default scripts multiline-comment.src beautify with custom settings 1`] = `

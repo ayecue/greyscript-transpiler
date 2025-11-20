@@ -3485,16 +3485,18 @@ Array [
 
 exports[`parse default scripts multiline-comment.src beautify 1`] = `
 Array [
-  "/* 
-
-
-my Test
-
-** */ print \\"test\\" /* 
-
-another comment
-
- */// one line comment",
+  "//
+//
+//
+// my Test
+//
+// **
+print \\"test\\" //
+//
+// another comment
+//
+//
+// one line comment",
 ]
 `;
 
