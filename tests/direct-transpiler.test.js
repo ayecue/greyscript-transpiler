@@ -47,6 +47,20 @@ describe('parse', function () {
         expect(result).toMatchSnapshot();
       });
 
+      test(path.basename(filepath) + ' beautify devMode', async () => {
+        const result = new DirectTranspiler({
+          code: fs.readFileSync(filepath, 'utf-8'),
+          buildType: BuildType.BEAUTIFY,
+          buildOptions: {
+            isDevMode: true
+          },
+          environmentVariables,
+          excludedNamespaces: Array.from(Object.keys(greyscriptMeta.getTypeSignature('general').getDefinitions()))
+        }).parse();
+
+        expect(result).toMatchSnapshot();
+      });
+
       test(path.basename(filepath) + ' beautify with custom settings', async () => {
         const result = new DirectTranspiler({
           code: fs.readFileSync(filepath, 'utf-8'),
