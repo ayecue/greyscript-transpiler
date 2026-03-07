@@ -812,12 +812,12 @@ end function
 
 // comments
 test = test + 5 // test
-test = [ // :D
+test = [
 	1,
-	2,
-	3, // its a list
+	2, // :D
+	3,
 	4,
-]
+] // its a list
 test = function // its a function
 	return 123 // it a return
 end function // its function end
@@ -827,7 +827,6 @@ end for // end for loop
 
 test = { \\"was\\": 123 } // was
 test = {
-
 	\\"was\\": 123, // was
 	\\"foo\\": 13,
 	\\"bar\\": 45,
@@ -1008,12 +1007,12 @@ end function
 
 // comments
 test += 5 // test
-test = [ // :D
+test = [
           1,
-          2,
-          3, // its a list
+          2, // :D
+          3,
           4,
-]
+] // its a list
 test = function // its a function
           return 123 // it a return
 end function // its function end
@@ -1023,7 +1022,6 @@ end for // end for loop
 
 test = { \\"was\\": 123 } // was
 test = {
-
           \\"was\\": 123, // was
           \\"foo\\": 13,
           \\"bar\\": 45,
@@ -1199,11 +1197,11 @@ exports[`parse default scripts binary-expressions.src beautify with custom setti
 a *= b
 a -= b
 a += b
-bitwise(\\"<<\\", a, b)
-bitwise(\\">>\\", a, b)
-w = bitwise(\\">>\\", bitwise(\\">>>\\", a, (bitwise(\\"<<\\", b, c))), a)
-bitwise(\\"|\\", a, b)
-bitwise(\\"&\\", a, b)
+a << b
+a >> b
+w = a >>> (b << c) >> a
+a | b
+a & b
 a ^ b
 a and b
 a or b"
@@ -1310,14 +1308,12 @@ print(\\"0.2\\")"
 
 exports[`parse default scripts envar.src beautify 1`] = `
 "#include \\"../fixtures/envar-include.src\\";
-
 myvar = \\"\\"foo\\"\\"
 print \\"0.2\\""
 `;
 
 exports[`parse default scripts envar.src beautify with custom settings 1`] = `
 "#include \\"../fixtures/envar-include.src\\";
-
 myvar = #envar test
 print(#envar test2)"
 `;
@@ -1532,7 +1528,7 @@ exports[`parse default scripts import-code.src beautify 1`] = `
 "import_code(\\"./ascii\\")
 import_code(\\"../fixtures/sub-import\\")
 import_code(\\"./isa.src\\") // override=./isa.src;
-
+// no-emit;
 import_code(\\"./file-does-not-exit\\") // no-eval;
 
 print 123"
@@ -1541,9 +1537,9 @@ print 123"
 exports[`parse default scripts import-code.src beautify with custom settings 1`] = `
 "import_code(\\"./ascii\\")
 import_code(\\"../fixtures/sub-import\\")
-import_code(\\"./file-does-not-exit\\") // override=./isa.src;
-import_code(\\"./file-does-not-exit\\") // no-emit;
-import_code(\\"./file-does-not-exit\\") // no-eval;
+import_code(\\"./file-does-not-exit\\") // override=./isa.src; // override=./isa.src;
+import_code(\\"./file-does-not-exit\\") // no-emit; // no-emit;
+import_code(\\"./file-does-not-exit\\") // no-eval; // no-eval;
 
 print(123)"
 `;
@@ -1626,7 +1622,6 @@ print {} isa list
 print {} isa map
 
 print {} isa funcRef
-
 "
 `;
 
@@ -1668,7 +1663,6 @@ print({} isa list)
 print({} isa map)
 
 print({} isa funcRef)
-
 "
 `;
 
@@ -1753,31 +1747,19 @@ N={123:\\"bar\\"}"
 exports[`parse default scripts multiline-comment.src 1`] = `"print(\\"test\\")"`;
 
 exports[`parse default scripts multiline-comment.src beautify 1`] = `
-"//
-//
-//
-// my Test
+"// my Test
 //
 // **
-print \\"test\\" //
-//
-// another comment
-//
-//
+print \\"test\\" // another comment
 // one line comment"
 `;
 
 exports[`parse default scripts multiline-comment.src beautify with custom settings 1`] = `
-"/* 
+"/* my Test
 
-
-my Test
-
-** */ print(\\"test\\") /* 
-
-another comment
-
- */// one line comment"
+  ** */
+print(\\"test\\") /* another comment */
+// one line comment"
 `;
 
 exports[`parse default scripts multiline-comment.src uglify 1`] = `
@@ -2863,8 +2845,7 @@ foo = test.encrypt(pwd)
 decrypted = test.decrypt(foo)
 
 print foo
-print decrypted
-"
+print decrypted"
 `;
 
 exports[`parse default scripts pseudo-crypto.src beautify with custom settings 1`] = `
@@ -3079,8 +3060,7 @@ foo = test.encrypt(pwd)
 decrypted = test.decrypt(foo)
 
 print(foo)
-print(decrypted)
-"
+print(decrypted)"
 `;
 
 exports[`parse default scripts pseudo-crypto.src uglify 1`] = `
@@ -3663,8 +3643,7 @@ print @(\\"was\\".split and (false or not false))
 print not \\"was\\".split and (false or not false)
 print not (\\"was\\".split and (false or not false))
 print -1 + 2
-print -(1 + 2)
-"
+print -(1 + 2)"
 `;
 
 exports[`parse default scripts unary.src beautify with custom settings 1`] = `
@@ -3677,8 +3656,7 @@ print(@(\\"was\\".split and (false or not false)))
 print(not \\"was\\".split and (false or not false))
 print(not (\\"was\\".split and (false or not false)))
 print(-1 + 2)
-print(-(1 + 2))
-"
+print(-(1 + 2))"
 `;
 
 exports[`parse default scripts unary.src uglify 1`] = `
