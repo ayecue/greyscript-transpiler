@@ -51,7 +51,7 @@ const result = await new Transpiler({
   environmentVariables: new Map([['VERSION', '"1.0.0"']])
 }).parse();
 
-// result is a record of output filename → transpiled code
+// result is a record of output filename to transpiled code
 console.log(result);
 ```
 
