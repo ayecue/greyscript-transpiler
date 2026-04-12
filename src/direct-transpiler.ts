@@ -18,7 +18,10 @@ export class DirectTranspiler extends GreybelDirectTranspiler {
     const me = this;
 
     const factoryConstructor = getFactory(me.buildType);
-    const chunkProvider = new ChunkProvider();
+    const chunkProvider = new ChunkProvider(
+      me.environmentVariables,
+      me.strictMode
+    );
     const chunk = chunkProvider.parse('unknown', me.code) as ASTChunkGreyScript;
     const namespaces = fetchNamespaces(chunk);
     const literals = [].concat(chunk.literals);
@@ -39,7 +42,8 @@ export class DirectTranspiler extends GreybelDirectTranspiler {
       buildOptions: me.buildOptions,
       factoryConstructor,
       context,
-      environmentVariables: me.environmentVariables
+      environmentVariables: me.environmentVariables,
+      strictMode: me.strictMode
     });
     const output = new OutputProcessor(context, transformer, {
       main: MAIN_BOILERPLATE,

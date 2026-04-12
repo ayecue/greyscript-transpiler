@@ -37,7 +37,9 @@ export class Transpiler extends GreybelTranspiler {
     const target = new Target({
       target: me.target,
       resourceHandler: me.resourceHandler,
-      context: me.context
+      context: me.context,
+      environmentVariables: me.environmentVariables,
+      strictMode: me.strictMode
     });
     const targetParseResult: TargetParseResult = await target.parse(
       me.buildType === BuildType.UGLIFY
@@ -49,6 +51,7 @@ export class Transpiler extends GreybelTranspiler {
       factoryConstructor,
       context,
       environmentVariables: me.environmentVariables,
+      strictMode: me.strictMode,
       resourceHandler: me.resourceHandler
     });
     const moduleBoilerplate = transformer.transform(MODULE_BOILERPLATE);

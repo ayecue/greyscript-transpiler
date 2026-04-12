@@ -21,12 +21,14 @@ export class ResourceManager
             resolved: await this.createMapping(resource.target, item.path)
           };
         }),
-        ...includes.map(async (item) => {
-          return {
-            ref: item,
-            resolved: await this.createMapping(resource.target, item.path)
-          };
-        }),
+        ...includes
+          .filter((item) => !item.typeOnly)
+          .map(async (item) => {
+            return {
+              ref: item,
+              resolved: await this.createMapping(resource.target, item.path)
+            };
+          }),
         ...nativeImports
           .filter((item) => {
             return item.eval && item.emit;

@@ -591,12 +591,12 @@ end function
 
 // comments
 test = test + 5 // test
-test = [ // :D
+test = [
 	1,
-	2,
-	3, // its a list
+	2, // :D
+	3,
 	4,
-]
+] // its a list
 test = function // its a function
 	return 123 // it a return
 end function // its function end
@@ -606,7 +606,6 @@ end for // end for loop
 
 test = { \\"was\\": 123 } // was
 test = {
-
 	\\"was\\": 123, // was
 	\\"foo\\": 13,
 	\\"bar\\": 45,
@@ -883,7 +882,6 @@ print(\\"0.2\\")",
 exports[`parse default scripts envar.src beautify 1`] = `
 Array [
   "myvar2 = \\"\\"foo\\"\\"
-
 
 myvar = \\"\\"foo\\"\\"
 print \\"0.2\\"",
@@ -2836,7 +2834,7 @@ import_code(\\"/fixtures/sub-sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-sub-import.src\\")
 import_code(\\"/fixtures/sub-import.src\\")
 import_code(\\"/scripts/isa.src\\") // override=./isa.src;
-
+// no-emit;
 import_code(\\"./file-does-not-exit\\") // no-eval;
 
 print 123",
@@ -3118,7 +3116,6 @@ print {} isa list
 print {} isa map
 
 print {} isa funcRef
-
 ",
 ]
 `;
@@ -3295,7 +3292,6 @@ import_code(\\"/fixtures/other-import.src\\")",
 	return module
 end function
 myNamespace = __REQUIRE(\\"C\\")
-
 print myNamespace",
 ]
 `;
@@ -3392,7 +3388,6 @@ print {} isa list
 print {} isa map
 
 print {} isa funcRef
-
 ",
 ]
 `;
@@ -3485,17 +3480,10 @@ Array [
 
 exports[`parse default scripts multiline-comment.src beautify 1`] = `
 Array [
-  "//
-//
-//
-// my Test
+  "// my Test
 //
 // **
-print \\"test\\" //
-//
-// another comment
-//
-//
+print \\"test\\" // another comment
 // one line comment",
 ]
 `;
@@ -4435,8 +4423,7 @@ foo = test.encrypt(pwd)
 decrypted = test.decrypt(foo)
 
 print foo
-print decrypted
-",
+print decrypted",
 ]
 `;
 
@@ -4939,8 +4926,7 @@ print @(\\"was\\".split and (false or not false))
 print not \\"was\\".split and (false or not false)
 print not (\\"was\\".split and (false or not false))
 print -1 + 2
-print -(1 + 2)
-",
+print -(1 + 2)",
 ]
 `;
 
